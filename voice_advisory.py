@@ -216,36 +216,6 @@ def _translate_phrase(english_phrase: str, language: str) -> str:
     """
     Look up the best matching key in PHRASE_BOOK and return the
     translated string with any road name / distance appended.
-
-    Matching strategy
-    -----------------
-    Keys are sorted longest-first so more-specific entries (e.g.
-    "Turn sharp left") are checked before shorter ones ("Turn left",
-    "Turn").  The first prefix match wins.
-
-    Remainder handling
-    ------------------
-    After stripping the matched key, any leftover text (road name,
-    distance) is cleaned of leading English prepositions and joined
-    with a dash:
-        "Turn left onto NH-8 (12 km)"
-        → key match: "Turn left"
-        → remainder: "onto NH-8 (12 km)"  →  strip "onto"  →  "NH-8 (12 km)"
-        → result: "Baayein muro - NH-8 (12 km)"
-
-    Fallback
-    --------
-    If no key matches, the original English phrase is returned so the
-    driver still hears something intelligible.
-
-    Parameters
-    ----------
-    english_phrase : str  — one instruction string from routing.py
-    language       : str  — "Sindhi", "Urdu", or "Dhatki"
-
-    Returns
-    -------
-    str — translated (or original-English fallback) instruction
     """
     # Sort longest key first to avoid short keys shadowing long ones
     sorted_keys = sorted(PHRASE_BOOK.keys(), key=len, reverse=True)
@@ -284,66 +254,6 @@ def generate_voice_advisory(
     """
     Translate a driving instruction into the target language, apply
     cargo-specific modifiers, and synthesise it to an MP3 audio buffer.
-
-    Parameters
-    ----------
-    base_instruction : str
-        One English instruction string as produced by
-        ``routing._build_instruction()``.
-        Example: "Turn left onto National Highway 8 (12.0 km)"
-
-    language : str
-        One of ``"Sindhi"``, ``"Urdu"``, or ``"Dhatki"``.
-        Defaults to ``"Urdu"`` — the most widely understood language
-        across the Sindh supply-chain corridor.
-
-    cargo_type : str
-        One of ``"Standard"`` or ``"Fragile / Tomatoes"``.
-        When ``"Fragile / Tomatoes"`` is selected:
-          • A language-specific caution phrase is appended to the text.
-          • gTTS ``slow=True`` is activated for more deliberate speech.
-
-    Returns
-    -------
-    dict with the following keys:
-
-        success       : bool
-            True if audio was synthesised successfully.
-
-        text          : str
-            The final translated text that was sent to gTTS.
-            Useful for displaying subtitles alongside the audio player.
-
-        language      : str
-            Echo of the requested language parameter.
-
-        cargo_type    : str
-            Echo of the cargo_type parameter.
-
-        audio_buffer  : io.BytesIO | None
-            In-memory MP3 buffer.  Pass directly to ``st.audio()``.
-            None on failure.
-
-        error         : str | None
-            Human-readable error message on failure, None on success.
-
-    Raises
-    ------
-    Does not raise — all errors are returned in the result dict so
-    Streamlit can display them without crashing the app.
-
-    Example
-    -------
-    >>> result = generate_voice_advisory(
-    ...     base_instruction = "Turn right onto Hyderabad Bypass (8.0 km)",
-    ...     language         = "Sindhi",
-    ...     cargo_type       = "Fragile / Tomatoes",
-    ... )
-    >>> if result["success"]:
-    ...     st.caption(result["text"])
-    ...     st.audio(result["audio_buffer"], format="audio/mp3")
-    ... else:
-    ...     st.error(result["error"])
     """
 
     # ── 1. Validate language ──────────────────────────────────────
@@ -380,8 +290,6 @@ def generate_voice_advisory(
     )
 
     # ── 4. Append fragile-cargo caution phrase ────────────────────
-    # When carrying tomatoes or other fragile produce, the driver
-    # receives an extra spoken reminder after every navigation step.
     is_fragile = (cargo_type == CARGO_FRAGILE)
 
     if is_fragile:
@@ -391,13 +299,6 @@ def generate_voice_advisory(
         final_text = f"{translated_instruction}."
 
     # ── 5. Synthesise speech with gTTS ────────────────────────────
-    # gTTS streams MP3 data from Google's TTS endpoint.
-    # We write directly to a BytesIO buffer so no temp files are
-    # created on disk — important for stateless Streamlit deployments.
-    #
-    # slow=True is activated for fragile cargo to produce speech that
-    # is slower and clearer, reducing misheard instructions.
-
     gtts_lang = GTTS_LANG_CODE[language]   # e.g. "ur" for all three languages
 
     try:
@@ -429,8 +330,6 @@ def generate_voice_advisory(
         }
 
     except gTTSError as exc:
-        # gTTSError is raised when Google's TTS endpoint is unreachable
-        # or returns an error (e.g. network restrictions in some environments).
         error_msg = (
             f"gTTS synthesis failed: {exc}. "
             "Check your internet connection. "
@@ -615,8 +514,6 @@ if __name__ == "__main__":
                 # ── st.audio INTEGRATION ────────────────────────
                 # Pass the BytesIO buffer directly — no temp file needed.
                 # format="audio/mp3" tells Streamlit the MIME type.
-                # autoplay=True plays immediately on page load (use
-                # with caution in production — can surprise users).
                 st.audio(
                     result["audio_buffer"],
                     format="audio/mp3",
@@ -635,7 +532,7 @@ if __name__ == "__main__":
                 # TTS unavailable — show the text prominently instead
                 st.error(f"Audio unavailable: {result['error']}")
                 st.info(
-                    "💡 **Text-only fallback active.**  "
+                    "💡 **Text-only fallback active.** "
                     "The advisory text above can still be displayed "
                     "to the driver on-screen.",
                     icon=None,
@@ -668,7 +565,7 @@ st.caption(result["text"])
 
 # Play the audio — works directly with BytesIO, no temp files
 if result["success"]:
-    st.audio(result["audio_buffer"], format="audio/mp3", autoplay=True)
+    st.audio(result["audio_buffer"], format="audio/mp3")
 else:
     st.warning(f"Audio unavailable: {result['error']}")
             ''',
