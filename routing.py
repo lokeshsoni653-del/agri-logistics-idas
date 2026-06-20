@@ -74,9 +74,9 @@ MODIFIER_LABEL = {
 }
 
 # Map colours
-ROUTE_LINE_COLOR  = "#2D5016"   # Dark agri-green for the route polyline
-START_MARKER_COLOR = "green"    # Folium named colour for departure pin
-END_MARKER_COLOR   = "red"      # Folium named colour for destination pin
+ROUTE_LINE_COLOR   = "#2D5016"   # Dark agri-green for the route polyline
+START_MARKER_COLOR = "green"     # Folium named colour for departure pin
+END_MARKER_COLOR   = "red"       # Folium named colour for destination pin
 
 
 # ─────────────────────────────────────────────────────────────────
@@ -105,7 +105,7 @@ def _build_instruction(step: dict) -> str:
       - distance          : metres to travel before the next step
     """
     maneuver  = step.get("maneuver", {})
-    m_type    = maneuver.get("type",     "continue")
+    m_type    = maneuver.get("type", "continue")
     m_mod     = maneuver.get("modifier", "")
     road_name = step.get("name", "").strip()
     distance  = step.get("distance", 0)
@@ -183,8 +183,7 @@ def get_osrm_route(
     start_lat, start_lon = start_coords
     end_lat,   end_lon   = end_coords
 
-    for name, lat, lon in [("start", start_lat, start_lon),
-                            ("end",   end_lat,   end_lon)]:
+    for name, lat, lon in [("start", start_lat, start_lon), ("end", end_lat, end_lon)]:
         if not (-90 <= lat <= 90 and -180 <= lon <= 180):
             return {
                 "success": False,
@@ -193,10 +192,6 @@ def get_osrm_route(
 
     # --- Build OSRM URL ---
     # OSRM coordinate order in the URL is  lon,lat;lon,lat
-    # Parameters:
-    #   overview=full      → return the complete uncompressed polyline
-    #   geometries=geojson → coordinates as plain JSON arrays, not encoded
-    #   steps=true         → include per-step maneuver data in each leg
     url = (
         f"{OSRM_BASE_URL}/route/v1/driving/"
         f"{start_lon},{start_lat};{end_lon},{end_lat}"
@@ -254,7 +249,7 @@ def get_osrm_route(
 
     # Distance and duration
     distance_km  = round(route["distance"] / 1000, 2)
-    duration_min = round(route["duration"] / 60,   1)
+    duration_min = round(route["duration"] / 60, 1)
 
     # --- Extract geometry ---
     # OSRM GeoJSON geometry: { "type": "LineString", "coordinates": [[lon, lat], ...] }
@@ -295,33 +290,7 @@ def plot_route_on_map(
 ) -> None:
     """
     Render a Folium map with the OSRM route polyline inside Streamlit.
-
-    Parameters
-    ----------
-    route_geometry : list[tuple[float, float]]
-        Ordered (lat, lon) points returned by get_osrm_route().
-        Must contain at least two points.
-
-    start_coords   : (lat, lon) — position of the green departure marker.
-    end_coords     : (lat, lon) — position of the red destination marker.
-    start_label    : Popup text for the departure marker.
-    end_label      : Popup text for the destination marker.
-    map_height_px  : Height of the embedded Folium map in pixels.
-
-    Raises
-    ------
-    ValueError — if route_geometry is empty or has fewer than 2 points.
-
-    Notes on libraries
-    ------------------
-    - folium.PolyLine   : draws the route line on the tile layer
-    - folium.Marker     : places clickable pins at start/end
-    - folium.TileLayer  : we use OpenStreetMap (free, no key required)
-    - st_folium         : bridges Folium → Streamlit; returns a dict of
-                          user interactions (last click, zoom level, etc.)
-                          which can drive future Phase-2 features.
     """
-
     if not route_geometry or len(route_geometry) < 2:
         st.error("Route geometry must contain at least two points.")
         return
@@ -333,7 +302,6 @@ def plot_route_on_map(
     centre_lon = (min(lons) + max(lons)) / 2
 
     # --- Estimate a sensible initial zoom level ---
-    # Rough heuristic: wider the span → lower the zoom number
     lat_span = max(lats) - min(lats)
     lon_span = max(lons) - min(lons)
     span     = max(lat_span, lon_span)
@@ -378,15 +346,12 @@ def plot_route_on_map(
     ).add_to(fmap)
 
     # --- Fit the map view to the full route extent ---
-    # fit_bounds ensures the whole polyline is visible regardless of screen size.
     fmap.fit_bounds(
         [[min(lats), min(lons)], [max(lats), max(lons)]],
         padding=(30, 30),    # pixels of padding around the bounding box
     )
 
     # --- Render inside Streamlit ---
-    # st_folium returns a dict with user interaction data (clicks, zoom, etc.)
-    # We capture it here so Phase-2 features can react to map clicks.
     map_data = st_folium(
         fmap,
         use_container_width=True,
@@ -394,7 +359,7 @@ def plot_route_on_map(
         returned_objects=["last_clicked", "center", "zoom"],
     )
 
-    return map_data   # caller can inspect clicks / zoom if needed
+    return map_data
 
 
 # ─────────────────────────────────────────────────────────────────
