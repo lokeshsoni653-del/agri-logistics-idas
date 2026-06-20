@@ -1,5 +1,5 @@
-streamlit==1.35.0
+streamlit
 requests
 folium
 streamlit-folium
-gTTS
+gtts
