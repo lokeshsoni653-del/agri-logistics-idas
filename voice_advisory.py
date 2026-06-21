@@ -1,49 +1,57 @@
 """
 voice_advisory.py — Agri-Logistics IDAS
 =========================================
-Intelligent Driver Advisory System (IDAS) — voice guidance layer.
-
+Production-grade multilingual voice guidance layer for the Intelligent
+Driver Assistance System (IDAS). Phase 3 edition.
+Author      : Lokesh Kumar
+Student ID  : 2k22-SE-42
+Email       : 2K22-SE-42@student.sau.edu.pk
+Institution : Sindh Agriculture University, Tandojam
 Public API
 ----------
     result = generate_voice_advisory(base_instruction, language, cargo_type)
-    # result keys: success, text, language, cargo_type, audio_buffer, error
-
+    Result dict keys:
+        success     : bool   — False if TTS generation failed
+        text        : str    — The romanised text that was spoken
+        language    : str    — The target language ("Sindhi", "Urdu", "Dhatki")
+        cargo_type  : str    — The cargo type passed in
+        audio_bytes : bytes  — Raw MP3 audio bytes (pass to st.audio)
+        transcript  : str    — Human-readable transcript line for display
+        error       : str    — Error message (only set when success=False)
 Streamlit usage
 ---------------
     from voice_advisory import generate_voice_advisory
-
     result = generate_voice_advisory(
         base_instruction = "Turn left onto National Highway 8 (12.0 km)",
         language         = "Urdu",
         cargo_type       = "Fragile / Tomatoes",
     )
     if result["success"]:
-        st.audio(result["audio_buffer"], format="audio/mp3")
-
+        import io
+        st.audio(io.BytesIO(result["audio_bytes"]), format="audio/mp3")
+        st.caption(result["transcript"])
+Caching
+-------
+    The heavy gTTS HTTP call is wrapped in `@st.cache_data` so repeated
+    calls with identical (text, lang_code, slow) arguments return the
+    cached bytes immediately without additional network requests.
 Dependencies
 ------------
     pip install gtts streamlit
 """
-
 import io
-import re
 import logging
-
 import streamlit as st
 from gtts import gTTS, gTTSError
-
 # ─────────────────────────────────────────────────────────────────
 # MODULE LOGGER
 # ─────────────────────────────────────────────────────────────────
 logger = logging.getLogger(__name__)
-
 # ─────────────────────────────────────────────────────────────────
 # CARGO TYPE CONSTANT
 # ─────────────────────────────────────────────────────────────────
-
 #: Must match the value used in the Streamlit selectbox in the main app.
 CARGO_FRAGILE = "Fragile / Tomatoes"
-
 # ─────────────────────────────────────────────────────────────────
 # PHRASE BOOK  (English → Romanised local script)
 # ─────────────────────────────────────────────────────────────────
@@ -61,9 +69,7 @@ CARGO_FRAGILE = "Fragile / Tomatoes"
 #
 # Extend this dict as new OSRM maneuver types are encountered.
 # ─────────────────────────────────────────────────────────────────
-
-PHRASE_BOOK: dict[str, dict[str, str]] = {
-
+PHRASE_BOOK: dict = {
     # ── Departure ──────────────────────────────────────────────
     "Head straight": {
         "Sindhi":  "Seedho halo",
@@ -75,7 +81,6 @@ PHRASE_BOOK: dict[str, dict[str, str]] = {
         "Urdu":    "Chalo",
         "Dhatki":  "Vanj",
     },
-
     # ── Turns ───────────────────────────────────────────────────
     "Turn left": {
         "Sindhi":  "Khabbe moro",
@@ -112,7 +117,6 @@ PHRASE_BOOK: dict[str, dict[str, str]] = {
         "Urdu":    "U-turn len",
         "Dhatki":  "U-turn karo",
     },
-
     # ── Continuing ──────────────────────────────────────────────
     "Continue straight": {
         "Sindhi":  "Seedho jaari rakho",
@@ -129,7 +133,6 @@ PHRASE_BOOK: dict[str, dict[str, str]] = {
         "Urdu":    "Aage badhein",
         "Dhatki":  "Aagey vanj",
     },
-
     # ── Merges and ramps ────────────────────────────────────────
     "Merge onto": {
         "Sindhi":  "Sadak te shamil thio",
@@ -151,7 +154,6 @@ PHRASE_BOOK: dict[str, dict[str, str]] = {
         "Urdu":    "Kaante ki taraf jaayein",
         "Dhatki":  "Kaanto vanj",
     },
-
     # ── Junctions ───────────────────────────────────────────────
     "Enter roundabout": {
         "Sindhi":  "Gol chakkar andar",
@@ -163,7 +165,6 @@ PHRASE_BOOK: dict[str, dict[str, str]] = {
         "Urdu":    "Sadak ke aakhir mein muren",
         "Dhatki":  "Raah khatam, phir",
     },
-
     # ── Arrival ─────────────────────────────────────────────────
     "Arrive at destination": {
         "Sindhi":  "Manzil te pahuncha. Safar mukliyo.",
@@ -171,403 +172,180 @@ PHRASE_BOOK: dict[str, dict[str, str]] = {
         "Dhatki":  "Thaur te pahuncha. Safar khatam.",
     },
 }
-
-
 # ─────────────────────────────────────────────────────────────────
 # FRAGILE CARGO SUFFIX
 # ─────────────────────────────────────────────────────────────────
 # This sentence is appended to every advisory when cargo_type is
 # CARGO_FRAGILE.  The slow=True flag in gTTS is also activated for
 # fragile cargo to make the speech clearer and more deliberate.
-
-FRAGILE_SUFFIX: dict[str, str] = {
+FRAGILE_SUFFIX: dict = {
     "Sindhi":  "Nazuk maal aahay, ahista halo",
     "Urdu":    "Nazuk maal hai, aahista chalo",
     "Dhatki":  "Nazuk bojh aahe, ahista vanj",
 }
-
-
 # ─────────────────────────────────────────────────────────────────
 # gTTS LANGUAGE CODE MAP
 # ─────────────────────────────────────────────────────────────────
 # gTTS uses BCP-47 language codes.  Sindhi (sd) and Dhatki have
 # limited or no dedicated TTS support, so we route them through
-# Urdu ('ur') which produces the most intelligible result for
-# Romanised Sindhi/Dhatki text.
-
-GTTS_LANG_CODE: dict[str, str] = {
-    "Sindhi":  "ur",   # closest supported TTS accent
-    "Urdu":    "ur",   # native
-    "Dhatki":  "ur",   # closest supported TTS accent
+# Urdu (ur) which shares much of the phonetic vocabulary and produces
+# intelligible output for Roman-script Sindhi/Dhatki phrases.
+#
+# Language code reference:
+#   https://gtts.readthedocs.io/en/latest/module.html#languages-gtts-lang
+GTTS_LANG_CODE: dict = {
+    "Sindhi":  "ur",   # closest available TTS; ur phonetics cover most Sindhi
+    "Urdu":    "ur",   # native TTS
+    "Dhatki":  "hi",   # Dhatki shares phonetics with Hindi/Rajasthani
 }
-
-# Regex to strip leading English prepositions from the remainder of
-# an instruction phrase so translated output reads more naturally.
-_PREPOSITION_RE = re.compile(
-    r"^(onto|on|at|into|towards?|toward)\s+", re.IGNORECASE
-)
-
-
 # ─────────────────────────────────────────────────────────────────
-# PRIVATE HELPER — translate one phrase
+# HELPER — match the longest phrase-book key inside an instruction
 # ─────────────────────────────────────────────────────────────────
-
-def _translate_phrase(english_phrase: str, language: str) -> str:
+def _match_phrase(instruction: str) -> str | None:
     """
-    Look up the best matching key in PHRASE_BOOK and return the
-    translated string with any road name / distance appended.
+    Return the phrase-book key that best matches the start of `instruction`.
+    We sort keys by descending length so "Turn sharp left" is tested
+    before "Turn" and "Turn left", preventing premature short matches.
     """
-    # Sort longest key first to avoid short keys shadowing long ones
-    sorted_keys = sorted(PHRASE_BOOK.keys(), key=len, reverse=True)
-
-    for key in sorted_keys:
-        if english_phrase.lower().startswith(key.lower()):
-            translations = PHRASE_BOOK[key]
-
-            # Get the translated verb/phrase, fall back to English key
-            translated_base = translations.get(language, key)
-
-            # Anything after the matched key is road name + distance
-            remainder = english_phrase[len(key):].strip()
-
-            # Strip leading English prepositions ("onto", "on", "at", …)
-            remainder = _PREPOSITION_RE.sub("", remainder).strip()
-
-            if remainder:
-                return f"{translated_base} - {remainder}"
-            return translated_base
-
-    # No match found — return the original English instruction as fallback
-    logger.warning("No translation found for %r in language %r", english_phrase, language)
-    return english_phrase
-
-
+    for key in sorted(PHRASE_BOOK.keys(), key=len, reverse=True):
+        if instruction.startswith(key):
+            return key
+    return None
+# ─────────────────────────────────────────────────────────────────
+# HELPER — translate a single OSRM instruction to target language
+# ─────────────────────────────────────────────────────────────────
+def _translate_instruction(instruction: str, language: str) -> str:
+    """
+    Translate one OSRM plain-English instruction into the target language.
+    Strategy:
+      1. Match the longest phrase-book key at the start of the instruction.
+      2. Extract any trailing road-name / distance suffix that was not
+         matched by the phrase key.
+      3. Return: "<translated_verb> <untranslated_suffix>".
+         Road names and distances are intentionally kept in English/Roman
+         because they are universally recognised by drivers regardless of
+         language, and translation would introduce ambiguity.
+    Falls back gracefully to the original English string if no match.
+    """
+    if language not in GTTS_LANG_CODE:
+        return instruction     # safety guard — return English unchanged
+    matched_key = _match_phrase(instruction)
+    if not matched_key:
+        return instruction     # no phrase-book entry — keep English
+    # Retrieve the translated verb phrase
+    translations = PHRASE_BOOK[matched_key]
+    translated_verb = translations.get(language, instruction)
+    # Extract the untranslated suffix (road name, distance, etc.)
+    suffix = instruction[len(matched_key):].strip()
+    if suffix:
+        return f"{translated_verb} — {suffix}"
+    return translated_verb
+# ─────────────────────────────────────────────────────────────────
+# CACHED TTS AUDIO GENERATOR
+# ─────────────────────────────────────────────────────────────────
+@st.cache_data(show_spinner=False)
+def _get_cached_audio_bytes(text: str, lang_code: str, slow: bool) -> bytes | None:
+    """
+    Generate TTS audio via gTTS and return the raw MP3 bytes.
+    This function is decorated with @st.cache_data so that repeated
+    calls with the same (text, lang_code, slow) arguments return the
+    already-generated bytes without making another gTTS HTTP request.
+    This dramatically reduces latency on re-renders and re-runs.
+    Parameters
+    ----------
+    text      : The romanised text to synthesise.
+    lang_code : BCP-47 language code (e.g. "ur", "hi").
+    slow      : If True, gTTS generates slower speech (used for fragile cargo).
+    Returns
+    -------
+    bytes — raw MP3 audio data, or None if gTTS raised an exception.
+    """
+    try:
+        tts = gTTS(text=text, lang=lang_code, slow=slow)
+        buf = io.BytesIO()
+        tts.write_to_fp(buf)
+        buf.seek(0)
+        return buf.read()
+    except gTTSError as exc:
+        logger.error("gTTS synthesis error: %s", exc)
+        return None
+    except Exception as exc:
+        logger.error("Unexpected TTS error: %s", exc)
+        return None
 # ─────────────────────────────────────────────────────────────────
 # PUBLIC FUNCTION — generate_voice_advisory
 # ─────────────────────────────────────────────────────────────────
-
 def generate_voice_advisory(
     base_instruction: str,
     language:         str = "Urdu",
     cargo_type:       str = "Standard",
 ) -> dict:
     """
-    Translate a driving instruction into the target language, apply
-    cargo-specific modifiers, and synthesise it to an MP3 audio buffer.
+    Translate a routing instruction and synthesise it as MP3 audio.
+    Parameters
+    ----------
+    base_instruction : Plain-English OSRM instruction string, e.g.
+                       "Turn left onto National Highway 8 (12.0 km)".
+    language         : Target language — one of "Sindhi", "Urdu", "Dhatki".
+                       Defaults to "Urdu" if an unrecognised value is passed.
+    cargo_type       : Cargo type string from the Streamlit selectbox.
+                       When equal to CARGO_FRAGILE, a safety suffix is
+                       appended and speech rate is slowed.
+    Returns
+    -------
+    dict:
+        success     : bool  — True if audio was generated successfully.
+        text        : str   — The final romanised text that was synthesised.
+        language    : str   — The target language that was used.
+        cargo_type  : str   — The cargo_type argument that was passed in.
+        audio_bytes : bytes — Raw MP3 bytes; None on failure.
+        transcript  : str   — Human-readable label for the audio player UI.
+        error       : str   — Error description; None on success.
     """
-
-    # ── 1. Validate language ──────────────────────────────────────
-    supported_languages = list(GTTS_LANG_CODE.keys())   # ["Sindhi", "Urdu", "Dhatki"]
-
-    if language not in supported_languages:
+    # ── 1. Normalise language ──────────────────────────────────
+    if language not in GTTS_LANG_CODE:
+        logger.warning("Unknown language '%s'; defaulting to Urdu.", language)
+        language = "Urdu"
+    lang_code = GTTS_LANG_CODE[language]
+    # ── 2. Translate instruction ───────────────────────────────
+    translated_text = _translate_instruction(base_instruction, language)
+    # ── 3. Append fragile-cargo safety suffix ─────────────────
+    is_fragile = (cargo_type == CARGO_FRAGILE)
+    if is_fragile:
+        suffix = FRAGILE_SUFFIX.get(language, "")
+        if suffix:
+            translated_text = f"{translated_text}. {suffix}."
+    # ── 4. Choose speech rate ──────────────────────────────────
+    # Slow speech for fragile cargo so the driver can process the advisory
+    # clearly even in noisy truck cab environments.
+    slow = is_fragile
+    # ── 5. Generate (or retrieve cached) audio bytes ──────────
+    audio_bytes = _get_cached_audio_bytes(translated_text, lang_code, slow)
+    if audio_bytes is None:
         return {
-            "success":      False,
-            "text":         "",
-            "language":     language,
-            "cargo_type":   cargo_type,
-            "audio_buffer": None,
+            "success":     False,
+            "text":        translated_text,
+            "language":    language,
+            "cargo_type":  cargo_type,
+            "audio_bytes": None,
+            "transcript":  "",
             "error": (
-                f"Language '{language}' is not supported. "
-                f"Choose from: {', '.join(supported_languages)}."
+                "gTTS audio generation failed. This may be a network issue "
+                "or a temporary Google TTS service outage. "
+                "Check your internet connection and try again."
             ),
         }
-
-    # ── 2. Validate instruction ───────────────────────────────────
-    if not base_instruction or not base_instruction.strip():
-        return {
-            "success":      False,
-            "text":         "",
-            "language":     language,
-            "cargo_type":   cargo_type,
-            "audio_buffer": None,
-            "error":        "base_instruction must not be empty.",
-        }
-
-    # ── 3. Translate the core instruction ────────────────────────
-    translated_instruction = _translate_phrase(
-        english_phrase=base_instruction.strip(),
-        language=language,
+    # ── 6. Build transcript label ──────────────────────────────
+    cargo_label = "🍅 Fragile" if is_fragile else "📦 Standard"
+    transcript  = (
+        f"🔊 [{language} · {cargo_label}] — {translated_text}"
     )
-
-    # ── 4. Append fragile-cargo caution phrase ────────────────────
-    is_fragile = (cargo_type == CARGO_FRAGILE)
-
-    if is_fragile:
-        caution_phrase = FRAGILE_SUFFIX.get(language, FRAGILE_SUFFIX["Urdu"])
-        final_text = f"{translated_instruction}. {caution_phrase}."
-    else:
-        final_text = f"{translated_instruction}."
-
-    # ── 5. Synthesise speech with gTTS ────────────────────────────
-    gtts_lang = GTTS_LANG_CODE[language]   # e.g. "ur" for all three languages
-
-    try:
-        tts = gTTS(
-            text=final_text,
-            lang=gtts_lang,
-            slow=is_fragile,   # deliberate pacing for fragile-cargo runs
-        )
-
-        # Write MP3 bytes into an in-memory buffer
-        audio_buffer = io.BytesIO()
-        tts.write_to_fp(audio_buffer)
-
-        # Rewind the buffer so st.audio() reads from the beginning
-        audio_buffer.seek(0)
-
-        logger.info(
-            "Advisory generated | lang=%s | cargo=%s | text=%r",
-            language, cargo_type, final_text,
-        )
-
-        return {
-            "success":      True,
-            "text":         final_text,
-            "language":     language,
-            "cargo_type":   cargo_type,
-            "audio_buffer": audio_buffer,
-            "error":        None,
-        }
-
-    except gTTSError as exc:
-        error_msg = (
-            f"gTTS synthesis failed: {exc}. "
-            "Check your internet connection. "
-            "The translated text is still available in result['text']."
-        )
-        logger.error(error_msg)
-        return {
-            "success":      False,
-            "text":         final_text,   # text is still usable even if audio failed
-            "language":     language,
-            "cargo_type":   cargo_type,
-            "audio_buffer": None,
-            "error":        error_msg,
-        }
-
-    except Exception as exc:
-        error_msg = f"Unexpected error during TTS synthesis: {exc}"
-        logger.exception(error_msg)
-        return {
-            "success":      False,
-            "text":         final_text,
-            "language":     language,
-            "cargo_type":   cargo_type,
-            "audio_buffer": None,
-            "error":        error_msg,
-        }
-
-
-# ─────────────────────────────────────────────────────────────────
-# STANDALONE DEMO — run `streamlit run voice_advisory.py` to test
-# ─────────────────────────────────────────────────────────────────
-
-if __name__ == "__main__":
-
-    # ── Page config ──────────────────────────────────────────────
-    st.set_page_config(
-        page_title="IDAS Voice Advisory — Test",
-        page_icon="🔊",
-        layout="wide",
-    )
-
-    # ── Custom CSS (minimal, consistent with main app) ────────────
-    st.markdown(
-        """
-        <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-        html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
-        .stApp { background-color: #F5F2EC; }
-        .phrase-row {
-            background: #fff; border-radius: 10px; padding: 14px 18px;
-            margin-bottom: 8px; box-shadow: 0 1px 4px rgba(0,0,0,0.07);
-        }
-        .phrase-row .eng  { color: #5C6B4A; font-size: 0.8rem; margin-bottom: 4px; }
-        .phrase-row .trans { color: #1E3A0F; font-size: 0.95rem; font-weight: 600; }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    # ── Header ───────────────────────────────────────────────────
-    st.markdown(
-        """
-        <div style="background:linear-gradient(135deg,#2D5016,#4A7C2F);
-                    border-radius:12px; padding:20px 28px; margin-bottom:20px;">
-            <h1 style="color:#fff; margin:0; font-size:1.6rem;">
-                🔊 IDAS Voice Advisory — Module Test
-            </h1>
-            <p style="color:#C5DFA0; margin:6px 0 0 0; font-size:0.85rem;">
-                Tests <code>generate_voice_advisory()</code> interactively
-            </p>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    # ── Input controls ────────────────────────────────────────────
-    col_inputs, col_output = st.columns([1, 1.4], gap="large")
-
-    with col_inputs:
-        st.subheader("⚙️ Parameters")
-
-        # Instruction text
-        instruction = st.text_input(
-            "Base Instruction (English)",
-            value="Turn left onto National Highway 8 (12.0 km)",
-            help="Paste any instruction string from routing.get_osrm_route()",
-        )
-
-        # Language
-        language = st.selectbox(
-            "🌐 Language",
-            options=["Sindhi", "Urdu", "Dhatki"],
-            index=1,
-        )
-
-        # Cargo type
-        cargo = st.selectbox(
-            "📦 Cargo Type",
-            options=["Standard", "Fragile / Tomatoes"],
-            index=0,
-        )
-
-        generate_btn = st.button(
-            "🔊 Generate Advisory", type="primary", use_container_width=True
-        )
-
-    # ── Phrase book reference ─────────────────────────────────────
-    with col_output:
-        st.subheader("📖 Phrase Book Preview")
-        st.caption(
-            "All translatable verbs available for the selected language. "
-            "These are the keys _translate_phrase() matches against."
-        )
-
-        # Show only a sample so the UI isn't overwhelming
-        sample_keys = [
-            "Head straight", "Turn left", "Turn right",
-            "Continue straight", "Arrive at destination",
-            "Merge onto", "Enter roundabout",
-        ]
-        for key in sample_keys:
-            trans = PHRASE_BOOK.get(key, {}).get(language, "—")
-            st.markdown(
-                f"""
-                <div class="phrase-row">
-                    <div class="eng">🇬🇧 {key}</div>
-                    <div class="trans">🗣️ {trans}</div>
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
-
-    st.divider()
-
-    # ── Generate and display result ───────────────────────────────
-    if generate_btn:
-
-        with st.spinner("Synthesising audio …"):
-            result = generate_voice_advisory(
-                base_instruction=instruction,
-                language=language,
-                cargo_type=cargo,
-            )
-
-        # ── Result summary cards ──────────────────────────────────
-        r1, r2, r3 = st.columns(3)
-        r1.metric("Language",   result["language"])
-        r2.metric("Cargo",      result["cargo_type"])
-        r3.metric("Status",     "✅ OK" if result["success"] else "❌ Failed")
-
-        st.divider()
-
-        col_text, col_audio = st.columns([1.2, 1], gap="large")
-
-        with col_text:
-            st.subheader("📝 Advisory Text")
-
-            # Original English instruction
-            st.markdown("**Original (English):**")
-            st.info(instruction)
-
-            # Final translated + cargo-modified text
-            st.markdown("**Translated advisory sent to gTTS:**")
-            if result["success"]:
-                st.success(result["text"])
-            else:
-                # Even on TTS failure, text is available for subtitles
-                st.warning(result["text"] if result["text"] else "—")
-
-            # Show fragile note if applicable
-            if cargo == CARGO_FRAGILE:
-                st.caption(
-                    f"🍅 Fragile suffix appended: "
-                    f"*{FRAGILE_SUFFIX.get(language, '')}*"
-                )
-
-        with col_audio:
-            st.subheader("🔊 Audio Playback")
-
-            if result["success"] and result["audio_buffer"]:
-                st.caption("Click ▶ to play the synthesised advisory.")
-                # ── st.audio INTEGRATION ────────────────────────
-                # Pass the BytesIO buffer directly — no temp file needed.
-                # format="audio/mp3" tells Streamlit the MIME type.
-                st.audio(
-                    result["audio_buffer"],
-                    format="audio/mp3",
-                    autoplay=False,
-                )
-                # Download button so drivers can save the clip
-                result["audio_buffer"].seek(0)   # rewind after st.audio reads it
-                st.download_button(
-                    label="⬇️ Download MP3",
-                    data=result["audio_buffer"],
-                    file_name="advisory.mp3",
-                    mime="audio/mp3",
-                    use_container_width=True,
-                )
-            else:
-                # TTS unavailable — show the text prominently instead
-                st.error(f"Audio unavailable: {result['error']}")
-                st.info(
-                    "💡 **Text-only fallback active.** "
-                    "The advisory text above can still be displayed "
-                    "to the driver on-screen.",
-                    icon=None,
-                )
-
-    else:
-        # Idle state
-        st.info(
-            "👆 Set the parameters above and click **Generate Advisory** to test.",
-            icon=None,
-        )
-
-    # ── Integration guide ─────────────────────────────────────────
-    with st.expander("📋 Integration Guide — how to use in the main app"):
-        st.code(
-            '''
-# In agri_logistics_idas.py — Driver Interface tab
-
-from voice_advisory import generate_voice_advisory
-
-# Called once per navigation step (e.g. when the driver taps "Next step")
-result = generate_voice_advisory(
-    base_instruction = current_step,                  # from get_osrm_route()
-    language         = st.session_state["driver_language"],
-    cargo_type       = st.session_state["cargo_type"],
-)
-
-# Display translated text as a subtitle
-st.caption(result["text"])
-
-# Play the audio — works directly with BytesIO, no temp files
-if result["success"]:
-    st.audio(result["audio_buffer"], format="audio/mp3")
-else:
-    st.warning(f"Audio unavailable: {result['error']}")
-            ''',
-            language="python",
-        )
+    return {
+        "success":     True,
+        "text":        translated_text,
+        "language":    language,
+        "cargo_type":  cargo_type,
+        "audio_bytes": audio_bytes,
+        "transcript":  transcript,
+        "error":       None,
+    }
