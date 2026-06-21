@@ -14,9 +14,11 @@ def mock_translate(text: str, target_lang: str) -> str:
     """Simulates a bidirectional NLP translation layer for logistics."""
     t = text.lower().strip()
     
+    # Driver reports hazard -> Translates to English for Corporate
     if t in ["pul budi wai ahe", "pul doob gaya hai", "pul budi gayo hai"]:
         return "⚠️ The bridge is flooded."
         
+    # Corporate sends update -> Translates to Native for Driver
     if t in ["delay tomato pickup by 2 hours", "delay pickup"]:
         translations = {
             "Sindhi": "Tamatar kahn me 2 kalak di dair ahe",
@@ -25,6 +27,7 @@ def mock_translate(text: str, target_lang: str) -> str:
         }
         return translations.get(target_lang, text)
         
+    # Generic Fallback
     if target_lang == "English":
         return f"[Translated to English]: {text}"
     else:
@@ -46,58 +49,271 @@ st.set_page_config(
 st.markdown(
     """
     <style>
+    /* ── Google Font ── */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-    html, body, [class*="css"] { font-family: 'Inter', sans-serif; }
-    .stApp { background-color: #F5F2EC; }
+
+    html, body, [class*="css"] {
+        font-family: 'Inter', sans-serif;
+    }
+
+    /* ── App background ── */
+    .stApp {
+        background-color: #F5F2EC;
+    }
+
+    /* ── Top banner ── */
     .app-header {
         background: linear-gradient(135deg, #2D5016 0%, #4A7C2F 60%, #6B9E3F 100%);
-        border-radius: 12px; padding: 20px 32px; margin-bottom: 20px;
-        display: flex; align-items: center; justify-content: space-between;
+        border-radius: 12px;
+        padding: 20px 32px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
     }
-    .app-header h1 { color: #FFFFFF; font-size: 1.75rem; font-weight: 700; margin: 0; letter-spacing: -0.3px; }
-    .app-header p { color: #C5DFA0; font-size: 0.85rem; margin: 4px 0 0 0; }
+    .app-header h1 {
+        color: #FFFFFF;
+        font-size: 1.75rem;
+        font-weight: 700;
+        margin: 0;
+        letter-spacing: -0.3px;
+    }
+    .app-header p {
+        color: #C5DFA0;
+        font-size: 0.85rem;
+        margin: 4px 0 0 0;
+    }
     .header-badge {
-        background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3);
-        color: #FFFFFF; font-size: 0.75rem; font-weight: 600; padding: 4px 12px; border-radius: 20px;
+        background: rgba(255,255,255,0.15);
+        border: 1px solid rgba(255,255,255,0.3);
+        color: #FFFFFF;
+        font-size: 0.75rem;
+        font-weight: 600;
+        padding: 4px 12px;
+        border-radius: 20px;
+        letter-spacing: 0.5px;
     }
-    .stTabs [data-baseweb="tab-list"] { gap: 8px; background: #EAE6DE; border-radius: 10px; padding: 6px; border: none; }
-    .stTabs [data-baseweb="tab"] { background: transparent; border-radius: 8px; color: #5C6B4A; font-weight: 600; font-size: 0.9rem; padding: 10px 24px; border: none; }
-    .stTabs [aria-selected="true"] { background: #FFFFFF !important; color: #2D5016 !important; box-shadow: 0 2px 8px rgba(45, 80, 22, 0.12); }
-    .stTabs [data-baseweb="tab-border"] { display: none; }
-    .stTabs [data-baseweb="tab-panel"] { padding-top: 20px; }
-    .metric-card { background: #FFFFFF; border-radius: 12px; padding: 20px 24px; border-left: 4px solid #4A7C2F; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
-    .metric-card h3 { color: #8A9E78; font-size: 0.75rem; font-weight: 600; margin: 0 0 6px 0; }
-    .metric-card .metric-value { color: #1E3A0F; font-size: 2rem; font-weight: 700; margin: 0 0 4px 0; }
-    .metric-card .metric-delta { color: #4A7C2F; font-size: 0.8rem; font-weight: 500; }
-    .section-card { background: #FFFFFF; border-radius: 12px; padding: 24px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); margin-bottom: 16px; }
-    .section-card h4 { color: #2D5016; font-size: 0.95rem; font-weight: 700; margin: 0 0 12px 0; padding-bottom: 10px; border-bottom: 1px solid #EAE6DE; }
-    .section-card p, .section-card li { color: #6B7A5C; font-size: 0.875rem; margin: 4px 0; }
-    .pill { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
+
+    /* ── Tabs styling ── */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+        background: #EAE6DE;
+        border-radius: 10px;
+        padding: 6px;
+        border: none;
+    }
+    .stTabs [data-baseweb="tab"] {
+        background: transparent;
+        border-radius: 8px;
+        color: #5C6B4A;
+        font-weight: 600;
+        font-size: 0.9rem;
+        padding: 10px 24px;
+        border: none;
+    }
+    .stTabs [aria-selected="true"] {
+        background: #FFFFFF !important;
+        color: #2D5016 !important;
+        box-shadow: 0 2px 8px rgba(45, 80, 22, 0.12);
+    }
+    .stTabs [data-baseweb="tab-border"] {
+        display: none;
+    }
+    .stTabs [data-baseweb="tab-panel"] {
+        padding-top: 20px;
+    }
+
+    /* ── Metric cards ── */
+    .metric-card {
+        background: #FFFFFF;
+        border-radius: 12px;
+        padding: 20px 24px;
+        border-left: 4px solid #4A7C2F;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .metric-card h3 {
+        color: #8A9E78;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.8px;
+        margin: 0 0 6px 0;
+    }
+    .metric-card .metric-value {
+        color: #1E3A0F;
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1;
+        margin: 0 0 4px 0;
+    }
+    .metric-card .metric-delta {
+        color: #4A7C2F;
+        font-size: 0.8rem;
+        font-weight: 500;
+    }
+
+    /* ── Section cards ── */
+    .section-card {
+        background: #FFFFFF;
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        margin-bottom: 16px;
+    }
+    .section-card h4 {
+        color: #2D5016;
+        font-size: 0.95rem;
+        font-weight: 700;
+        margin: 0 0 12px 0;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #EAE6DE;
+    }
+    .section-card p, .section-card li {
+        color: #6B7A5C;
+        font-size: 0.875rem;
+        line-height: 1.6;
+        margin: 4px 0;
+    }
+
+    /* ── Status pills ── */
+    .pill {
+        display: inline-block;
+        padding: 3px 10px;
+        border-radius: 20px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
     .pill-green  { background: #D6EFC4; color: #2D6A1A; }
     .pill-orange { background: #FDE8C8; color: #8A4800; }
     .pill-red    { background: #FDD5D5; color: #8A0000; }
     .pill-blue   { background: #D0E8FF; color: #004A8A; }
-    .driver-panel { background: linear-gradient(160deg, #1E3A0F 0%, #2D5016 100%); border-radius: 16px; padding: 28px; color: #FFFFFF; margin-bottom: 20px; }
-    .driver-panel h2 { font-size: 1.2rem; font-weight: 700; color: #FFFFFF; margin: 0 0 4px 0; }
-    .driver-panel .sub { color: #A8C87E; font-size: 0.82rem; margin: 0; }
-    .driver-info-row { display: flex; gap: 24px; margin-top: 18px; flex-wrap: wrap; }
-    .driver-info-item label { color: #8AB065; font-size: 0.72rem; font-weight: 600; display: block; margin-bottom: 3px; }
-    .driver-info-item span { color: #FFFFFF; font-size: 0.92rem; font-weight: 600; }
-    .cargo-standard { background: #D6EFC4; color: #2D6A1A; padding: 6px 14px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; display: inline-block; }
-    .cargo-fragile { background: #FDE8C8; color: #8A4800; padding: 6px 14px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; display: inline-block; }
-    .placeholder-block { background: #F0EDE6; border: 2px dashed #C8C0A8; border-radius: 10px; padding: 20px; text-align: center; color: #9A9280; font-size: 0.82rem; margin-top: 8px; }
-    hr.agri-hr { border: none; border-top: 1px solid #DDD8CD; margin: 16px 0; }
-    
+
+    /* ── Driver panel ── */
+    .driver-panel {
+        background: linear-gradient(160deg, #1E3A0F 0%, #2D5016 100%);
+        border-radius: 16px;
+        padding: 28px;
+        color: #FFFFFF;
+        margin-bottom: 20px;
+    }
+    .driver-panel h2 {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: #FFFFFF;
+        margin: 0 0 4px 0;
+    }
+    .driver-panel .sub {
+        color: #A8C87E;
+        font-size: 0.82rem;
+        margin: 0;
+    }
+    .driver-info-row {
+        display: flex;
+        gap: 24px;
+        margin-top: 18px;
+        flex-wrap: wrap;
+    }
+    .driver-info-item label {
+        color: #8AB065;
+        font-size: 0.72rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        display: block;
+        margin-bottom: 3px;
+    }
+    .driver-info-item span {
+        color: #FFFFFF;
+        font-size: 0.92rem;
+        font-weight: 600;
+    }
+
+    /* ── Cargo type badges ── */
+    .cargo-standard {
+        background: #D6EFC4; 
+        color: #2D6A1A;
+        padding: 6px 14px; 
+        border-radius: 8px;
+        font-weight: 600; 
+        font-size: 0.85rem; 
+        display: inline-block;
+    }
+    .cargo-fragile {
+        background: #FDE8C8; 
+        color: #8A4800;
+        padding: 6px 14px; 
+        border-radius: 8px;
+        font-weight: 600; 
+        font-size: 0.85rem; 
+        display: inline-block;
+    }
+
+    /* ── Placeholder text blocks ── */
+    .placeholder-block {
+        background: #F0EDE6;
+        border: 2px dashed #C8C0A8;
+        border-radius: 10px;
+        padding: 20px;
+        text-align: center;
+        color: #9A9280;
+        font-size: 0.82rem;
+        font-style: italic;
+        margin-top: 8px;
+    }
+
+    /* ── Divider ── */
+    hr.agri-hr {
+        border: none;
+        border-top: 1px solid #DDD8CD;
+        margin: 16px 0;
+    }
+
+    /* ── Streamlit selectbox / label overrides ── */
+    label[data-testid="stWidgetLabel"] > div > p {
+        font-weight: 600 !important;
+        color: #2D5016 !important;
+        font-size: 0.875rem !important;
+    }
+
     /* ── Dynamic Safety Alert Panel ── */
     .safety-alert {
-        border-radius: 10px; padding: 18px 20px; margin-bottom: 16px; display: flex; align-items: flex-start; gap: 14px; border-left: 5px solid;
+        border-radius: 10px; 
+        padding: 18px 20px; 
+        margin-bottom: 16px; 
+        display: flex; 
+        align-items: flex-start; 
+        gap: 14px; 
+        border-left: 5px solid;
     }
-    .safety-alert.standard { background: #E8F4FD; border-color: #2196F3; color: #0C4375; }
-    .safety-alert.warning { background: #FFF4E5; border-color: #FF9800; color: #804C00; }
-    .safety-alert.critical { background: #FDECEA; border-color: #F44336; color: #7A1911; }
-    .safety-icon { font-size: 1.8rem; line-height: 1; }
-    .safety-text h5 { margin: 0 0 6px 0; font-size: 0.95rem; font-weight: 700; }
-    .safety-text p { margin: 0; font-size: 0.85rem; line-height: 1.5; }
+    .safety-alert.standard { 
+        background: #E8F4FD; 
+        border-color: #2196F3; 
+        color: #0C4375; 
+    }
+    .safety-alert.warning { 
+        background: #FFF4E5; 
+        border-color: #FF9800; 
+        color: #804C00; 
+    }
+    .safety-alert.critical { 
+        background: #FDECEA; 
+        border-color: #F44336; 
+        color: #7A1911; 
+    }
+    .safety-icon { 
+        font-size: 1.8rem; 
+        line-height: 1; 
+    }
+    .safety-text h5 { 
+        margin: 0 0 6px 0; 
+        font-size: 0.95rem; 
+        font-weight: 700; 
+    }
+    .safety-text p { 
+        margin: 0; 
+        font-size: 0.85rem; 
+        line-height: 1.5; 
+    }
     </style>
     """,
     unsafe_allow_html=True,
@@ -116,7 +332,12 @@ DEFAULTS = {
     "vehicle_id": "TRK-119",
     "current_route": "Hyderabad → Karachi",
     "chat_messages": [
-        {"role": "corporate", "original": "Welcome to IDAS Network.", "english": "Welcome to IDAS Network.", "source_lang": "English"}
+        {
+            "role": "corporate", 
+            "original": "Welcome to IDAS Network.", 
+            "english": "Welcome to IDAS Network.", 
+            "source_lang": "English"
+        }
     ]
 }
 
@@ -160,9 +381,19 @@ with tab_corp:
         ("IN TRANSIT",       "17",   "On scheduled routes",  "#6B5E2F"),
         ("HAZARDS",          "1",    "⚠ Requires attention", "#8A3A1A"),
     ]
+    
     for col, (label, value, delta, accent) in zip([k1, k2, k3, k4], kpis):
         with col:
-            st.markdown(f"""<div class="metric-card" style="border-left-color:{accent};"><h3>{label}</h3><p class="metric-value">{value}</p><p class="metric-delta">{delta}</p></div>""", unsafe_allow_html=True)
+            st.markdown(
+                f"""
+                <div class="metric-card" style="border-left-color:{accent};">
+                    <h3>{label}</h3>
+                    <p class="metric-value">{value}</p>
+                    <p class="metric-delta">{delta}</p>
+                </div>
+                """, 
+                unsafe_allow_html=True
+            )
 
     st.markdown("<hr class='agri-hr' style='margin:22px 0;'>", unsafe_allow_html=True)
 
@@ -170,6 +401,7 @@ with tab_corp:
 
     with col_map:
         st.markdown("<div class='section-card'><h4>🗺️ Live Fleet Map</h4>", unsafe_allow_html=True)
+        
         with st.spinner("Calculating true-road network distance..."):
             route_data = get_osrm_route() 
             if route_data["success"]:
@@ -177,6 +409,7 @@ with tab_corp:
                 st.session_state["route_instructions"] = route_data["instructions"]
             else:
                 st.error(route_data["error"])
+                
         st.markdown("</div>", unsafe_allow_html=True)
 
     with col_fleet:
@@ -188,7 +421,8 @@ with tab_corp:
                 <p>TRK-115 &nbsp;<span class="pill pill-orange">Delayed</span></p>
                 <p>TRK-119 &nbsp;<span class="pill pill-green">On Route</span></p>
             </div>
-            """, unsafe_allow_html=True
+            """, 
+            unsafe_allow_html=True
         )
 
         # ── CORPORATE CHAT INTERFACE ──
@@ -203,7 +437,10 @@ with tab_corp:
         
         if prompt := st.chat_input("Message TRK-119 driver (English)...", key="corp_input"):
             st.session_state.chat_messages.append({
-                "role": "corporate", "original": prompt, "english": prompt, "source_lang": "English"
+                "role": "corporate", 
+                "original": prompt, 
+                "english": prompt, 
+                "source_lang": "English"
             })
             st.rerun()
             
@@ -221,37 +458,67 @@ with tab_driver:
         <div class="driver-panel">
             <h2>👤 {st.session_state['driver_name']}</h2>
             <div class="driver-info-row">
-                <div class="driver-info-item"><label>Current Route</label><span>{st.session_state['current_route']}</span></div>
-                <div class="driver-info-item"><label>Language</label><span>{lang_flag} {st.session_state['driver_language']}</span></div>
-                <div class="driver-info-item"><label>Cargo</label><span class="{cargo_cls}">{cargo_lbl}</span></div>
+                <div class="driver-info-item">
+                    <label>Current Route</label>
+                    <span>{st.session_state['current_route']}</span>
+                </div>
+                <div class="driver-info-item">
+                    <label>Language</label>
+                    <span>{lang_flag} {st.session_state['driver_language']}</span>
+                </div>
+                <div class="driver-info-item">
+                    <label>Cargo</label>
+                    <span class="{cargo_cls}">{cargo_lbl}</span>
+                </div>
             </div>
         </div>
-        """, unsafe_allow_html=True
+        """, 
+        unsafe_allow_html=True
     )
 
     # ── Settings row (Expanded with Context Simulators) ──
     col_lang, col_cargo, col_time, col_weather = st.columns(4, gap="medium")
 
     with col_lang:
-        selected_lang = st.selectbox("🌐 Language", options=LANGUAGES, index=LANGUAGES.index(st.session_state["driver_language"]), key="_lang_select")
+        selected_lang = st.selectbox(
+            "🌐 Language", 
+            options=LANGUAGES, 
+            index=LANGUAGES.index(st.session_state["driver_language"]), 
+            key="_lang_select"
+        )
         if selected_lang != st.session_state["driver_language"]:
             st.session_state["driver_language"] = selected_lang
             st.rerun()
 
     with col_cargo:
-        selected_cargo = st.selectbox("📦 Cargo", options=CARGO_TYPES, index=CARGO_TYPES.index(st.session_state["cargo_type"]), key="_cargo_select")
+        selected_cargo = st.selectbox(
+            "📦 Cargo", 
+            options=CARGO_TYPES, 
+            index=CARGO_TYPES.index(st.session_state["cargo_type"]), 
+            key="_cargo_select"
+        )
         if selected_cargo != st.session_state["cargo_type"]:
             st.session_state["cargo_type"] = selected_cargo
             st.rerun()
             
     with col_time:
-        selected_time = st.selectbox("⏱️ Time (Simulate)", options=TIME_OPTS, index=TIME_OPTS.index(st.session_state["time_of_day"]), key="_time_select")
+        selected_time = st.selectbox(
+            "⏱️ Time (Simulate)", 
+            options=TIME_OPTS, 
+            index=TIME_OPTS.index(st.session_state["time_of_day"]), 
+            key="_time_select"
+        )
         if selected_time != st.session_state["time_of_day"]:
             st.session_state["time_of_day"] = selected_time
             st.rerun()
 
     with col_weather:
-        selected_weather = st.selectbox("☁️ Weather (Sim)", options=WEATHER_OPTS, index=WEATHER_OPTS.index(st.session_state["weather"]), key="_weather_select")
+        selected_weather = st.selectbox(
+            "☁️ Weather (Sim)", 
+            options=WEATHER_OPTS, 
+            index=WEATHER_OPTS.index(st.session_state["weather"]), 
+            key="_weather_select"
+        )
         if selected_weather != st.session_state["weather"]:
             st.session_state["weather"] = selected_weather
             st.rerun()
@@ -301,7 +568,8 @@ with tab_driver:
                 <p>{alert_msg}</p>
             </div>
         </div>
-        """, unsafe_allow_html=True
+        """, 
+        unsafe_allow_html=True
     )
 
     # ── Main driver columns ──
@@ -313,14 +581,19 @@ with tab_driver:
             <div class="section-card">
                 <h4>🗺️ Navigation View</h4>
                 <div class="placeholder-block" style="height:240px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px;">
-                    <span style="font-size:2rem;">🧭</span><span>Turn-by-turn map will render here</span>
+                    <span style="font-size:2rem;">🧭</span>
+                    <span>Turn-by-turn map will render here</span>
                 </div>
             </div>
-            """, unsafe_allow_html=True
+            """, 
+            unsafe_allow_html=True
         )
 
     with col_assist:
-        st.markdown(f"<div class='section-card'><h4>💬 Dispatch Chat ({st.session_state['driver_language']})</h4>", unsafe_allow_html=True)
+        st.markdown(
+            f"<div class='section-card'><h4>💬 Dispatch Chat ({st.session_state['driver_language']})</h4>", 
+            unsafe_allow_html=True
+        )
         
         target_lang = st.session_state["driver_language"]
         chat_container_drv = st.container(height=180)
@@ -336,7 +609,10 @@ with tab_driver:
         if prompt := st.chat_input(f"Type hazard in {target_lang}...", key="driver_input"):
             english_translation = mock_translate(prompt, "English")
             st.session_state.chat_messages.append({
-                "role": "driver", "original": prompt, "english": english_translation, "source_lang": target_lang
+                "role": "driver", 
+                "original": prompt, 
+                "english": english_translation, 
+                "source_lang": target_lang
             })
             st.rerun()
             
@@ -365,6 +641,7 @@ with tab_driver:
                     st.error(result["error"])
         else:
             st.info("⚠️ Map must be loaded in Corporate Dashboard to fetch route.")
+            
         st.markdown("</div>", unsafe_allow_html=True)
 
     with col_tele:
@@ -378,7 +655,8 @@ with tab_driver:
                     Live OBD feed — Phase 2
                 </div>
             </div>
-            """, unsafe_allow_html=True
+            """, 
+            unsafe_allow_html=True
         )
 
 # ─────────────────────────────────────────────
