@@ -1,23 +1,29 @@
 """
 Agri-Logistics IDAS — Intelligent Driver Assistance System
 Production-Grade Research Prototype — Phase 3 (Context-Aware Safety)
+
 Author      : Lokesh Kumar
 Student ID  : 2k22-SE-42
 Email       : 2K22-SE-42@student.sau.edu.pk
 Institution : Sindh Agriculture University, Tandojam
+
 Research Paper Title:
     "Bridging the Digital Literacy Gap in Rural Agri-Logistics:
      A Trilingual, Context-Aware Intelligent Driver Assistance System
      for the Sindh Agricultural Supply Chain"
+
 Submitted to: Sindh Agriculture University, Tandojam
 """
+
 import io
 import streamlit as st
 from routing import get_osrm_route, plot_route_on_map, plot_fallback_map
 from voice_advisory import generate_voice_advisory
+
 # ═══════════════════════════════════════════════════════════════════
 # SECTION 1: MOCK NLP TRANSLATOR
 # ═══════════════════════════════════════════════════════════════════
+
 # ── Known hazard phrases from driver → Corporate English ────────────
 # Supports all three regional dialects: Sindhi, Urdu, Dhatki
 HAZARD_PHRASES: dict = {
@@ -52,6 +58,7 @@ HAZARD_PHRASES: dict = {
     "janwar sadak te aahay": "🐄 Livestock on the road — caution advised.",
     "janwar sadak par hai":  "🐄 Livestock on the road — caution advised.",
 }
+
 # ── Corporate English commands → Native dialect translations ────────
 CORPORATE_COMMANDS: dict = {
     "delay tomato pickup by 2 hours": {
@@ -100,32 +107,42 @@ CORPORATE_COMMANDS: dict = {
         "Dhatki":  "Bian raah varo",
     },
 }
+
+
 def mock_translate(text: str, target_lang: str) -> str:
     """
     Bidirectional NLP mock translator for the Agri-Logistics IDAS.
+
     Modes:
       Driver → Corporate  : target_lang = "English"
           Detects known regional hazard phrases (Sindhi / Urdu / Dhatki)
           and returns the English translation with a status emoji.
+
       Corporate → Driver  : target_lang in {"Sindhi", "Urdu", "Dhatki"}
           Detects known English corporate commands and returns the
           translation in the driver's selected regional dialect.
+
     Fallback:
           Returns a bracketed placeholder for unrecognised phrases.
     """
     t = text.lower().strip()
+
     # Driver → English (hazard detection)
     if target_lang == "English":
         for phrase, translation in HAZARD_PHRASES.items():
             if phrase in t:
                 return translation
         return f"[Translated to English]: {text}"
+
     # English → Native dialect (corporate command detection)
     for phrase, translations in CORPORATE_COMMANDS.items():
         if phrase in t:
             return translations.get(target_lang, text)
+
     # Generic fallback
     return f"[Translated to {target_lang}]: {text}"
+
+
 def is_hazard_message(text: str) -> bool:
     """
     Return True if `text` contains a known hazard phrase.
@@ -133,10 +150,13 @@ def is_hazard_message(text: str) -> bool:
     """
     t = text.lower().strip()
     return any(phrase in t for phrase in HAZARD_PHRASES)
+
+
 # ─────────────────────────────────────────────────────────────────
 # CHAT RENDERER — uses components.v1.html() to guarantee HTML
 # rendering regardless of Streamlit version or markdown escaping.
 # ─────────────────────────────────────────────────────────────────
+
 def _render_chat(
     messages: list,
     view: str = "corporate",
@@ -145,14 +165,17 @@ def _render_chat(
 ) -> None:
     """
     Render chat messages as custom styled HTML bubbles.
+
     Strategy: use st.container(height=height) — Streamlit's native
     scrollable box — and call st.markdown() once per message with
     unsafe_allow_html=True.  Small, single-div snippets are always
     rendered correctly by Streamlit; only large concatenated HTML
     strings risk being output as escaped text.
+
     The CSS classes (.chat-row, .bubble-driver, etc.) are already
     defined in the global <style> block injected at startup, so they
     apply to every individual markdown snippet automatically.
+
     Parameters
     ----------
     messages    : st.session_state.chat_messages list.
@@ -168,6 +191,7 @@ def _render_chat(
             avatar   = "🚚" if is_driver else "🏢"
             av_cls   = "avatar-drv" if is_driver else "avatar-corp"
             meta_cls = "meta-right" if is_driver else "meta-left"
+
             if view == "corporate":
                 display_text = msg["english"]
                 badge = (
@@ -184,6 +208,7 @@ def _render_chat(
                         msg["english"].lower(), target_lang
                     )
                     badge = f"🏢 → {target_lang}"
+
             # One small, self-contained div per message — always rendered
             # correctly by st.markdown(unsafe_allow_html=True)
             st.markdown(
@@ -195,13 +220,17 @@ def _render_chat(
                 f'</div></div>',
                 unsafe_allow_html=True,
             )
+
+
 # ═══════════════════════════════════════════════════════════════════
 # SECTION 2: DYNAMIC CONTEXT-AWARE SAFETY DATA
 # ═══════════════════════════════════════════════════════════════════
+
 # Safety text per alert level, per language.
 # Structure: {level_key: {lang: (title, body_message)}}
 # The "English" entry is always present as the fallback.
 SAFETY_TEXT: dict = {
+
     # ── Tier 4: EXTREME — Night + Rain + Fragile (all three) ──────
     "extreme": {
         "English": (
@@ -233,6 +262,7 @@ SAFETY_TEXT: dict = {
             "Kisi ne bhi aagey na niklo.",
         ),
     },
+
     # ── Tier 3: CRITICAL — Rain + Fragile (without night) ─────────
     "critical": {
         "English": (
@@ -260,6 +290,7 @@ SAFETY_TEXT: dict = {
             "Achano rokna na karo — tamatar kharab ane nuksaan thavando.",
         ),
     },
+
     # ── Tier 2: WARNING (Fragile only) ────────────────────────────
     "warning_fragile": {
         "English": (
@@ -287,6 +318,7 @@ SAFETY_TEXT: dict = {
             "Speed bump dheerey langho — tamatar zaya na thia.",
         ),
     },
+
     # ── Tier 2: WARNING (Night + Rain, no fragile) ────────────────
     "warning_night_rain": {
         "English": (
@@ -314,6 +346,7 @@ SAFETY_TEXT: dict = {
             "Bina batti gadi ane janwaron ro khayal rakho.",
         ),
     },
+
     # ── Tier 2: WARNING (Night only) ──────────────────────────────
     "warning_night": {
         "English": (
@@ -340,6 +373,7 @@ SAFETY_TEXT: dict = {
             "Samhne aavti gadi waste lights dim karo.",
         ),
     },
+
     # ── Tier 2: WARNING (Rain only) ───────────────────────────────
     "warning_rain": {
         "English": (
@@ -367,6 +401,7 @@ SAFETY_TEXT: dict = {
             "Ahista vanj ane paani bharil raah thon pario raho.",
         ),
     },
+
     # ── Tier 1: STANDARD (all clear) ──────────────────────────────
     "standard": {
         "English": (
@@ -394,6 +429,8 @@ SAFETY_TEXT: dict = {
         ),
     },
 }
+
+
 def get_safety_context(
     cargo_type: str,
     time_of_day: str,
@@ -402,6 +439,7 @@ def get_safety_context(
 ) -> tuple:
     """
     Evaluate context parameters and return the appropriate safety tier.
+
     Priority hierarchy (highest to lowest):
         extreme        — Night + Rain + Fragile (all three)
         critical       — Rain + Fragile
@@ -410,6 +448,7 @@ def get_safety_context(
         warning_night  — Night only
         warning_rain   — Rain only
         standard       — No hazards detected
+
     Returns
     -------
     tuple: (css_class, title, message, english_title)
@@ -422,6 +461,7 @@ def get_safety_context(
     is_fragile = (cargo_type == "Fragile / Tomatoes")
     is_night   = (time_of_day == "Night")
     is_rain    = (weather == "Rain")
+
     # Determine alert tier
     if is_fragile and is_night and is_rain:
         level     = "extreme"
@@ -444,40 +484,53 @@ def get_safety_context(
     else:
         level     = "standard"
         css_class = "standard"
+
     # Retrieve localised text; fall back to English if language not found
     texts    = SAFETY_TEXT[level]
     lang_key = language if language in texts else "English"
     title, message = texts[lang_key]
+
     # Always retrieve the English title for the corporate dashboard log
     eng_title, _ = texts["English"]
+
     return css_class, title, message, eng_title
+
+
 # ═══════════════════════════════════════════════════════════════════
 # SECTION 3: STREAMLIT PAGE CONFIG
 # ═══════════════════════════════════════════════════════════════════
+
 st.set_page_config(
     page_title="Agri-Logistics IDAS · SAU Tandojam",
     page_icon="🌾",
     layout="wide",
     initial_sidebar_state="expanded",
 )
+
+
 # ═══════════════════════════════════════════════════════════════════
 # SECTION 4: CUSTOM CSS
 # ═══════════════════════════════════════════════════════════════════
+
 st.markdown(
     """
     <style>
     /* ── Google Font: Inter ───────────────────────────────────── */
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
     html, body, [class*="css"] {
         font-family: 'Inter', sans-serif;
     }
+
     /* ── App background ──────────────────────────────────────── */
     .stApp {
         background-color: #F5F2EC;
     }
+
     /* ── Hide Streamlit menu & footer ───────────────────────── */
     #MainMenu { visibility: hidden; }
     footer    { visibility: hidden; }
+
     /* ── Sidebar background ──────────────────────────────────── */
     [data-testid="stSidebar"] {
         background: linear-gradient(180deg, #111A06 0%, #1E2E0A 60%, #2A3F10 100%);
@@ -486,6 +539,7 @@ st.markdown(
     [data-testid="stSidebar"] * {
         color: #D0DEB8 !important;
     }
+
     /* ── Academic Author Card ───────────────────────────────── */
     .academic-card {
         background: linear-gradient(160deg, #1A2409 0%, #243310 100%);
@@ -547,6 +601,7 @@ st.markdown(
         font-weight: 600;
         line-height: 1.4;
     }
+
     /* ── Sidebar section label ──────────────────────────────── */
     .sidebar-section-label {
         color: #6B8A45 !important;
@@ -556,6 +611,7 @@ st.markdown(
         letter-spacing: 1.2px;
         margin: 18px 0 8px 0;
     }
+
     /* ── App header banner ──────────────────────────────────── */
     .app-header {
         background: linear-gradient(135deg, #1E3A0F 0%, #2D5016 50%, #3D6B22 100%);
@@ -600,6 +656,7 @@ st.markdown(
         font-weight: 600;
         margin-top: 4px;
     }
+
     /* ── Tab bar ────────────────────────────────────────────── */
     .stTabs [data-baseweb="tab-list"] {
         gap: 8px;
@@ -625,6 +682,7 @@ st.markdown(
     }
     .stTabs [data-baseweb="tab-border"] { display: none; }
     .stTabs [data-baseweb="tab-panel"]  { padding-top: 22px; }
+
     /* ── KPI metric cards ───────────────────────────────────── */
     .metric-card {
         background: #FFFFFF;
@@ -661,6 +719,7 @@ st.markdown(
     .metric-card .metric-delta.positive { color: #2D6A1A; }
     .metric-card .metric-delta.neutral  { color: #7A6A2F; }
     .metric-card .metric-delta.negative { color: #8A0000; }
+
     /* ── Section cards ──────────────────────────────────────── */
     .section-card {
         background: #FFFFFF;
@@ -677,6 +736,7 @@ st.markdown(
         padding-bottom: 10px;
         border-bottom: 1px solid #EAE6DE;
     }
+
     /* ── Route info badges ──────────────────────────────────── */
     .route-info-row {
         display: flex;
@@ -696,6 +756,7 @@ st.markdown(
         align-items: center;
         gap: 5px;
     }
+
     /* ── Status pills ───────────────────────────────────────── */
     .pill {
         display: inline-block;
@@ -708,6 +769,7 @@ st.markdown(
     .pill-orange { background: #FDE8C8; color: #7A4000; }
     .pill-red    { background: #FDD5D5; color: #7A0000; }
     .pill-blue   { background: #D0E8FF; color: #003A7A; }
+
     /* ── Driver panel ───────────────────────────────────────── */
     .driver-panel {
         background: linear-gradient(160deg, #1E3A0F 0%, #2D5016 100%);
@@ -748,6 +810,7 @@ st.markdown(
         font-size: 0.9rem;
         font-weight: 600;
     }
+
     /* ── Cargo badges ───────────────────────────────────────── */
     .cargo-standard {
         background: #D6EFC4;
@@ -767,18 +830,21 @@ st.markdown(
         font-size: 0.82rem;
         display: inline-block;
     }
+
     /* ── Divider ────────────────────────────────────────────── */
     hr.agri-hr {
         border: none;
         border-top: 1px solid #DDD8CD;
         margin: 18px 0;
     }
+
     /* ── Widget label overrides ─────────────────────────────── */
     label[data-testid="stWidgetLabel"] > div > p {
         font-weight: 600 !important;
         color: #2D5016 !important;
         font-size: 0.82rem !important;
     }
+
     /* ── Safety alert panels ────────────────────────────────── */
     .safety-alert {
         border-radius: 12px;
@@ -833,6 +899,7 @@ st.markdown(
     .safety-alert.extreme .safety-text p {
         color: #FFB0A8;
     }
+
     /* ── Pulse animations ───────────────────────────────────── */
     @keyframes pulse-glow-red {
         0%   { box-shadow: 0 0 0 0 rgba(244, 67, 54, 0.4); }
@@ -844,6 +911,7 @@ st.markdown(
         50%  { box-shadow: 0 0 20px 6px rgba(255, 0, 0, 0.4); }
         100% { box-shadow: 0 0 0 0 rgba(255, 0, 0, 0.0); }
     }
+
     /* ── Hazard alert banner (corporate tab) ────────────────── */
     .hazard-banner {
         background: linear-gradient(135deg, #C62828, #E53935);
@@ -868,6 +936,7 @@ st.markdown(
         opacity: 0.85;
         margin-top: 2px;
     }
+
     /* ── Custom chat bubbles ────────────────────────────────── */
     .chat-scroll-box {
         height: 260px;
@@ -928,6 +997,7 @@ st.markdown(
     }
     .meta-right { text-align: right; }
     .meta-left  { text-align: left; }
+
     /* ── Navigation placeholder ─────────────────────────────── */
     .nav-placeholder {
         background: #F0EDE6;
@@ -944,6 +1014,7 @@ st.markdown(
         font-style: italic;
         margin-top: 6px;
     }
+
     /* ── Telemetry card ─────────────────────────────────────── */
     .tele-row {
         display: flex;
@@ -967,6 +1038,7 @@ st.markdown(
         font-size: 0.75rem;
         font-style: italic;
     }
+
     /* ── IEEE footer ────────────────────────────────────────── */
     .ieee-footer {
         background: linear-gradient(135deg, #111A06 0%, #1E2E0A 100%);
@@ -1020,9 +1092,12 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+
 # ═══════════════════════════════════════════════════════════════════
 # SECTION 5: SESSION STATE MANAGEMENT
 # ═══════════════════════════════════════════════════════════════════
+
 DEFAULTS: dict = {
     "driver_language":   "Sindhi",
     "cargo_type":        "Standard",
@@ -1046,22 +1121,28 @@ DEFAULTS: dict = {
         }
     ],
 }
+
 for _key, _val in DEFAULTS.items():
     if _key not in st.session_state:
         st.session_state[_key] = _val
+
 # Constants for dropdowns
 LANGUAGES    = ["Sindhi", "Urdu", "Dhatki"]
 CARGO_TYPES  = ["Standard", "Fragile / Tomatoes"]
 TIME_OPTS    = ["Day", "Night"]
 WEATHER_OPTS = ["Clear", "Rain"]
+
 CARGO_LABELS: dict = {
     "Standard":            ("cargo-standard", "📦 Standard"),
     "Fragile / Tomatoes":  ("cargo-fragile",  "🍅 Fragile / Tomatoes"),
 }
 LANG_FLAG: dict = {"Sindhi": "🟢", "Urdu": "🔵", "Dhatki": "🟡"}
+
+
 # ═══════════════════════════════════════════════════════════════════
 # SECTION 6: ACADEMIC AUTHOR SIDEBAR
 # ═══════════════════════════════════════════════════════════════════
+
 with st.sidebar:
     st.markdown(
         """
@@ -1086,6 +1167,7 @@ with st.sidebar:
         """,
         unsafe_allow_html=True,
     )
+
     st.markdown(
         '<p class="sidebar-section-label">📋 Research Context</p>',
         unsafe_allow_html=True,
@@ -1108,6 +1190,7 @@ with st.sidebar:
         """,
         unsafe_allow_html=True,
     )
+
     st.markdown(
         '<p class="sidebar-section-label">🚚 Active Asset</p>',
         unsafe_allow_html=True,
@@ -1128,6 +1211,7 @@ with st.sidebar:
         """,
         unsafe_allow_html=True,
     )
+
     st.markdown(
         '<p class="sidebar-section-label">ℹ️ System Status</p>',
         unsafe_allow_html=True,
@@ -1154,9 +1238,12 @@ with st.sidebar:
         """,
         unsafe_allow_html=True,
     )
+
+
 # ═══════════════════════════════════════════════════════════════════
 # SECTION 7: MAIN APP HEADER
 # ═══════════════════════════════════════════════════════════════════
+
 st.markdown(
     """
     <div class="app-header">
@@ -1177,24 +1264,32 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+
 # ═══════════════════════════════════════════════════════════════════
 # SECTION 8: TABS
 # ═══════════════════════════════════════════════════════════════════
+
 tab_corp, tab_driver = st.tabs(
     ["🏢 Corporate Dashboard", "🚚 Driver Interface"]
 )
+
+
 # ───────────────────────────────────────────────────────────────────
 # TAB 1 — CORPORATE DASHBOARD
 # ───────────────────────────────────────────────────────────────────
 with tab_corp:
+
     # ── KPI Metric Cards ──────────────────────────────────────────
     k1, k2, k3, k4 = st.columns(4, gap="medium")
+
     kpis = [
         ("ACTIVE TRUCKS",  "24",  "↑ 3 since yesterday",  "#4A7C2F", "positive"),
         ("DELIVERIES",     "138", "↑ 12% vs last week",   "#4A7C2F", "positive"),
         ("IN TRANSIT",     "17",  "On scheduled routes",  "#6B5E2F", "neutral"),
         ("HAZARDS",        "1",   "⚠ Requires attention", "#8A3A1A", "negative"),
     ]
+
     for col, (label, value, delta, accent, delta_cls) in zip(
         [k1, k2, k3, k4], kpis
     ):
@@ -1209,7 +1304,9 @@ with tab_corp:
                 """,
                 unsafe_allow_html=True,
             )
+
     st.markdown("<hr class='agri-hr' style='margin:22px 0;'>", unsafe_allow_html=True)
+
     # ── Hazard Banner (shown when driver has reported a hazard) ───
     if st.session_state.get("hazard_active", False):
         st.markdown(
@@ -1228,18 +1325,24 @@ with tab_corp:
             st.session_state["hazard_active"]   = False
             st.session_state["last_hazard_msg"] = ""
             st.rerun()
+
     # ── Map + Fleet layout ────────────────────────────────────────
     col_map, col_fleet = st.columns([1.6, 1], gap="large")
+
     with col_map:
         st.markdown("<div class='section-card'><h4>🗺️ Live Fleet Map</h4>", unsafe_allow_html=True)
+
         with st.spinner("Calculating true-road network route via OSRM…"):
             route_data = get_osrm_route()
+
         if route_data["success"]:
             plot_route_on_map(route_geometry=route_data["geometry"])
+
             # Store route data in session state for the Driver tab
             st.session_state["route_instructions"]  = route_data["instructions"]
             st.session_state["route_distance_km"]   = route_data["distance_km"]
             st.session_state["route_duration_min"]  = route_data["duration_min"]
+
             # Distance / duration info badges
             dist = route_data["distance_km"]
             dur  = route_data["duration_min"]
@@ -1260,7 +1363,9 @@ with tab_corp:
                 f"Reason: {route_data['error']}"
             )
             plot_fallback_map()
+
         st.markdown("</div>", unsafe_allow_html=True)
+
     with col_fleet:
         # Fleet status
         st.markdown(
@@ -1286,6 +1391,7 @@ with tab_corp:
             """,
             unsafe_allow_html=True,
         )
+
         # ── Corporate Chat Interface ────────────────────────────────
         st.markdown(
             "<div class='section-card'>"
@@ -1321,14 +1427,19 @@ with tab_corp:
             )
             st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
+
+
+
 # ───────────────────────────────────────────────────────────────────
 # TAB 2 — DRIVER INTERFACE
 # ───────────────────────────────────────────────────────────────────
 with tab_driver:
+
     lang_flag  = LANG_FLAG.get(st.session_state["driver_language"], "🟢")
     cargo_cls, cargo_lbl = CARGO_LABELS.get(
         st.session_state["cargo_type"], CARGO_LABELS["Standard"]
     )
+
     # ── Driver identity panel ──────────────────────────────────────
     st.markdown(
         f"""
@@ -1362,8 +1473,10 @@ with tab_driver:
         """,
         unsafe_allow_html=True,
     )
+
     # ── Context simulator dropdowns ────────────────────────────────
     col_lang, col_cargo, col_time, col_weather = st.columns(4, gap="medium")
+
     with col_lang:
         selected_lang = st.selectbox(
             "🌐 Language",
@@ -1374,6 +1487,7 @@ with tab_driver:
         if selected_lang != st.session_state["driver_language"]:
             st.session_state["driver_language"] = selected_lang
             st.rerun()
+
     with col_cargo:
         selected_cargo = st.selectbox(
             "📦 Cargo Type",
@@ -1384,6 +1498,7 @@ with tab_driver:
         if selected_cargo != st.session_state["cargo_type"]:
             st.session_state["cargo_type"] = selected_cargo
             st.rerun()
+
     with col_time:
         selected_time = st.selectbox(
             "⏱️ Time (Simulate)",
@@ -1394,6 +1509,7 @@ with tab_driver:
         if selected_time != st.session_state["time_of_day"]:
             st.session_state["time_of_day"] = selected_time
             st.rerun()
+
     with col_weather:
         selected_weather = st.selectbox(
             "☁️ Weather (Simulate)",
@@ -1404,7 +1520,9 @@ with tab_driver:
         if selected_weather != st.session_state["weather"]:
             st.session_state["weather"] = selected_weather
             st.rerun()
+
     st.markdown("<hr class='agri-hr'>", unsafe_allow_html=True)
+
     # ── Dynamic Context-Aware Safety Alert Panel ───────────────────
     css_class, alert_title, alert_message, eng_title = get_safety_context(
         cargo_type  = st.session_state["cargo_type"],
@@ -1412,6 +1530,7 @@ with tab_driver:
         weather     = st.session_state["weather"],
         language    = st.session_state["driver_language"],
     )
+
     # Map icon from title prefix
     icon_map = {
         "⛔":  "⛔",
@@ -1427,6 +1546,7 @@ with tab_driver:
         if alert_title.startswith(prefix):
             alert_icon = icon
             break
+
     st.markdown(
         f"""
         <div class="safety-alert {css_class}">
@@ -1439,8 +1559,10 @@ with tab_driver:
         """,
         unsafe_allow_html=True,
     )
+
     # ── Main driver columns ────────────────────────────────────────
     col_nav, col_assist = st.columns([1.4, 1], gap="large")
+
     with col_nav:
         st.markdown(
             """
@@ -1457,8 +1579,10 @@ with tab_driver:
             """,
             unsafe_allow_html=True,
         )
+
     with col_assist:
         target_lang = st.session_state["driver_language"]
+
         st.markdown(
             f"<div class='section-card'>"
             f"<h4>💬 Dispatch Chat ({lang_flag} {target_lang})</h4>",
@@ -1499,14 +1623,18 @@ with tab_driver:
                 st.session_state["last_hazard_msg"] = english_translation
             st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
+
+
     # ── Audio Guidance + Telemetry row ────────────────────────────
     col_audio, col_tele = st.columns(2, gap="large")
+
     with col_audio:
         st.markdown(
             "<div class='section-card'><h4>🔊 Audio Guidance</h4>",
             unsafe_allow_html=True,
         )
         instructions = st.session_state.get("route_instructions", [])
+
         if instructions and len(instructions) > 1:
             next_turn = instructions[1]
             st.markdown(
@@ -1519,6 +1647,7 @@ with tab_driver:
                 """,
                 unsafe_allow_html=True,
             )
+
             if st.button(
                 f"🔊 Play in {st.session_state['driver_language']}",
                 type="primary",
@@ -1530,6 +1659,7 @@ with tab_driver:
                         language=st.session_state["driver_language"],
                         cargo_type=st.session_state["cargo_type"],
                     )
+
                 if result["success"]:
                     st.success(
                         f"**{result['language']}:** {result['text']}"
@@ -1542,7 +1672,9 @@ with tab_driver:
                     st.error(result["error"])
         else:
             st.info("⚠️ Load the map in the Corporate Dashboard to enable audio guidance.")
+
         st.markdown("</div>", unsafe_allow_html=True)
+
     with col_tele:
         st.markdown(
             """
@@ -1576,9 +1708,12 @@ with tab_driver:
             """,
             unsafe_allow_html=True,
         )
+
+
 # ═══════════════════════════════════════════════════════════════════
 # SECTION 9: IEEE-STYLE ACADEMIC FOOTER
 # ═══════════════════════════════════════════════════════════════════
+
 st.markdown(
     """
     <div class="ieee-footer">
