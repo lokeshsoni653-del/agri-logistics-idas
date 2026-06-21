@@ -13,7 +13,6 @@ Submitted to: Sindh Agriculture University, Tandojam
 """
 import io
 import streamlit as st
-import streamlit.components.v1 as components
 from routing import get_osrm_route, plot_route_on_map, plot_fallback_map
 from voice_advisory import generate_voice_advisory
 # ═══════════════════════════════════════════════════════════════════
@@ -138,68 +137,6 @@ def is_hazard_message(text: str) -> bool:
 # CHAT RENDERER — uses components.v1.html() to guarantee HTML
 # rendering regardless of Streamlit version or markdown escaping.
 # ─────────────────────────────────────────────────────────────────
-# Inline CSS embedded in the iframe so it works independently of
-# the global st.markdown stylesheet.
-_CHAT_CSS = """
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html, body {
-    font-family: 'Inter', sans-serif;
-    background: #FAFAF8;
-    padding: 10px 8px;
-    overflow-x: hidden;
-}
-.chat-row {
-    display: flex;
-    margin-bottom: 12px;
-    align-items: flex-end;
-    gap: 7px;
-}
-.chat-row.driver   { flex-direction: row-reverse; }
-.chat-row.corporate{ flex-direction: row; }
-.chat-avatar {
-    width: 28px;
-    height: 28px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.82rem;
-    flex-shrink: 0;
-    line-height: 1;
-}
-.avatar-corp { background: #EAE6DE; }
-.avatar-drv  { background: linear-gradient(135deg, #2D5016, #4A7C2F); }
-.chat-bubble-wrap { max-width: 78%; }
-.chat-bubble {
-    padding: 9px 13px;
-    border-radius: 14px;
-    font-size: 0.83rem;
-    line-height: 1.55;
-    word-wrap: break-word;
-    word-break: break-word;
-}
-.bubble-corporate {
-    background: #EDEBE4;
-    color: #2D3A1F;
-    border-bottom-left-radius: 4px;
-}
-.bubble-driver {
-    background: linear-gradient(135deg, #2D5016, #4A7C2F);
-    color: #FFFFFF;
-    border-bottom-right-radius: 4px;
-}
-.chat-meta {
-    font-size: 0.62rem;
-    color: #A09880;
-    margin-top: 4px;
-    padding: 0 3px;
-}
-.meta-right { text-align: right; }
-.meta-left  { text-align: left;  }
-</style>
-"""
 def _render_chat(
     messages: list,
     view: str = "corporate",
@@ -208,49 +145,56 @@ def _render_chat(
 ) -> None:
     """
     Render chat messages as custom styled HTML bubbles.
-    Uses streamlit.components.v1.html() which embeds content in an
-    iframe — this guarantees raw HTML is always rendered correctly
-    and is immune to Streamlit's markdown escaping behaviour.
+    Strategy: use st.container(height=height) — Streamlit's native
+    scrollable box — and call st.markdown() once per message with
+    unsafe_allow_html=True.  Small, single-div snippets are always
+    rendered correctly by Streamlit; only large concatenated HTML
+    strings risk being output as escaped text.
+    The CSS classes (.chat-row, .bubble-driver, etc.) are already
+    defined in the global <style> block injected at startup, so they
+    apply to every individual markdown snippet automatically.
     Parameters
     ----------
     messages    : st.session_state.chat_messages list.
     view        : "corporate" shows English; "driver" shows regional language.
     target_lang : Driver's selected language (used only when view=="driver").
-    height      : Height of the rendered iframe in pixels.
+    height      : Pixel height of the scrollable chat container.
     """
-    rows = ""
-    for msg in messages:
-        is_driver = (msg["role"] == "driver")
-        row_cls   = "driver" if is_driver else "corporate"
-        bbl_cls   = "bubble-driver" if is_driver else "bubble-corporate"
-        avatar    = "&#x1F69A;" if is_driver else "&#x1F3E2;"  # truck / office emoji
-        av_cls    = "avatar-drv" if is_driver else "avatar-corp"
-        meta_cls  = "meta-right" if is_driver else "meta-left"
-        if view == "corporate":
-            display_text = msg["english"]
-            badge = (
-                f"&#x1F310; {msg.get('source_lang', '?')} &rarr; EN"
-                if is_driver
-                else "&#x1F3E2; Corporate"
-            )
-        else:
-            if is_driver:
-                display_text = msg["original"]
-                badge = f"You ({target_lang})"
+    with st.container(height=height, border=False):
+        for msg in messages:
+            is_driver = (msg["role"] == "driver")
+            row_cls  = "driver" if is_driver else "corporate"
+            bbl_cls  = "bubble-driver" if is_driver else "bubble-corporate"
+            avatar   = "🚚" if is_driver else "🏢"
+            av_cls   = "avatar-drv" if is_driver else "avatar-corp"
+            meta_cls = "meta-right" if is_driver else "meta-left"
+            if view == "corporate":
+                display_text = msg["english"]
+                badge = (
+                    f"🌐 {msg.get('source_lang', '?')} → EN"
+                    if is_driver
+                    else "🏢 Corporate"
+                )
             else:
-                display_text = mock_translate(msg["english"].lower(), target_lang)
-                badge = f"&#x1F3E2; &rarr; {target_lang}"
-        rows += (
-            f'<div class="chat-row {row_cls}">'
-            f'  <div class="chat-avatar {av_cls}">{avatar}</div>'
-            f'  <div class="chat-bubble-wrap">'
-            f'    <div class="chat-bubble {bbl_cls}">{display_text}</div>'
-            f'    <div class="chat-meta {meta_cls}">{badge}</div>'
-            f'  </div>'
-            f'</div>'
-        )
-    full_html = _CHAT_CSS + f"<div>{rows}</div>"
-    components.html(full_html, height=height, scrolling=True)
+                if is_driver:
+                    display_text = msg["original"]
+                    badge = f"You ({target_lang})"
+                else:
+                    display_text = mock_translate(
+                        msg["english"].lower(), target_lang
+                    )
+                    badge = f"🏢 → {target_lang}"
+            # One small, self-contained div per message — always rendered
+            # correctly by st.markdown(unsafe_allow_html=True)
+            st.markdown(
+                f'<div class="chat-row {row_cls}">'
+                f'<div class="chat-avatar {av_cls}">{avatar}</div>'
+                f'<div class="chat-bubble-wrap">'
+                f'<div class="chat-bubble {bbl_cls}">{display_text}</div>'
+                f'<div class="chat-meta {meta_cls}">{badge}</div>'
+                f'</div></div>',
+                unsafe_allow_html=True,
+            )
 # ═══════════════════════════════════════════════════════════════════
 # SECTION 2: DYNAMIC CONTEXT-AWARE SAFETY DATA
 # ═══════════════════════════════════════════════════════════════════
