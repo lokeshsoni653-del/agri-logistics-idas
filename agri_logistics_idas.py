@@ -1,6 +1,6 @@
 """
 Agri-Logistics IDAS — Intelligent Driver Assistance System
-Streamlit UI Layout & State Management (Phase 2 - Bidirectional Chat)
+Streamlit UI Layout & State Management (Phase 3 - Context-Aware Safety)
 """
 
 import streamlit as st
@@ -8,17 +8,15 @@ from routing import get_osrm_route, plot_route_on_map
 from voice_advisory import generate_voice_advisory
 
 # ─────────────────────────────────────────────
-# MOCK TRANSLATOR LOGIC (The "Wow" Factor)
+# MOCK TRANSLATOR LOGIC
 # ─────────────────────────────────────────────
 def mock_translate(text: str, target_lang: str) -> str:
     """Simulates a bidirectional NLP translation layer for logistics."""
     t = text.lower().strip()
     
-    # 1. Driver reports hazard -> Translates to English for Corporate
     if t in ["pul budi wai ahe", "pul doob gaya hai", "pul budi gayo hai"]:
         return "⚠️ The bridge is flooded."
         
-    # 2. Corporate sends update -> Translates to Native for Driver
     if t in ["delay tomato pickup by 2 hours", "delay pickup"]:
         translations = {
             "Sindhi": "Tamatar kahn me 2 kalak di dair ahe",
@@ -27,7 +25,6 @@ def mock_translate(text: str, target_lang: str) -> str:
         }
         return translations.get(target_lang, text)
         
-    # Generic Fallback
     if target_lang == "English":
         return f"[Translated to English]: {text}"
     else:
@@ -90,6 +87,17 @@ st.markdown(
     .cargo-fragile { background: #FDE8C8; color: #8A4800; padding: 6px 14px; border-radius: 8px; font-weight: 600; font-size: 0.85rem; display: inline-block; }
     .placeholder-block { background: #F0EDE6; border: 2px dashed #C8C0A8; border-radius: 10px; padding: 20px; text-align: center; color: #9A9280; font-size: 0.82rem; margin-top: 8px; }
     hr.agri-hr { border: none; border-top: 1px solid #DDD8CD; margin: 16px 0; }
+    
+    /* ── Dynamic Safety Alert Panel ── */
+    .safety-alert {
+        border-radius: 10px; padding: 18px 20px; margin-bottom: 16px; display: flex; align-items: flex-start; gap: 14px; border-left: 5px solid;
+    }
+    .safety-alert.standard { background: #E8F4FD; border-color: #2196F3; color: #0C4375; }
+    .safety-alert.warning { background: #FFF4E5; border-color: #FF9800; color: #804C00; }
+    .safety-alert.critical { background: #FDECEA; border-color: #F44336; color: #7A1911; }
+    .safety-icon { font-size: 1.8rem; line-height: 1; }
+    .safety-text h5 { margin: 0 0 6px 0; font-size: 0.95rem; font-weight: 700; }
+    .safety-text p { margin: 0; font-size: 0.85rem; line-height: 1.5; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -101,6 +109,8 @@ st.markdown(
 DEFAULTS = {
     "driver_language": "Sindhi",
     "cargo_type": "Standard",
+    "time_of_day": "Day",
+    "weather": "Clear",
     "driver_name": "Muhammad Saleem",
     "driver_id": "DRV-0042",
     "vehicle_id": "TRK-119",
@@ -116,6 +126,8 @@ for key, val in DEFAULTS.items():
 
 LANGUAGES = ["Sindhi", "Urdu", "Dhatki"]
 CARGO_TYPES = ["Standard", "Fragile / Tomatoes"]
+TIME_OPTS = ["Day", "Night"]
+WEATHER_OPTS = ["Clear", "Rain"]
 CARGO_LABELS = {
     "Standard":            ("cargo-standard", "📦 Standard"),
     "Fragile / Tomatoes":  ("cargo-fragile",  "🍅 Fragile / Tomatoes"),
@@ -129,7 +141,7 @@ st.markdown(
             <h1>🌾 Agri-Logistics IDAS</h1>
             <p>Intelligent Driver Assistance System — Sindh Agricultural Supply Chain</p>
         </div>
-        <div class="header-badge">PHASE 2 · BIDIRECTIONAL</div>
+        <div class="header-badge">PHASE 3 · FULL SYSTEM</div>
     </div>
     """,
     unsafe_allow_html=True,
@@ -182,26 +194,20 @@ with tab_corp:
         # ── CORPORATE CHAT INTERFACE ──
         st.markdown("<div class='section-card'><h4>💬 Dispatch Chat (English View)</h4>", unsafe_allow_html=True)
         
-        # Scrollable container for chat
         chat_container_corp = st.container(height=300)
         for msg in st.session_state.chat_messages:
             with chat_container_corp.chat_message("assistant" if msg["role"] == "corporate" else "user"):
-                # Corporate always sees English
                 st.write(msg["english"])
                 if msg["role"] == "driver":
                     st.caption(f"*(Translated from {msg['source_lang']})*")
         
         if prompt := st.chat_input("Message TRK-119 driver (English)...", key="corp_input"):
             st.session_state.chat_messages.append({
-                "role": "corporate", 
-                "original": prompt, 
-                "english": prompt, 
-                "source_lang": "English"
+                "role": "corporate", "original": prompt, "english": prompt, "source_lang": "English"
             })
             st.rerun()
             
         st.markdown("</div>", unsafe_allow_html=True)
-
 
 # ═══════════════════════════════════════════════
 # TAB 2 — DRIVER INTERFACE
@@ -223,28 +229,120 @@ with tab_driver:
         """, unsafe_allow_html=True
     )
 
-    col_lang, col_cargo, col_gap = st.columns([1, 1, 1.5], gap="large")
+    # ── Settings row (Expanded with Context Simulators) ──
+    col_lang, col_cargo, col_time, col_weather = st.columns(4, gap="medium")
 
     with col_lang:
-        selected_lang = st.selectbox("🌐 Select Language", options=LANGUAGES, index=LANGUAGES.index(st.session_state["driver_language"]), key="_lang_select")
+        selected_lang = st.selectbox("🌐 Language", options=LANGUAGES, index=LANGUAGES.index(st.session_state["driver_language"]), key="_lang_select")
         if selected_lang != st.session_state["driver_language"]:
             st.session_state["driver_language"] = selected_lang
             st.rerun()
 
     with col_cargo:
-        selected_cargo = st.selectbox("📦 Cargo Type", options=CARGO_TYPES, index=CARGO_TYPES.index(st.session_state["cargo_type"]), key="_cargo_select")
+        selected_cargo = st.selectbox("📦 Cargo", options=CARGO_TYPES, index=CARGO_TYPES.index(st.session_state["cargo_type"]), key="_cargo_select")
         if selected_cargo != st.session_state["cargo_type"]:
             st.session_state["cargo_type"] = selected_cargo
             st.rerun()
+            
+    with col_time:
+        selected_time = st.selectbox("⏱️ Time (Simulate)", options=TIME_OPTS, index=TIME_OPTS.index(st.session_state["time_of_day"]), key="_time_select")
+        if selected_time != st.session_state["time_of_day"]:
+            st.session_state["time_of_day"] = selected_time
+            st.rerun()
 
-    if st.session_state["cargo_type"] == "Fragile / Tomatoes":
-        st.info(f"🍅 **Fragile mode active.** Audio reminders will be issued in **{st.session_state['driver_language']}**.", icon=None)
-    else:
-        st.success(f"📦 **Standard cargo mode.** Audio guidance language: **{st.session_state['driver_language']}**.", icon=None)
+    with col_weather:
+        selected_weather = st.selectbox("☁️ Weather (Sim)", options=WEATHER_OPTS, index=WEATHER_OPTS.index(st.session_state["weather"]), key="_weather_select")
+        if selected_weather != st.session_state["weather"]:
+            st.session_state["weather"] = selected_weather
+            st.rerun()
 
     st.markdown("<hr class='agri-hr'>", unsafe_allow_html=True)
 
-    col_audio, col_chat = st.columns([1, 1.4], gap="large")
+    # ── DYNAMIC CONTEXT-AWARE SAFETY ETIQUETTE ──
+    # Evaluate context and determine alert level
+    alert_level = "standard"
+    alert_icon = "ℹ️"
+    alert_title = "Standard Driving Parameters"
+    alert_msg = "Route is clear. Maintain standard driving etiquette and observe local speed limits."
+
+    if st.session_state["cargo_type"] == "Fragile / Tomatoes" and st.session_state["weather"] == "Rain":
+        alert_level = "critical"
+        alert_icon = "🛑"
+        alert_title = "CRITICAL: Wet Roads + Fragile Cargo"
+        alert_msg = "Roads are slippery and cargo is highly perishable. Reduce speed by 30%, increase following distance to 6 seconds, and avoid sudden braking."
+    elif st.session_state["cargo_type"] == "Fragile / Tomatoes":
+        alert_level = "warning"
+        alert_icon = "🍅"
+        alert_title = "CAUTION: Delicate Payload"
+        alert_msg = "Perishable produce detected. Brake gently approaching turns and avoid sudden acceleration to prevent crop bruising."
+    elif st.session_state["time_of_day"] == "Night" and st.session_state["weather"] == "Rain":
+        alert_level = "critical"
+        alert_icon = "🌧️"
+        alert_title = "SEVERE: Low Visibility"
+        alert_msg = "Nighttime and heavy rain detected. Turn on fog lights, avoid overtaking on single-lane roads, and watch for unlit agricultural vehicles."
+    elif st.session_state["time_of_day"] == "Night":
+        alert_level = "warning"
+        alert_icon = "🌙"
+        alert_title = "NIGHT ETIQUETTE ACTIVE"
+        alert_msg = "Sun has set. Activate headlights, beware of stray livestock on rural roads, and dim high-beams for oncoming traffic."
+    elif st.session_state["weather"] == "Rain":
+        alert_level = "warning"
+        alert_icon = "🌦️"
+        alert_title = "WET CONDITIONS"
+        alert_msg = "Light rain detected along route. Braking distance is increased. Please drive carefully."
+
+    # Render the dynamic alert
+    st.markdown(
+        f"""
+        <div class="safety-alert {alert_level}">
+            <div class="safety-icon">{alert_icon}</div>
+            <div class="safety-text">
+                <h5>{alert_title}</h5>
+                <p>{alert_msg}</p>
+            </div>
+        </div>
+        """, unsafe_allow_html=True
+    )
+
+    # ── Main driver columns ──
+    col_nav, col_assist = st.columns([1.4, 1], gap="large")
+
+    with col_nav:
+        st.markdown(
+            """
+            <div class="section-card">
+                <h4>🗺️ Navigation View</h4>
+                <div class="placeholder-block" style="height:240px; display:flex; align-items:center; justify-content:center; flex-direction:column; gap:8px;">
+                    <span style="font-size:2rem;">🧭</span><span>Turn-by-turn map will render here</span>
+                </div>
+            </div>
+            """, unsafe_allow_html=True
+        )
+
+    with col_assist:
+        st.markdown(f"<div class='section-card'><h4>💬 Dispatch Chat ({st.session_state['driver_language']})</h4>", unsafe_allow_html=True)
+        
+        target_lang = st.session_state["driver_language"]
+        chat_container_drv = st.container(height=180)
+        
+        for msg in st.session_state.chat_messages:
+            is_user = (msg["role"] == "driver")
+            with chat_container_drv.chat_message("user" if is_user else "assistant"):
+                if msg["source_lang"] == "English":
+                    st.write(mock_translate(msg["english"], target_lang))
+                else:
+                    st.write(msg["original"])
+
+        if prompt := st.chat_input(f"Type hazard in {target_lang}...", key="driver_input"):
+            english_translation = mock_translate(prompt, "English")
+            st.session_state.chat_messages.append({
+                "role": "driver", "original": prompt, "english": english_translation, "source_lang": target_lang
+            })
+            st.rerun()
+            
+        st.markdown("</div>", unsafe_allow_html=True)
+
+    col_audio, col_tele = st.columns(2, gap="large")
 
     with col_audio:
         st.markdown("<div class='section-card'><h4>🔊 Audio Guidance</h4>", unsafe_allow_html=True)
@@ -269,34 +367,19 @@ with tab_driver:
             st.info("⚠️ Map must be loaded in Corporate Dashboard to fetch route.")
         st.markdown("</div>", unsafe_allow_html=True)
 
-    with col_chat:
-        # ── DRIVER CHAT INTERFACE ──
-        st.markdown(f"<div class='section-card'><h4>💬 Dispatch Chat ({st.session_state['driver_language']} View)</h4>", unsafe_allow_html=True)
-        
-        target_lang = st.session_state["driver_language"]
-        chat_container_drv = st.container(height=300)
-        
-        for msg in st.session_state.chat_messages:
-            is_user = (msg["role"] == "driver")
-            with chat_container_drv.chat_message("user" if is_user else "assistant"):
-                # Driver sees Corporate messages translated to native language
-                if msg["source_lang"] == "English":
-                    st.write(mock_translate(msg["english"], target_lang))
-                # Driver sees their own messages in original native language
-                else:
-                    st.write(msg["original"])
-
-        if prompt := st.chat_input(f"Type hazard or update in {target_lang}...", key="driver_input"):
-            english_translation = mock_translate(prompt, "English")
-            st.session_state.chat_messages.append({
-                "role": "driver", 
-                "original": prompt, 
-                "english": english_translation, 
-                "source_lang": target_lang
-            })
-            st.rerun()
-            
-        st.markdown("</div>", unsafe_allow_html=True)
+    with col_tele:
+        st.markdown(
+            """
+            <div class="section-card">
+                <h4>📡 Vehicle Telemetry</h4>
+                <p><strong>Speed:</strong> — km/h</p>
+                <p><strong>Engine temp:</strong> — °C</p>
+                <div class="placeholder-block" style="height:20px; display:flex; align-items:center; justify-content:center;">
+                    Live OBD feed — Phase 2
+                </div>
+            </div>
+            """, unsafe_allow_html=True
+        )
 
 # ─────────────────────────────────────────────
 # FOOTER
@@ -305,7 +388,7 @@ st.markdown(
     """
     <hr style="border:none; border-top:1px solid #DDD8CD; margin-top:32px;">
     <p style="text-align:center; color:#B0A890; font-size:0.75rem; padding-bottom:12px;">
-        Agri-Logistics IDAS &nbsp;·&nbsp; Phase 2 Prototype &nbsp;·&nbsp; Sindh Agricultural Supply Chain
+        Agri-Logistics IDAS &nbsp;·&nbsp; Phase 3 Prototype &nbsp;·&nbsp; Sindh Agricultural Supply Chain
     </p>
     """,
     unsafe_allow_html=True,
