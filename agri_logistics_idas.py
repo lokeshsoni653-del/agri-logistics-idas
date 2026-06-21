@@ -153,8 +153,10 @@ def is_hazard_message(text: str) -> bool:
 
 
 # ─────────────────────────────────────────────────────────────────
-# CHAT RENDERER — uses components.v1.html() to guarantee HTML
-# rendering regardless of Streamlit version or markdown escaping.
+# CHAT RENDERER
+# Each message is rendered as a single, small st.markdown() call.
+# This approach is compatible with every Streamlit version (1.0+)
+# and works correctly inside any column or container.
 # ─────────────────────────────────────────────────────────────────
 
 def _render_chat(
@@ -166,60 +168,57 @@ def _render_chat(
     """
     Render chat messages as custom styled HTML bubbles.
 
-    Strategy: use st.container(height=height) — Streamlit's native
-    scrollable box — and call st.markdown() once per message with
-    unsafe_allow_html=True.  Small, single-div snippets are always
-    rendered correctly by Streamlit; only large concatenated HTML
-    strings risk being output as escaped text.
+    Each message is rendered as a single small st.markdown() call
+    with unsafe_allow_html=True.  Individual short HTML snippets are
+    always rendered correctly by Streamlit — only large concatenated
+    HTML blobs risk being emitted as escaped text.
 
-    The CSS classes (.chat-row, .bubble-driver, etc.) are already
-    defined in the global <style> block injected at startup, so they
-    apply to every individual markdown snippet automatically.
+    The CSS classes (.chat-row, .bubble-driver, etc.) are defined in
+    the global <style> block injected at app startup, so they apply
+    automatically to every snippet.
 
     Parameters
     ----------
     messages    : st.session_state.chat_messages list.
-    view        : "corporate" shows English; "driver" shows regional language.
-    target_lang : Driver's selected language (used only when view=="driver").
-    height      : Pixel height of the scrollable chat container.
+    view        : "corporate" — show English text.
+                  "driver"    — translate corporate messages to target_lang.
+    target_lang : Driver's selected language (only used when view=="driver").
+    height      : Unused — kept for API compatibility.
     """
-    with st.container(height=height, border=False):
-        for msg in messages:
-            is_driver = (msg["role"] == "driver")
-            row_cls  = "driver" if is_driver else "corporate"
-            bbl_cls  = "bubble-driver" if is_driver else "bubble-corporate"
-            avatar   = "🚚" if is_driver else "🏢"
-            av_cls   = "avatar-drv" if is_driver else "avatar-corp"
-            meta_cls = "meta-right" if is_driver else "meta-left"
+    for msg in messages:
+        is_driver = (msg["role"] == "driver")
+        row_cls  = "driver" if is_driver else "corporate"
+        bbl_cls  = "bubble-driver" if is_driver else "bubble-corporate"
+        avatar   = "🚚" if is_driver else "🏢"
+        av_cls   = "avatar-drv" if is_driver else "avatar-corp"
+        meta_cls = "meta-right" if is_driver else "meta-left"
 
-            if view == "corporate":
-                display_text = msg["english"]
-                badge = (
-                    f"🌐 {msg.get('source_lang', '?')} → EN"
-                    if is_driver
-                    else "🏢 Corporate"
-                )
-            else:
-                if is_driver:
-                    display_text = msg["original"]
-                    badge = f"You ({target_lang})"
-                else:
-                    display_text = mock_translate(
-                        msg["english"].lower(), target_lang
-                    )
-                    badge = f"🏢 → {target_lang}"
-
-            # One small, self-contained div per message — always rendered
-            # correctly by st.markdown(unsafe_allow_html=True)
-            st.markdown(
-                f'<div class="chat-row {row_cls}">'
-                f'<div class="chat-avatar {av_cls}">{avatar}</div>'
-                f'<div class="chat-bubble-wrap">'
-                f'<div class="chat-bubble {bbl_cls}">{display_text}</div>'
-                f'<div class="chat-meta {meta_cls}">{badge}</div>'
-                f'</div></div>',
-                unsafe_allow_html=True,
+        if view == "corporate":
+            display_text = msg["english"]
+            badge = (
+                f"🌐 {msg.get('source_lang', '?')} → EN"
+                if is_driver
+                else "🏢 Corporate"
             )
+        else:
+            if is_driver:
+                display_text = msg["original"]
+                badge = f"You ({target_lang})"
+            else:
+                display_text = mock_translate(
+                    msg["english"].lower(), target_lang
+                )
+                badge = f"🏢 → {target_lang}"
+
+        st.markdown(
+            f'<div class="chat-row {row_cls}">'
+            f'<div class="chat-avatar {av_cls}">{avatar}</div>'
+            f'<div class="chat-bubble-wrap">'
+            f'<div class="chat-bubble {bbl_cls}">{display_text}</div>'
+            f'<div class="chat-meta {meta_cls}">{badge}</div>'
+            f'</div></div>',
+            unsafe_allow_html=True,
+        )
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -1112,6 +1111,9 @@ DEFAULTS: dict = {
     "route_instructions": [],
     "route_distance_km": None,
     "route_duration_min": None,
+    "route_geometry":     None,
+    "route_loaded":       False,
+    "route_fallback":     False,
     "chat_messages": [
         {
             "role":        "corporate",
@@ -1332,16 +1334,23 @@ with tab_corp:
     with col_map:
         st.markdown("<div class='section-card'><h4>🗺️ Live Fleet Map</h4>", unsafe_allow_html=True)
 
-        with st.spinner("Calculating true-road network route via OSRM…"):
-            route_data = get_osrm_route()
+        # Check if route data is loaded and successful in session state. If not, fetch it.
+        if "route_data" not in st.session_state or not st.session_state["route_data"].get("success", False):
+            with st.spinner("Calculating true-road network route via OSRM…"):
+                st.session_state["route_data"] = get_osrm_route()
+        
+        route_data = st.session_state["route_data"]
 
         if route_data["success"]:
-            plot_route_on_map(route_geometry=route_data["geometry"])
+            plot_route_on_map(route_geometry=route_data["geometry"], key="corp_route_map")
 
             # Store route data in session state for the Driver tab
+            st.session_state["route_geometry"]      = route_data["geometry"]
             st.session_state["route_instructions"]  = route_data["instructions"]
             st.session_state["route_distance_km"]   = route_data["distance_km"]
             st.session_state["route_duration_min"]  = route_data["duration_min"]
+            st.session_state["route_loaded"]        = True
+            st.session_state["route_fallback"]      = False
 
             # Distance / duration info badges
             dist = route_data["distance_km"]
@@ -1362,7 +1371,14 @@ with tab_corp:
                 f"⚠️ OSRM routing unavailable — showing fallback map. "
                 f"Reason: {route_data['error']}"
             )
-            plot_fallback_map()
+            plot_fallback_map(key="corp_fallback_map")
+            
+            st.session_state["route_geometry"]      = None
+            st.session_state["route_instructions"]  = ["OSRM routing unavailable — showing fallback map."]
+            st.session_state["route_distance_km"]   = None
+            st.session_state["route_duration_min"]  = None
+            st.session_state["route_loaded"]        = True
+            st.session_state["route_fallback"]      = True
 
         st.markdown("</div>", unsafe_allow_html=True)
 
@@ -1568,6 +1584,22 @@ with tab_driver:
             """
             <div class="section-card">
                 <h4>🗺️ Navigation View</h4>
+            """,
+            unsafe_allow_html=True,
+        )
+
+        if st.session_state.get("route_loaded", False):
+            if st.session_state.get("route_fallback", False):
+                plot_fallback_map(map_height_px=290, key="driver_fallback_map")
+            else:
+                plot_route_on_map(
+                    route_geometry=st.session_state["route_geometry"],
+                    map_height_px=290,
+                    key="driver_route_map",
+                )
+        else:
+            st.markdown(
+                """
                 <div class="nav-placeholder">
                     <span style="font-size:2rem;">🧭</span>
                     <span>Turn-by-turn navigation map</span>
@@ -1575,10 +1607,11 @@ with tab_driver:
                         Load the Corporate Dashboard map first to enable this view
                     </span>
                 </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+                """,
+                unsafe_allow_html=True,
+            )
+
+        st.markdown("</div>", unsafe_allow_html=True)
 
     with col_assist:
         target_lang = st.session_state["driver_language"]
