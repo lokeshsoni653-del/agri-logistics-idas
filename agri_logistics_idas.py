@@ -1286,27 +1286,36 @@ with tab_corp:
             """,
             unsafe_allow_html=True,
         )
-        # ── Corporate Chat Interface ───────────────────────────────
+        # ── Corporate Chat Interface ────────────────────────────────
         st.markdown(
-            "<div class='section-card'><h4>💬 Dispatch Chat (English View)</h4>",
+            "<div class='section-card'>"
+            "<h4>💬 Dispatch Chat (English View)</h4>",
             unsafe_allow_html=True,
         )
-        # Render chat bubbles via components.html() to guarantee HTML
-        # rendering (immune to st.markdown escaping in newer Streamlit versions)
         _render_chat(
             messages=st.session_state.chat_messages,
             view="corporate",
-            height=270,
+            height=240,
         )
-        # Corporate chat input
-        if corp_prompt := st.chat_input(
-            "Message TRK-119 driver (English)…", key="corp_input"
-        ):
+        # Input row — text_input + button (works reliably inside any column)
+        corp_inp_col, corp_btn_col = st.columns([5, 1], gap="small")
+        with corp_inp_col:
+            corp_text = st.text_input(
+                "corp_label",
+                placeholder="Message TRK-119 driver (English)…",
+                label_visibility="collapsed",
+                key="corp_text_input",
+            )
+        with corp_btn_col:
+            corp_send = st.button(
+                "Send", key="corp_send_btn", use_container_width=True
+            )
+        if corp_send and corp_text.strip():
             st.session_state.chat_messages.append(
                 {
                     "role":        "corporate",
-                    "original":    corp_prompt,
-                    "english":     corp_prompt,
+                    "original":    corp_text.strip(),
+                    "english":     corp_text.strip(),
                     "source_lang": "English",
                 }
             )
@@ -1455,29 +1464,36 @@ with tab_driver:
             f"<h4>💬 Dispatch Chat ({lang_flag} {target_lang})</h4>",
             unsafe_allow_html=True,
         )
-        # Render chat bubbles via components.html() to guarantee HTML
-        # rendering (immune to st.markdown escaping in newer Streamlit versions)
         _render_chat(
             messages=st.session_state.chat_messages,
             view="driver",
             target_lang=target_lang,
-            height=240,
+            height=210,
         )
-        # Driver chat input
-        if drv_prompt := st.chat_input(
-            f"Report hazard in {target_lang}…", key="driver_input"
-        ):
-            english_translation = mock_translate(drv_prompt, "English")
-            hazard_detected     = is_hazard_message(drv_prompt)
+        # Input row — text_input + button (works reliably inside any column)
+        drv_inp_col, drv_btn_col = st.columns([5, 1], gap="small")
+        with drv_inp_col:
+            drv_text = st.text_input(
+                "drv_label",
+                placeholder=f"Report hazard in {target_lang}…",
+                label_visibility="collapsed",
+                key="drv_text_input",
+            )
+        with drv_btn_col:
+            drv_send = st.button(
+                "Send", key="drv_send_btn", use_container_width=True
+            )
+        if drv_send and drv_text.strip():
+            english_translation = mock_translate(drv_text.strip(), "English")
+            hazard_detected     = is_hazard_message(drv_text.strip())
             st.session_state.chat_messages.append(
                 {
                     "role":        "driver",
-                    "original":    drv_prompt,
+                    "original":    drv_text.strip(),
                     "english":     english_translation,
                     "source_lang": target_lang,
                 }
             )
-            # Flag hazard in session state so Corporate tab shows the banner
             if hazard_detected:
                 st.session_state["hazard_active"]   = True
                 st.session_state["last_hazard_msg"] = english_translation
