@@ -1,5 +1,5 @@
-streamlit
-requests
-folium
-streamlit-folium
-gtts
+streamlit>=1.28.0
+requests>=2.31.0
+folium>=0.15.0
+streamlit-folium>=0.15.0
+gtts>=2.4.0
