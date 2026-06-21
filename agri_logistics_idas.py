@@ -22,32 +22,32 @@ from voice_advisory import generate_voice_advisory
 # Supports all three regional dialects: Sindhi, Urdu, Dhatki
 HAZARD_PHRASES: dict = {
     # Bridge hazards
-    "pul budi wai ahe":      "⚠️ The bridge is flooded.",
+    "pul budi wai ahey":      "⚠️ The bridge is flooded.",
     "pul doob gaya hai":     "⚠️ The bridge is flooded.",
-    "pul budi gayo hai":     "⚠️ The bridge is flooded.",
+    "pul buday gayo hai":     "⚠️ The bridge is flooded.",
     "pul band ahe":          "⚠️ The bridge is closed — route blocked.",
     "pul band hai":          "⚠️ The bridge is closed — route blocked.",
     # Road blockages
-    "sadak bund ahe":        "🚧 The road is blocked ahead.",
+    "rasto bund ahe":        "🚧 The road is blocked ahead.",
     "sadak band hai":        "🚧 The road is blocked ahead.",
-    "raah bund ahe":         "🚧 The road is blocked ahead.",
+    "rasto band hai":         "🚧 The road is blocked ahead.",
     # Weather
     "tez barish ahe":        "🌧️ Driver reports heavy rainfall on route.",
     "tez baarish hai":       "🌧️ Driver reports heavy rainfall on route.",
-    "meh tez aavti ahe":     "🌧️ Driver reports heavy rainfall on route.",
+    "barsat tezz hai":     "🌧️ Driver reports heavy rainfall on route.",
     # Vehicle breakdown
-    "gaadi kharab thii":     "🔧 Vehicle breakdown — driver requires assistance.",
+    "gaadi kharab thii wahi aa":     "🔧 Vehicle breakdown — driver requires assistance.",
     "gaadi kharab hui hai":  "🔧 Vehicle breakdown — driver requires assistance.",
-    "gaadi kharab thai":     "🔧 Vehicle breakdown — driver requires assistance.",
+    "gadi kharab thai gyi hai":     "🔧 Vehicle breakdown — driver requires assistance.",
     "gadi kharab ahe":       "🔧 Vehicle breakdown — driver requires assistance.",
     # Cargo spoilage
     "tamatar kharab thia":   "🍅 Produce spoilage risk — fragile cargo compromised.",
     "tamatar bigad rahe":    "🍅 Produce spoilage risk — fragile cargo compromised.",
-    "tamatar kharab thai":   "🍅 Produce spoilage risk — fragile cargo compromised.",
+    "tamatar kharab thia ae":   "🍅 Produce spoilage risk — fragile cargo compromised.",
     # Traffic
     "trafik jam ahe":        "🚦 Traffic congestion reported by driver.",
     "trafik jam hai":        "🚦 Traffic congestion reported by driver.",
-    "traffic jam ahe":       "🚦 Traffic congestion reported by driver.",
+    "rasto jam hai":       "🚦 Traffic congestion reported by driver.",
     # Livestock / road hazard
     "janwar sadak te aahay": "🐄 Livestock on the road — caution advised.",
     "janwar sadak par hai":  "🐄 Livestock on the road — caution advised.",
@@ -55,14 +55,14 @@ HAZARD_PHRASES: dict = {
 # ── Corporate English commands → Native dialect translations ────────
 CORPORATE_COMMANDS: dict = {
     "delay tomato pickup by 2 hours": {
-        "Sindhi":  "Tamatar kahn me 2 kalak di dair ahe",
+        "Sindhi":  "Tamatar kharan me 2 kalak ji dair ahe",
         "Urdu":    "Tamatar uthane mein 2 ghante ki der hai",
-        "Dhatki":  "Tamatar uparan mein 2 kalak ro vilamb hai",
+        "Dhatki":  "Tamatar kharan mein 2 kalak ri der hai",
     },
     "delay pickup": {
-        "Sindhi":  "Kahn mein dair ahe",
+        "Sindhi":  "Kharan mein dair ahe",
         "Urdu":    "Uthane mein der hai",
-        "Dhatki":  "Uparan mein dair ahe",
+        "Dhatki":  "kahrarn mein dair hai",
     },
     "reroute due to weather": {
         "Sindhi":  "Mosam kharab ahe, nayo rasto varo",
