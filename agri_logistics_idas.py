@@ -16,7 +16,25 @@ Submitted to: Sindh Agriculture University, Tandojam
 """
 
 import io
+import inspect
 import streamlit as st
+import streamlit_folium as sf
+
+# ── MONKEY-PATCH st_folium FOR UNIQUE DETERMINISTIC KEYS ──────────
+_original_st_folium = sf.st_folium
+
+def patched_st_folium(fig, *args, **kwargs):
+    if "key" not in kwargs or kwargs["key"] is None:
+        # Trace back to find caller function name (e.g. plot_route_on_map)
+        frame = inspect.currentframe().f_back
+        func_name = frame.f_code.co_name if frame else "unknown"
+        height = kwargs.get("height", "default")
+        # Generate a unique, layout-deterministic key
+        kwargs["key"] = f"auto_map_{func_name}_{height}"
+    return _original_st_folium(fig, *args, **kwargs)
+
+sf.st_folium = patched_st_folium
+
 from routing import get_osrm_route, plot_route_on_map, plot_fallback_map
 from voice_advisory import generate_voice_advisory
 
