@@ -1342,7 +1342,7 @@ with tab_corp:
         route_data = st.session_state["route_data"]
 
         if route_data["success"]:
-            plot_route_on_map(route_geometry=route_data["geometry"], key="corp_route_map")
+            plot_route_on_map(route_geometry=route_data["geometry"])
 
             # Store route data in session state for the Driver tab
             st.session_state["route_geometry"]      = route_data["geometry"]
@@ -1371,7 +1371,7 @@ with tab_corp:
                 f"⚠️ OSRM routing unavailable — showing fallback map. "
                 f"Reason: {route_data['error']}"
             )
-            plot_fallback_map(key="corp_fallback_map")
+            plot_fallback_map()
             
             st.session_state["route_geometry"]      = None
             st.session_state["route_instructions"]  = ["OSRM routing unavailable — showing fallback map."]
@@ -1590,12 +1590,11 @@ with tab_driver:
 
         if st.session_state.get("route_loaded", False):
             if st.session_state.get("route_fallback", False):
-                plot_fallback_map(map_height_px=290, key="driver_fallback_map")
+                plot_fallback_map(map_height_px=290)
             else:
                 plot_route_on_map(
                     route_geometry=st.session_state["route_geometry"],
                     map_height_px=290,
-                    key="driver_route_map",
                 )
         else:
             st.markdown(
