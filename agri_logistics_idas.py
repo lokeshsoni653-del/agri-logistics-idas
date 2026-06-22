@@ -35,7 +35,14 @@ def patched_st_folium(fig, *args, **kwargs):
 
 sf.st_folium = patched_st_folium
 
-from routing import get_osrm_route, plot_route_on_map, plot_fallback_map
+import streamlit.components.v1 as components
+from routing import (
+    get_osrm_route,
+    plot_route_on_map,
+    plot_fallback_map,
+    get_route_map_html,
+    get_fallback_map_html,
+)
 from voice_advisory import generate_voice_advisory
 
 # ═══════════════════════════════════════════════════════════════════
@@ -1607,13 +1614,16 @@ with tab_driver:
         )
 
         if st.session_state.get("route_loaded", False):
+            # Use pure HTML rendering — avoids all st_folium duplicate-key
+            # conflicts that occur when two maps exist in the same session.
             if st.session_state.get("route_fallback", False):
-                plot_fallback_map(map_height_px=290)
+                map_html = get_fallback_map_html(map_height_px=290)
             else:
-                plot_route_on_map(
+                map_html = get_route_map_html(
                     route_geometry=st.session_state["route_geometry"],
                     map_height_px=290,
                 )
+            components.html(map_html, height=295, scrolling=False)
         else:
             st.markdown(
                 """
