@@ -53,36 +53,36 @@ from voice_advisory import generate_voice_advisory
 # Supports all three regional dialects: Sindhi, Urdu, Dhatki
 HAZARD_PHRASES: dict = {
     # Bridge hazards
-    "pul budi wai ahe":      "⚠️ The bridge is flooded.",
-    "pul doob gaya hai":     "⚠️ The bridge is flooded.",
-    "pul buday gayo hai":     "⚠️ The bridge is flooded.",
-    "pul band ahey":          "⚠️ The bridge is closed — route blocked.",
-    "pul band hai":          "⚠️ The bridge is closed — route blocked.",
+    "pul budi wai ahe":           "⚠️ The bridge is flooded.",
+    "pul doob gaya hai":          "⚠️ The bridge is flooded.",
+    "pul buday gayo hai":         "⚠️ The bridge is flooded.",
+    "pul band ahey":              "⚠️ The bridge is closed — route blocked.",
+    "pul band hai":               "⚠️ The bridge is closed — route blocked.",
     # Road blockages
-    "sadak bund ahe":        "🚧 The road is blocked ahead.",
-    "sadak band hai":        "🚧 The road is blocked ahead.",
-    "rasto band hai":         "🚧 The road is blocked ahead.",
+    "sadak bund ahe":             "🚧 The road is blocked ahead.",
+    "sadak band hai":             "🚧 The road is blocked ahead.",
+    "rasto band hai":             "🚧 The road is blocked ahead.",
     # Weather
-    "tez barish ahe":        "🌧️ Driver reports heavy rainfall on route.",
-    "tez baarish hai":       "🌧️ Driver reports heavy rainfall on route.",
-    "barsat tezz hai":     "🌧️ Driver reports heavy rainfall on route.",
+    "tez barish ahe":             "🌧️ Driver reports heavy rainfall on route.",
+    "tez baarish hai":            "🌧️ Driver reports heavy rainfall on route.",
+    "barsat tezz hai":            "🌧️ Driver reports heavy rainfall on route.",
     # Vehicle breakdown
-    "gaadi kharab thi wahi ahay":     "🔧 Vehicle breakdown — driver requires assistance.",
-    "gaadi kharab hui hai":  "🔧 Vehicle breakdown — driver requires assistance.",
-    "gaadi kharab thi hai":     "🔧 Vehicle breakdown — driver requires assistance.",
-    "gadi kharab ahe":       "🔧 Vehicle breakdown — driver requires assistance.",
+    "gaadi kharab thi wahi ahay": "🔧 Vehicle breakdown — driver requires assistance.",
+    "gaadi kharab hui hai":       "🔧 Vehicle breakdown — driver requires assistance.",
+    "gaadi kharab thi hai":       "🔧 Vehicle breakdown — driver requires assistance.",
+    "gadi kharab ahe":            "🔧 Vehicle breakdown — driver requires assistance.",
     # Cargo spoilage
-    "tamatar kharab thi wya":   "🍅 Produce spoilage risk — fragile cargo compromised.",
-    "tamatar bigad rahe":    "🍅 Produce spoilage risk — fragile cargo compromised.",
-    "tamata kharab thai ae":   "🍅 Produce spoilage risk — fragile cargo compromised.",
+    "tamatar kharab thi wya":     "🍅 Produce spoilage risk — fragile cargo compromised.",
+    "tamatar bigad rahe":         "🍅 Produce spoilage risk — fragile cargo compromised.",
+    "tamata kharab thai ae":      "🍅 Produce spoilage risk — fragile cargo compromised.",
     # Traffic
-    "rasto jam ahe":        "🚦 Traffic congestion reported by driver.",
-    "trafik jam hai":        "🚦 Traffic congestion reported by driver.",
-    "rasto jam hai":       "🚦 Traffic congestion reported by driver.",
+    "rasto jam ahe":              "🚦 Traffic congestion reported by driver.",
+    "trafik jam hai":             "🚦 Traffic congestion reported by driver.",
+    "rasto jam hai":              "🚦 Traffic congestion reported by driver.",
     # Livestock / road hazard
-    "janwar raste te aahay": "🐄 Livestock on the road — caution advised.",
-    "janwar sadak par hai":  "🐄 Livestock on the road — caution advised.",
-    "janwar raste te hai":  "🐄 Livestock on the road — caution advised.",
+    "janwar raste te aahay":      "🐄 Livestock on the road — caution advised.",
+    "janwar sadak par hai":       "🐄 Livestock on the road — caution advised.",
+    "janwar raste te hai":        "🐄 Livestock on the road — caution advised.",
 }
 
 # ── Corporate English commands → Native dialect translations ────────
@@ -176,6 +176,171 @@ def is_hazard_message(text: str) -> bool:
     """
     t = text.lower().strip()
     return any(phrase in t for phrase in HAZARD_PHRASES)
+
+
+# ── Auto-reply rules: driver input keyword → English response ────
+# These are matched against the driver's lowercased raw text.
+AUTO_REPLY_RULES: list = [
+    # Greetings
+    (["hello", "hi", "helo", "salam", "assalam", "namaste", "namaskar",
+      "khush aayo", "aayo", "slamalekum", "salaam"],
+     "hello"),
+    # Acknowledgment / OK / received
+    (["ok", "okay", "okat", "theek", "acha", "thik", "ji", "haan", "han",
+      "samajh", "samjh", "shukriya", "thanks", "thank you", "dhanyawad"],
+     "message received"),
+    # Breakdown
+    (["kharab", "breakdown", "khaarij", "bund", "nahi chal"],
+     "breakdown"),
+    # Help / Assistance
+    (["help", "madad", "sahara", "madadgar", "emergency", "emergency hai",
+      "sos", "musibat"],
+     "help"),
+    # Location / Position
+    (["kahan", "kahan hoon", "location", "position", "muqam", "jagah",
+      "waaro", "thhio", "pahuncha"],
+     "location"),
+    # Delay
+    (["dair", "late", "der", "delay", "aage nahi", "nahi pahunch"],
+     "delay"),
+    # Cargo status
+    (["maal", "cargo", "tamatar", "bojh", "load", "samaan"],
+     "cargo"),
+    # Rest / Break
+    (["rest", "aram", "araam", "khana", "lunch", "ruk", "ruko", "roko"],
+     "rest"),
+    # Fuel
+    (["fuel", "petrol", "diesel", "tel", "bharna", "khatam"],
+     "fuel"),
+    # Arrival / Destination
+    (["pahunch", "pahuncha", "destination", "hyderabad", "manzil",
+      "delivery", "pohanch"],
+     "arrival"),
+    # Weather query
+    (["barish", "baarish", "mausam", "weather", "mosam", "tez barish"],
+     "weather"),
+    # Road / Route
+    (["sadak", "rasta", "raah", "route", "block", "jam", "traffic"],
+     "route"),
+]
+
+# Contextual corporate auto-replies per category, per language
+AUTO_REPLIES: dict = {
+    "hello": {
+        "English": "Welcome, TRK-119! You are connected to IDAS Network. Safe travels on the Mithi → Hyderabad corridor.",
+        "Sindhi":  "Khush aayo, TRK-119! IDAS Network saan jura thia aahin. Mithi → Hyderabad rasto salaamti halo.",
+        "Urdu":    "Khush aamdeed, TRK-119! IDAS Network se jur gaye hain. Mithi → Hyderabad raaste par salamti se chalein.",
+        "Dhatki":  "Aavkaari, TRK-119! IDAS Network saan jura aahin. Mithi → Hyderabad raah te salaamti vanj.",
+    },
+    "message received": {
+        "English": "✅ Message received, TRK-119. Continue on your current route. Corporate is monitoring.",
+        "Sindhi":  "✅ Message milyo, TRK-119. Pano rasto jaari rakhio. Corporate nazar rakhiyaal ahe.",
+        "Urdu":    "✅ Paigham mil gaya, TRK-119. Apna rasta jaari rakhein. Corporate nazar rakh raha hai.",
+        "Dhatki":  "✅ Sandesh milyo, TRK-119. Paano raah jaari rakho. Corporate nazar rakhe ahe.",
+    },
+    "breakdown": {
+        "English": "🔧 ALERT: Breakdown reported for TRK-119! Stay safe on the roadside. Dispatch is arranging assistance. ETA: 45 minutes.",
+        "Sindhi":  "🔧 KHABAR: TRK-119 ji gaadi kharab! Sadak ji kirri te salaamti thio. Madad aaavti ahe. Waqt: 45 minute.",
+        "Urdu":    "🔧 KHABAR: TRK-119 ki gaadi kharab! Sadak ke kinare mehfooz rahein. Madad aa rahi hai. Waqt: 45 minute.",
+        "Dhatki":  "🔧 KHABAR: TRK-119 ri gadi kharab! Sadak ri kinar te salaamti raho. Madad aavti ahe. Waqt: 45 minute.",
+    },
+    "help": {
+        "English": "🚨 EMERGENCY ACKNOWLEDGED! TRK-119 — Your GPS position has been flagged. Dispatch and local support are being alerted. Stay calm.",
+        "Sindhi":  "🚨 EMERGENCY MILYO! TRK-119 — Tuhajo GPS muqam note thio ahe. Dispatch ۽ local madad khabardar aahin. Sabr rakho.",
+        "Urdu":    "🚨 EMERGENCY MIL GAYI! TRK-119 — Aapki GPS jagah note ho gayi hai. Dispatch aur local madad alert ho rahe hain. Sabr rakhein.",
+        "Dhatki":  "🚨 EMERGENCY MILYO! TRK-119 — Taaro GPS thaan note thhiyo ahe. Dispatch ane madad khabardar aahin. Sabr rakho.",
+    },
+    "location": {
+        "English": "📍 TRK-119 — Your GPS is active and tracked. You are on the Mithi → Hyderabad corridor. Next waypoint: N25°03' E68°72'.",
+        "Sindhi":  "📍 TRK-119 — Tuhajo GPS chalu ahe. Toon Mithi → Hyderabad rasti thi. Agli jagah: N25°03' E68°72'.",
+        "Urdu":    "📍 TRK-119 — Aapka GPS chalu hai. Aap Mithi → Hyderabad raaste par hain. Agla muqam: N25°03' E68°72'.",
+        "Dhatki":  "📍 TRK-119 — Taaro GPS chalu ahe. Too Mithi → Hyderabad raah te aahay. Aglo thaan: N25°03' E68°72'.",
+    },
+    "delay": {
+        "English": "⏱️ Delay noted, TRK-119. Updated ETA communicated to the destination warehouse. Drive safely — cargo integrity is priority.",
+        "Sindhi":  "⏱️ Dair note thii, TRK-119. Nayo waqt warehouse khe dasayo thio. Salaamti halo — maal ji hifazat zaroori ahe.",
+        "Urdu":    "⏱️ Der note ho gayi, TRK-119. Updated waqt warehouse ko bata diya. Salaamti se chalein — maal ki hifazat zaroori hai.",
+        "Dhatki":  "⏱️ Dair note thhiyo, TRK-119. Nayo waqt warehouse khe dasayo thhiyo. Salaamti vanj — bojh ri hifazat zaroori ahe.",
+    },
+    "cargo": {
+        "English": "🍅 Cargo status acknowledged. Ensure cold-chain integrity. If produce shows signs of spoilage, report immediately for rerouting.",
+        "Sindhi":  "🍅 Maal halat note thii. Thandi chain kaayam rakho. Je tamatar kharab thian, hinner report karo.",
+        "Urdu":    "🍅 Maal ki halat note ho gayi. Thandi chain barkaraar rakhein. Agar tamatar kharab hon to fauran report karein.",
+        "Dhatki":  "🍅 Bojh ri halat note thhiyo. Thandi chain rakhjo. Je tamatar kharab thia, hinner report karo.",
+    },
+    "rest": {
+        "English": "☕ Rest stop approved, TRK-119. Maximum 20 minutes. Resume route before 15:30. Stay on designated rest areas only.",
+        "Sindhi":  "☕ Araam di ijazat milyi, TRK-119. Waddhi thon waddhi 20 minute. 15:30 thon pehle waapas halo. Sirf muqarrar jagah te ruko.",
+        "Urdu":    "☕ Araam ki ijazat hai, TRK-119. Zyada se zyada 20 minute. 15:30 se pehle wapas chalein. Sirf muqarrar jagah par rukein.",
+        "Dhatki":  "☕ Araam ri ijazat milyi, TRK-119. Waddhu 20 minute. 15:30 thon aggo vaapas vanj. Sirf muqarrar thaan te ruko.",
+    },
+    "fuel": {
+        "English": "⛽ Fuel stop noted. Nearest approved fuel station: Naukot, 12 km ahead on your route. Resume within 15 minutes.",
+        "Sindhi":  "⛽ Petrol stop note thii. Sab thon nyaari fuel station: Naukot, 12 km aagey. 15 minute mein waapas aayo.",
+        "Urdu":    "⛽ Petrol stop note ho gayi. Qareeb ka fuel station: Naukot, 12 km aage. 15 minute mein wapas aa jayein.",
+        "Dhatki":  "⛽ Petrol stop note thhiyo. Nazdiiki fuel station: Naukot, 12 km aagey. 15 minute mein vaapas aao.",
+    },
+    "arrival": {
+        "English": "🏁 Excellent, TRK-119! Arrival confirmed. Notify the warehouse supervisor on site. Delivery paperwork is ready for you.",
+        "Sindhi":  "🏁 Shabaash, TRK-119! Pahuncho thhia. Warehouse supervisor khe khabar karo. Delivery kaagaz tyaar aahin.",
+        "Urdu":    "🏁 Shabaash, TRK-119! Pahunch gaye. Warehouse supervisor ko khabar karein. Delivery kaagaz tayyar hain.",
+        "Dhatki":  "🏁 Shabaash, TRK-119! Pahunchyo. Warehouse supervisor khe khabar karo. Delivery kaagaz tayaar aahin.",
+    },
+    "weather": {
+        "English": "🌦️ Weather update: Moderate rainfall on N-55 corridor. Reduce speed, activate fog lights. Route diversion via M-9 not yet required.",
+        "Sindhi":  "🌦️ Mosam khabar: N-55 te barish ahe. Raftar ghat karo, fog lights chalao. M-9 rasto hun zaroori naahin.",
+        "Urdu":    "🌦️ Mausam update: N-55 par baarish hai. Raftar kam karein, fog lights on karein. M-9 rasta abhi zaroori nahi.",
+        "Dhatki":  "🌦️ Mosam khabar: N-55 te meh ahe. Chaal ghat karo, fog batti jalao. M-9 raah hun zaroori naahin.",
+    },
+    "route": {
+        "English": "🗺️ Route confirmed: Mithi → Naukot → Hyderabad. No major closures reported. Proceed on current path. ETA: 3h 20min.",
+        "Sindhi":  "🗺️ Rasto pakko: Mithi → Naukot → Hyderabad. Koi bund rasto report naahin thio. Jaari raho. Waqt: 3h 20min.",
+        "Urdu":    "🗺️ Rasta pakka: Mithi → Naukot → Hyderabad. Koi band rasta report nahi hua. Jaari rakhein. Waqt: 3h 20min.",
+        "Dhatki":  "🗺️ Raah pakki: Mithi → Naukot → Hyderabad. Koi bund raah report naahin thhiyo. Jaari rakho. Waqt: 3h 20min.",
+    },
+    "hazard": {
+        "English": "🚨 HAZARD CONFIRMED by Corporate! TRK-119, stay safe. Alternative route via Diplo is being calculated. Do NOT proceed through hazard zone.",
+        "Sindhi":  "🚨 KHATRO CONFIRM! TRK-119, salaamti raho. Diplo raho nayo rasto hisaab aahin. Khatarnak jagah mein na wanjio.",
+        "Urdu":    "🚨 KHATARNAK MANZAR CONFIRM! TRK-119, mehfooz rahein. Diplo se naya rasta nikala ja raha hai. Khatarnak jagah mein mat jayein.",
+        "Dhatki":  "🚨 KHATRO CONFIRM! TRK-119, salaamti raho. Diplo waaro nayo raah hisaab aahin. Khatarnak thaan te na vanj.",
+    },
+    "default": {
+        "English": "✅ Message received, TRK-119. Corporate dispatch is monitoring your route. Continue as planned. Contact us if anything changes.",
+        "Sindhi":  "✅ Paighaam milyo, TRK-119. Corporate dispatch tuhaji nigrani karay ahe. Rasto jaari rakho. Koi tabdeeli thee taan dasao.",
+        "Urdu":    "✅ Paigham mil gaya, TRK-119. Corporate dispatch aap ki nigrani kar raha hai. Raasta jaari rakhein. Kuch badlega to batayein.",
+        "Dhatki":  "✅ Sandesh milyo, TRK-119. Corporate dispatch taari nigrani kare ahe. Raah jaari rakho. Koi badlaav thay taan dasao.",
+    },
+}
+
+
+def generate_auto_reply(driver_text: str, driver_lang: str, is_hazard: bool) -> dict:
+    """
+    Generate an automatic corporate reply to a driver message.
+
+    Matches driver_text against AUTO_REPLY_RULES keywords (case-insensitive).
+    Hazard messages always get the urgent hazard reply.
+
+    Returns a chat message dict (same shape as items in chat_messages).
+    """
+    t = driver_text.lower().strip()
+
+    # Hazard always takes highest priority
+    if is_hazard:
+        category = "hazard"
+    else:
+        category = "default"
+        for keywords, cat in AUTO_REPLY_RULES:
+            if any(kw in t for kw in keywords):
+                category = cat
+                break
+
+    reply_en = AUTO_REPLIES[category]["English"]
+    return {
+        "role":        "corporate",
+        "original":    reply_en,
+        "english":     reply_en,
+        "source_lang": "English",
+    }
 
 
 # ─────────────────────────────────────────────────────────────────
@@ -421,9 +586,9 @@ SAFETY_TEXT: dict = {
         ),
         "Dhatki": (
             "🌦️  AAGEY GEHLI RAAH",
-            "Raah te meh barsat thi hai. "
-            "Gilay raste te break thoro pehri harya. "
-            "Ahista jaya ane paani bharil raste kha paray rahya.",
+            "Raah te meh aavti ahe. "
+            "Gehli raah te rokna distance vaddhu thayo ahe. "
+            "Ahista vanj ane paani bharil raah thon pario raho.",
         ),
     },
 
@@ -448,9 +613,9 @@ SAFETY_TEXT: dict = {
         ),
         "Dhatki": (
             "ℹ️  SADHAARAN HALAT",
-            "Raah saaf hai. "
-            "Aaram sa halo ayi speed limit ghat rakho. "
-            "waday safar mein paani pitaa raho.",
+            "Raah saaf ahe. "
+            "Sadhaaran chalo ane speed limit manno. "
+            "Lambo safar mein paani pindo raho.",
         ),
     },
 }
@@ -1671,6 +1836,7 @@ with tab_driver:
         if drv_send and drv_text.strip():
             english_translation = mock_translate(drv_text.strip(), "English")
             hazard_detected     = is_hazard_message(drv_text.strip())
+            # Append driver message
             st.session_state.chat_messages.append(
                 {
                     "role":        "driver",
@@ -1682,6 +1848,13 @@ with tab_driver:
             if hazard_detected:
                 st.session_state["hazard_active"]   = True
                 st.session_state["last_hazard_msg"] = english_translation
+            # ── Auto-reply from Corporate ─────────────────────────
+            auto_reply = generate_auto_reply(
+                driver_text=drv_text.strip(),
+                driver_lang=target_lang,
+                is_hazard=hazard_detected,
+            )
+            st.session_state.chat_messages.append(auto_reply)
             st.rerun()
         st.markdown("</div>", unsafe_allow_html=True)
 
