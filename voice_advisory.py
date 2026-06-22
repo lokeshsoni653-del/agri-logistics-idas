@@ -72,35 +72,35 @@ CARGO_FRAGILE = "Fragile / Tomatoes"
 PHRASE_BOOK: dict = {
     # ── Departure ──────────────────────────────────────────────
     "Head straight": {
-        "Sindhi":  "Seedho halo",
+        "Sindhi":  "Seedho vanj",
         "Urdu":    "Seedha chalo",
-        "Dhatki":  "Seedho vanj",
+        "Dhatki":  "Seedha halo",
     },
     "Head": {
-        "Sindhi":  "Halo",
+        "Sindhi":  "vanjo",
         "Urdu":    "Chalo",
-        "Dhatki":  "Vanj",
+        "Dhatki":  "halo",
     },
     # ── Turns ───────────────────────────────────────────────────
     "Turn left": {
-        "Sindhi":  "Khabbe moro",
+        "Sindhi":  "Khabbey phiro",
         "Urdu":    "Baayein muro",
-        "Dhatki":  "Khabey phir",
+        "Dhatki":  "undhe hath the phiro",
     },
     "Turn right": {
         "Sindhi":  "Saje moro",
         "Urdu":    "Daayein muro",
-        "Dhatki":  "Sajey phir",
+        "Dhatki":  "Sindhe hath the moro",
     },
     "Turn slight left": {
-        "Sindhi":  "Thoro khabbe",
+        "Sindhi":  "Thoro khabbey moro",
         "Urdu":    "Thoda baayein",
-        "Dhatki":  "Thoro khabey",
+        "Dhatki":  "Thoro khabay moro",
     },
     "Turn slight right": {
-        "Sindhi":  "Thoro saje",
+        "Sindhi":  "Thoro sajey moro",
         "Urdu":    "Thoda daayein",
-        "Dhatki":  "Thoro sajey",
+        "Dhatki":  "Thoro sajey moro",
     },
     "Turn sharp left": {
         "Sindhi":  "Tikkhi khabbe moro",
@@ -108,9 +108,9 @@ PHRASE_BOOK: dict = {
         "Dhatki":  "Tikkho khabey phir",
     },
     "Turn sharp right": {
-        "Sindhi":  "Tikkhi saje moro",
+        "Sindhi":  "jaldi saje moro",
         "Urdu":    "Teekha daayein muro",
-        "Dhatki":  "Tikkho sajey phir",
+        "Dhatki":  "jaldi sajey phirao",
     },
     "Turn U-turn": {
         "Sindhi":  "U-turn karo",
@@ -119,57 +119,57 @@ PHRASE_BOOK: dict = {
     },
     # ── Continuing ──────────────────────────────────────────────
     "Continue straight": {
-        "Sindhi":  "Seedho jaari rakho",
+        "Sindhi":  "Seedho halda wanjo",
         "Urdu":    "Seedha jaari rakhen",
-        "Dhatki":  "Seedho chalte raho",
+        "Dhatki":  "Seedho halta raho",
     },
     "Continue": {
-        "Sindhi":  "Jaari rakho",
+        "Sindhi":  "jaari rakho",
         "Urdu":    "Jaari rakhen",
-        "Dhatki":  "Chalte raho",
+        "Dhatki":  "halta jao",
     },
     "Continue onto": {
         "Sindhi":  "Aage wanjio",
         "Urdu":    "Aage badhein",
-        "Dhatki":  "Aagey vanj",
+        "Dhatki":  "Aagya halo",
     },
     # ── Merges and ramps ────────────────────────────────────────
     "Merge onto": {
-        "Sindhi":  "Sadak te shamil thio",
+        "Sindhi":  "Sadak te bhera thio",
         "Urdu":    "Sadak par shamil hon",
-        "Dhatki":  "Raah mein mil",
+        "Dhatki":  "Raah mein bhera thiyo",
     },
     "Take ramp onto": {
-        "Sindhi":  "Ramp khe pakaro",
+        "Sindhi":  "Ramp te acho",
         "Urdu":    "Ramp par aayein",
-        "Dhatki":  "Ramp pakaro",
+        "Dhatki":  "Ramp te aao",
     },
     "Take exit onto": {
         "Sindhi":  "Exit khe pakaro",
         "Urdu":    "Exit lein",
-        "Dhatki":  "Bahar niklo",
+        "Dhatki":  "Bahar jao",
     },
     "Take fork onto": {
-        "Sindhi":  "Kaanta varo",
+        "Sindhi":  "Kaanta ri taraf vanjo",
         "Urdu":    "Kaante ki taraf jaayein",
-        "Dhatki":  "Kaanto vanj",
+        "Dhatki":  "Kaante ri taraf jao",
     },
     # ── Junctions ───────────────────────────────────────────────
     "Enter roundabout": {
-        "Sindhi":  "Gol chakkar andar",
+        "Sindhi":  "Gol chakkar je andar vanjo",
         "Urdu":    "Gol chakkar mein daakhil hon",
-        "Dhatki":  "Gol chakkar andar",
+        "Dhatki":  "Gol chakkar re andar jao",
     },
     "At end of road, turn": {
-        "Sindhi":  "Sadak khatam, moro",
+        "Sindhi":  "road jo aakhir te gaadi, moro",
         "Urdu":    "Sadak ke aakhir mein muren",
-        "Dhatki":  "Raah khatam, phir",
+        "Dhatki":  "Raste re aakhir main gaadi, phirao",
     },
     # ── Arrival ─────────────────────────────────────────────────
     "Arrive at destination": {
-        "Sindhi":  "Manzil te pahuncha. Safar mukliyo.",
+        "Sindhi":  "Manzil te pahunchi wya. Safar pooro thiyo.",
         "Urdu":    "Manzil par pahunch gaye. Safar mukammal hua.",
-        "Dhatki":  "Thaur te pahuncha. Safar khatam.",
+        "Dhatki":  "manzil te pohche gya. Safar khatam thiyo.",
     },
 }
 # ─────────────────────────────────────────────────────────────────
@@ -181,7 +181,7 @@ PHRASE_BOOK: dict = {
 FRAGILE_SUFFIX: dict = {
     "Sindhi":  "Nazuk maal aahay, ahista halo",
     "Urdu":    "Nazuk maal hai, aahista chalo",
-    "Dhatki":  "Nazuk bojh aahe, ahista vanj",
+    "Dhatki":  "Nazuk bojh hai, aastay halo",
 }
 # ─────────────────────────────────────────────────────────────────
 # gTTS LANGUAGE CODE MAP
