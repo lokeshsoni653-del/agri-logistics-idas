@@ -55,81 +55,82 @@ HAZARD_PHRASES: dict = {
     # Bridge hazards
     "pul budi wai ahe":      "⚠️ The bridge is flooded.",
     "pul doob gaya hai":     "⚠️ The bridge is flooded.",
-    "pul budi gayo hai":     "⚠️ The bridge is flooded.",
-    "pul band ahe":          "⚠️ The bridge is closed — route blocked.",
+    "pul buday gayo hai":     "⚠️ The bridge is flooded.",
+    "pul band ahey":          "⚠️ The bridge is closed — route blocked.",
     "pul band hai":          "⚠️ The bridge is closed — route blocked.",
     # Road blockages
     "sadak bund ahe":        "🚧 The road is blocked ahead.",
     "sadak band hai":        "🚧 The road is blocked ahead.",
-    "raah bund ahe":         "🚧 The road is blocked ahead.",
+    "rasto band hai":         "🚧 The road is blocked ahead.",
     # Weather
     "tez barish ahe":        "🌧️ Driver reports heavy rainfall on route.",
     "tez baarish hai":       "🌧️ Driver reports heavy rainfall on route.",
-    "meh tez aavti ahe":     "🌧️ Driver reports heavy rainfall on route.",
+    "barsat tezz hai":     "🌧️ Driver reports heavy rainfall on route.",
     # Vehicle breakdown
-    "gaadi kharab thii":     "🔧 Vehicle breakdown — driver requires assistance.",
+    "gaadi kharab thi wahi ahay":     "🔧 Vehicle breakdown — driver requires assistance.",
     "gaadi kharab hui hai":  "🔧 Vehicle breakdown — driver requires assistance.",
-    "gaadi kharab thai":     "🔧 Vehicle breakdown — driver requires assistance.",
+    "gaadi kharab thi hai":     "🔧 Vehicle breakdown — driver requires assistance.",
     "gadi kharab ahe":       "🔧 Vehicle breakdown — driver requires assistance.",
     # Cargo spoilage
-    "tamatar kharab thia":   "🍅 Produce spoilage risk — fragile cargo compromised.",
+    "tamatar kharab thi wya":   "🍅 Produce spoilage risk — fragile cargo compromised.",
     "tamatar bigad rahe":    "🍅 Produce spoilage risk — fragile cargo compromised.",
-    "tamatar kharab thai":   "🍅 Produce spoilage risk — fragile cargo compromised.",
+    "tamata kharab thai ae":   "🍅 Produce spoilage risk — fragile cargo compromised.",
     # Traffic
-    "trafik jam ahe":        "🚦 Traffic congestion reported by driver.",
+    "rasto jam ahe":        "🚦 Traffic congestion reported by driver.",
     "trafik jam hai":        "🚦 Traffic congestion reported by driver.",
-    "traffic jam ahe":       "🚦 Traffic congestion reported by driver.",
+    "rasto jam hai":       "🚦 Traffic congestion reported by driver.",
     # Livestock / road hazard
-    "janwar sadak te aahay": "🐄 Livestock on the road — caution advised.",
+    "janwar raste te aahay": "🐄 Livestock on the road — caution advised.",
     "janwar sadak par hai":  "🐄 Livestock on the road — caution advised.",
+    "janwar raste te hai":  "🐄 Livestock on the road — caution advised.",
 }
 
 # ── Corporate English commands → Native dialect translations ────────
 CORPORATE_COMMANDS: dict = {
     "delay tomato pickup by 2 hours": {
-        "Sindhi":  "Tamatar kahn me 2 kalak di dair ahe",
+        "Sindhi":  "Tamatar khahrn me 2 kalak ji dair ahe",
         "Urdu":    "Tamatar uthane mein 2 ghante ki der hai",
-        "Dhatki":  "Tamatar uparan mein 2 kalak ro vilamb hai",
+        "Dhatki":  "Tamata kaharn mein 2 kalak ri dair hai",
     },
     "delay pickup": {
-        "Sindhi":  "Kahn mein dair ahe",
+        "Sindhi":  "Kharn mein dair ahey",
         "Urdu":    "Uthane mein der hai",
-        "Dhatki":  "Uparan mein dair ahe",
+        "Dhatki":  "kahrarn mein dair hai",
     },
     "reroute due to weather": {
-        "Sindhi":  "Mosam kharab ahe, nayo rasto varo",
+        "Sindhi":  "Mosam kharab ahey, nayo rasto vanjo",
         "Urdu":    "Mausam kharab hai, naya rasta lo",
-        "Dhatki":  "Abhaav ro mosam ahe, nayo raah varo",
+        "Dhatki":  "mosam kharab hai, bijo rasto jao",
     },
     "stop and wait": {
-        "Sindhi":  "Rokio ۽ Intezaar karo",
+        "Sindhi":  "Rokio ۽ Intezaar kayo",
         "Urdu":    "Ruko aur intezaar karein",
-        "Dhatki":  "Rokyo ane raaho",
+        "Dhatki":  "roko ayi sabar karo",
     },
     "proceed to delivery": {
         "Sindhi":  "Delivery waari wanjio",
         "Urdu":    "Delivery ki taraf chalein",
-        "Dhatki":  "Delivery taraf vanj",
+        "Dhatki":  "Delivery ri taraf jao",
     },
     "welcome to idas network": {
         "Sindhi":  "IDAS Network mein khush aayo",
         "Urdu":    "IDAS Network mein khush aamdeed",
-        "Dhatki":  "IDAS Network mein aavkaari",
+        "Dhatki":  "IDAS Network mein khushi aao avi",
     },
     "check your cargo": {
-        "Sindhi":  "Pano maal check karo",
+        "Sindhi":  "Panjo maal check karo",
         "Urdu":    "Apna maal check karein",
-        "Dhatki":  "Paano bojh dekho",
+        "Dhatki":  "apro maal joo",
     },
     "estimated arrival in 2 hours": {
-        "Sindhi":  "2 kalak mein pahuncho thhio",
+        "Sindhi":  "2 kalak mein pohchi windas",
         "Urdu":    "2 ghante mein pahunchne ki umeed hai",
-        "Dhatki":  "2 kalak mein pahunchan ri ummid ahe",
+        "Dhatki":  "2 kalak mein ppohche jais ro",
     },
     "take the alternate route": {
-        "Sindhi":  "Bian rasto varo",
+        "Sindhi":  "Biyo rasto vanjo",
         "Urdu":    "Doosra rasta lo",
-        "Dhatki":  "Bian raah varo",
+        "Dhatki":  "Bijay raste jao",
     },
 }
 
@@ -266,10 +267,10 @@ SAFETY_TEXT: dict = {
         ),
         "Sindhi": (
             "⛔  INTEHAIYI KHATRO: Raat + Barish + Nazuk Maal",
-            "Teno khatarnak halat hik waqt gado thia aahin. "
+            "Teno khatarnak halat hik waqt gad thia aahin. "
             "Raftar 50% ghat karo. Hazard lights hinner chalao. "
             "Sadak ji kirri chhad. Barish rukay taan gaadi rokyo. "
-            "Kisi khe overtake na karo.",
+            "Keh khe overtake na karo.",
         ),
         "Urdu": (
             "⛔  انتہائی خطرہ: رات + بارش + نازک مال",
@@ -280,10 +281,10 @@ SAFETY_TEXT: dict = {
         ),
         "Dhatki": (
             "⛔  BAHUT BARO KHATRO: Raat + Meh + Nazuk Bojh",
-            "Teen khatarnak haalat ikthe aahin. "
-            "Chaal 50% hinner ghat karo. Hazard batti hinner jalao. "
+            "Teen khatarnak haalat bhera hai. "
+            "Chaal 50% heran ghat karo. Hazard batti hera jalao. "
             "Sadak ri jhalar chhad. Meh rukay takaar gadi rokyo. "
-            "Kisi ne bhi aagey na niklo.",
+            "Keh kha bhi agya na jao.",
         ),
     },
 
@@ -299,7 +300,7 @@ SAFETY_TEXT: dict = {
             "🛑  KHATARNAK: Giili Sadak + Nazuk Maal",
             "Sadak chikani ahe ۽ maal nazuk ahe. "
             "Raftar 30% ghat karo. Aagey waari gaadi thon 6 second door raho. "
-            "Achanak brake na dabo — tamatar kharab thia ۽ nuksaan thindo.",
+            "Achanak brake na kayo — tamatar kharab thia ۽ nuksaan thindo.",
         ),
         "Urdu": (
             "🛑  خطرناک: گیلی سڑک + نازک مال",
@@ -309,9 +310,9 @@ SAFETY_TEXT: dict = {
         ),
         "Dhatki": (
             "🛑  KHATARNAK: Gehli Sadak + Nazuk Bojh",
-            "Sadak geli ahe ane bojh nazuk ahe. "
-            "Chaal 30% ghat karo. Aagey ri gadi thon 6 second dur raho. "
-            "Achano rokna na karo — tamatar kharab ane nuksaan thavando.",
+            "Raste main pani hai ayi bojh nazuk ahe. "
+            "Chaal 30% ghat karo. Agay ri gadi kha 6 second dur raho. "
+            "Ochto roko na karo — tamatar kharab ayi nuksaan the jasay.",
         ),
     },
 
@@ -326,7 +327,7 @@ SAFETY_TEXT: dict = {
         "Sindhi": (
             "🍅  KHABARDAR: Nazuk Maal Gadi Mein Aahay",
             "Tamatar ۽ nazuk maal gadi mein aahay. "
-            "Mod waray ahista brake dabo. Achanak tez na thio. "
+            "Mod waray ahista brake kayo. Achanak tez na thio. "
             "Speed bump slow karke langho — tamatar zaya na thia.",
         ),
         "Urdu": (
@@ -337,9 +338,9 @@ SAFETY_TEXT: dict = {
         ),
         "Dhatki": (
             "🍅  KHABARDAR: Nazuk Bojh Gadi Mein Aahay",
-            "Tamatar ane nazuk bojh gadi mein aahay. "
-            "Kono waray ahista rokna karo. Achano tez na thao. "
-            "Speed bump dheerey langho — tamatar zaya na thia.",
+            "Tamatar ane nazuk bojh gadi mein hai. "
+            "morr te ahista gadi halaya. Achanak tez na karya. "
+            "Speed bump te ahista thiya — tamatar zaya na thia.",
         ),
     },
 
@@ -353,8 +354,8 @@ SAFETY_TEXT: dict = {
         ),
         "Sindhi": (
             "🌧️  SANJIDA: Raat + Barish — Ghat Dikhai",
-            "Raat ahe ۽ barish payi ahe. "
-            "Fog lights hinner chalao. Hik lane wari sadak te overtake na karo. "
+            "Raat ahe ۽ barish payi ahey. "
+            "Fog lights hiyar halaoo. Hik lane wari sadak te overtake na karo. "
             "Bina batti gadi ۽ janwaron thon khabardar raho.",
         ),
         "Urdu": (
@@ -366,7 +367,7 @@ SAFETY_TEXT: dict = {
         "Dhatki": (
             "🌧️  GAMBHIR: Raat + Meh — Thori Dikh",
             "Raat ahe ane meh aavti ahe. "
-            "Fog batti hinner jalao. Hik lane wari raah te aagey na niklo. "
+            "Fog batti hera jalao. Hik lane wari raah te aagya na jao. "
             "Bina batti gadi ane janwaron ro khayal rakho.",
         ),
     },
@@ -381,7 +382,7 @@ SAFETY_TEXT: dict = {
         "Sindhi": (
             "🌙  RAAT JO USOOL LAAGO",
             "Sooraj lahyo ahe. Headlights jalao. "
-            "Ḍahar ji sadak te janwaron thon cheti raho. "
+            "goth ji sadak te janwaron thon cheti raho. "
             "Samhni aaindi gaadi waste lights dim karo.",
         ),
         "Urdu": (
@@ -392,9 +393,9 @@ SAFETY_TEXT: dict = {
         ),
         "Dhatki": (
             "🌙  RAAT RO DHANG LAAGO",
-            "Sooraj dhabbo thhiyo. Headlights jalao. "
-            "Ḍahar ri raah waaro janwaron thon sujan raho. "
-            "Samhne aavti gadi waste lights dim karo.",
+            "Sooraj hetho the pyo. Headlights halao. "
+            "goth ri raah waaro janwaron ro dhiyan rakho. "
+            "Samu aati gadi waste lights dim karo.",
         ),
     },
 
@@ -420,9 +421,9 @@ SAFETY_TEXT: dict = {
         ),
         "Dhatki": (
             "🌦️  AAGEY GEHLI RAAH",
-            "Raah te meh aavti ahe. "
-            "Gehli raah te rokna distance vaddhu thayo ahe. "
-            "Ahista vanj ane paani bharil raah thon pario raho.",
+            "Raah te meh barsat thi hai. "
+            "Gilay raste te break thoro pehri harya. "
+            "Ahista jaya ane paani bharil raste kha paray rahya.",
         ),
     },
 
@@ -447,9 +448,9 @@ SAFETY_TEXT: dict = {
         ),
         "Dhatki": (
             "ℹ️  SADHAARAN HALAT",
-            "Raah saaf ahe. "
-            "Sadhaaran chalo ane speed limit manno. "
-            "Lambo safar mein paani pindo raho.",
+            "Raah saaf hai. "
+            "Aaram sa halo ayi speed limit ghat rakho. "
+            "waday safar mein paani pitaa raho.",
         ),
     },
 }
