@@ -681,62 +681,106 @@
 
     // Translations for Auto Replies
         // Comprehensive Multilingual Intent Dictionary
-    const autoReplies = {
-        "hello": {
-            "English": "👋 IDAS DISPATCH: Welcome TRK-119! Connected to IDAS Network. How can dispatch assist your transit today?",
-            "Sindhi":  "👋 IDAS DISPATCH: Khush aayo TRK-119! IDAS Network saan jura ahyo. Kihn madad kayo?",
-            "Urdu":    "👋 IDAS DISPATCH: Khush aamdeed TRK-119! IDAS Network se jur gaye hain. Kaise madad karein?",
-            "Dhatki":  "👋 IDAS DISPATCH: Aavkaari TRK-119! IDAS Network saan jura aahin. Kihn madad karo?"
-        },
-        "route": {
-            "English": "🗺️ ROUTE DISPATCH: Active corridor is Mithi → Hyderabad (162.5 km) via National Highway 8. Current position: ~56.9 km covered near Digri.",
-            "Sindhi":  "🗺️ RASTO DISPATCH: Tuhajo rasto Mithi → Hyderabad (162.5 km) National Highway 8 te ahe. Digri wath 56.9 km puras thia ahe.",
-            "Urdu":    "🗺️ RASTA DISPATCH: Aap ka rasta Mithi → Hyderabad (162.5 km) National Highway 8 par hai. Digri ke paas 56.9 km mukammal ho gaye hain.",
-            "Dhatki":  "🗺️ RAAH DISPATCH: Taaro raah Mithi → Hyderabad (162.5 km) National Highway 8 te hai. Digri paas 56.9 km pura thia aahin."
-        },
-        "turn": {
-            "English": "🧭 DIRECTION ADVISORY: Turn left at the upcoming junction onto National Highway 8. Follow the green route line on your navigation map.",
-            "Sindhi":  "🧭 DIRECTION ADVISORY: Agte junction te khabbe moro National Highway 8 te. Map te green line rasto halo.",
-            "Urdu":    "🧭 DIRECTION ADVISORY: Aage junction par baayein muren National Highway 8 par. Map par sabz line par chalein.",
-            "Dhatki":  "🧭 DIRECTION ADVISORY: Aagya junction te khabey phir National Highway 8 te. Map te green line te vanj."
-        },
-        "speed": {
-            "English": "⚡ SPEED ADVISORY: Current recommended speed is 42 km/h (Limit: 50 km/h) due to rain and night driving conditions.",
-            "Sindhi":  "⚡ RAFTAR ADVISORY: Barish aur raat ji wajah saan recommended raftar 42 km/h ahe. Tezi na kayo.",
-            "Urdu":    "⚡ RAFTAR ADVISORY: Baarish aur raat ki wajah se tajweez karda raftaar 42 km/h hai. Tez na chalein.",
-            "Dhatki":  "⚡ RAFTAR ADVISORY: Barish ayi raat ri wajah saan recommended raftar 42 km/h hai."
-        },
-        "eta": {
-            "English": "⏱️ ETA DISPATCH: Estimated time remaining to Hyderabad is ~2 hours 10 minutes (105.6 km remaining).",
-            "Sindhi":  "⏱️ ETA DISPATCH: Hyderabad pohchan mein lagbhag 2 kalak 10 minute baaki aahin (105.6 km baaki).",
-            "Urdu":    "⏱️ ETA DISPATCH: Hyderabad pahunche mein taqreeban 2 ghante 10 minute baaqi hain (105.6 km baaqi).",
-            "Dhatki":  "⏱️ ETA DISPATCH: Hyderabad ppohche mein lagbhag 2 kalak 10 minute baaki aahin."
-        },
-        "cargo": {
-            "English": "🍅 CARGO ADVISORY: Fragile Tomato load detected. Temperature: 19.2°C. Avoid harsh braking or sudden maneuvers.",
-            "Sindhi":  "🍅 MAAL ADVISORY: Tamatar nazuk maal ahe. Temperature: 19.2°C. Achanak brake na kayo.",
-            "Urdu":    "🍅 MAAL ADVISORY: Tamatar nazuk maal hai. Temperature: 19.2°C. Achanak brake mat lagayein.",
-            "Dhatki":  "🍅 MAAL ADVISORY: Tamatar nazuk maal hai. Temperature: 19.2°C. Achanak brake na karo."
-        },
-        "weather": {
-            "English": "🌧️ WEATHER ALERT: Rain reported on Mithi-Hyderabad highway segment. Road friction μ = 0.38 (Slippery). Keep hazard lights ON.",
-            "Sindhi":  "🌧️ MOSAM ALERT: Raste te barish ahe. Sadak chikani ahe (μ = 0.38). Hazard lights chalao.",
-            "Urdu":    "🌧️ MAUSAM ALERT: Raaste par baarish hai. Sadak phislan wali hai (μ = 0.38). Hazard lights chalu rakhein.",
-            "Dhatki":  "🌧️ MOSAM ALERT: Raah te barish hai. Sadak chikani hai. Hazard lights chalao."
-        },
-        "hazard": {
-            "English": "🚨 HIGH-PRIORITY ALERT: Hazard logged for TRK-119. Alternate routing via Diplo calculated. Dispatch monitoring.",
-            "Sindhi":  "🚨 HIGH-PRIORITY ALERT: TRK-119 khatro register thia ahe. Diplo rasto nayo alert tayar ahe.",
-            "Urdu":    "🚨 HIGH-PRIORITY ALERT: TRK-119 khatra register ho gaya hai. Diplo se naya rasta tayyar hai.",
-            "Dhatki":  "🚨 HIGH-PRIORITY ALERT: TRK-119 khatro register thia hai. Diplo raah nayo alert tayar hai."
-        },
-        "default": {
-            "English": "📡 DISPATCH ASSISTANT: Message logged for TRK-119. Active route: Mithi → Hyderabad (35% complete). Vehicle speed: 42 km/h. Dispatch is monitoring your safety.",
-            "Sindhi":  "📡 DISPATCH ASSISTANT: TRK-119 paighaam record thia. Rasto: Mithi → Hyderabad (35% mukammal). Raftar: 42 km/h. Corporate tuhaji safety nigrani karay ahe.",
-            "Urdu":    "📡 DISPATCH ASSISTANT: TRK-119 paigham record ho gaya. Rasta: Mithi → Hyderabad (35% mukammal). Raftar: 42 km/h. Corporate aap ki safety nigrani kar raha hai.",
-            "Dhatki":  "📡 DISPATCH ASSISTANT: TRK-119 sandesh record thia. Raah: Mithi → Hyderabad (35% mukammal). Raftar: 42 km/h. Corporate taari safety nigrani kare ahe."
+        function generateSmartReply(userText) {
+        const val = userText.toLowerCase().trim();
+        const lang = state.lang;
+        const covered = (162.5 * state.progressPct / 100).toFixed(1);
+        const remKm = (162.5 - covered).toFixed(1);
+        const remMin = Math.round(200 * (100 - state.progressPct) / 100);
+        const hrs = Math.floor(remMin / 60), mins = remMin % 60;
+        
+        let spd = "72 km/h";
+        if (state.weather === 'Rain' && state.time === 'Night') spd = "42 km/h (Limit: 50)";
+        else if (state.weather === 'Rain' || state.time === 'Night') spd = "58 km/h (Limit: 60)";
+
+        // 1. Route / Path / Location Queries
+        if (/route|rasto|raah|give|where|path|map|destination|way|kahan|kera|location|pos/i.test(val)) {
+            return {
+                "English": `🗺️ ROUTE DISPATCH: Active corridor is Mithi → Hyderabad (162.5 km) via National Highway 8. Current location: ${covered} km covered near Digri. ${remKm} km remaining.`,
+                "Sindhi":  `🗺️ RASTO DISPATCH: Tuhajo rasto Mithi → Hyderabad (162.5 km) National Highway 8 te ahe. Maujuda jagah: ${covered} km Digri wath puras. ${remKm} km baaki ahe.`,
+                "Urdu":    `🗺️ RASTA DISPATCH: Aap ka rasta Mithi → Hyderabad (162.5 km) National Highway 8 par hai. Maujuda maqam: ${covered} km Digri ke paas. ${remKm} km baaqi hain.`,
+                "Dhatki":  `🗺️ RAAH DISPATCH: Taaro raah Mithi → Hyderabad (162.5 km) National Highway 8 te hai. Maujuda thikano: ${covered} km Digri paas. ${remKm} km baaki aahin.`
+            };
         }
-    };
+
+        // 2. Turn / Direction Queries
+        if (/mura|muri|mor|side|direction|kayi|turn|left|right|wanjo|vanjo|khabbe|saje/i.test(val)) {
+            return {
+                "English": `🧭 DIRECTION ADVISORY: Turn left at the upcoming junction onto National Highway 8. Follow the green route line on your navigation map.`,
+                "Sindhi":  `🧭 DIRECTION ADVISORY: Agte junction te khabbe moro National Highway 8 te. Map te green line rasto halo.`,
+                "Urdu":    `🧭 DIRECTION ADVISORY: Aage junction par baayein muren National Highway 8 par. Map par sabz line par chalein.`,
+                "Dhatki":  `🧭 DIRECTION ADVISORY: Aagya junction te khabey phir National Highway 8 te. Map te green line te vanj.`
+            };
+        }
+
+        // 3. Speed / Raftar Queries
+        if (/speed|fast|slow|raftar|tez|limit|chalo/i.test(val)) {
+            return {
+                "English": `⚡ SPEED ADVISORY: Current recommended speed is ${spd} due to ${state.weather} weather and ${state.time} conditions. Maintain safe braking distance.`,
+                "Sindhi":  `⚡ RAFTAR ADVISORY: Recommended raftar ${spd} ahe (${state.weather} weather, ${state.time}). Tezi na kayo, safe doori rakho.`,
+                "Urdu":    `⚡ RAFTAR ADVISORY: Tajweez karda raftaar ${spd} hai (${state.weather} mausam, ${state.time}). Tez na chalein, mehfooz fasla rakhein.`,
+                "Dhatki":  `⚡ RAFTAR ADVISORY: Recommended raftar ${spd} hai (${state.weather} weather, ${state.time}). Tezi na karo.`
+            };
+        }
+
+        // 4. Time / ETA / Distance Queries
+        if (/time|eta|distance|km|duration|pohchan|wqt|ghante|when|reach/i.test(val)) {
+            return {
+                "English": `⏱️ ETA DISPATCH: Estimated time remaining to Hyderabad is ~${hrs}h ${mins}m (${remKm} km remaining). Drive safely!`,
+                "Sindhi":  `⏱️ ETA DISPATCH: Hyderabad pohchan mein lagbhag ${hrs} kalak ${mins} minute baaki aahin (${remKm} km baaki). Salaamti halo!`,
+                "Urdu":    `⏱️ ETA DISPATCH: Hyderabad pahunche mein taqreeban ${hrs} ghante ${mins} minute baaqi hain (${remKm} km baaqi). Salamti se chalein!`,
+                "Dhatki":  `⏱️ ETA DISPATCH: Hyderabad ppohche mein lagbhag ${hrs} kalak ${mins} minute baaki aahin (${remKm} km baaki). Salaamti vanj!`
+            };
+        }
+
+        // 5. Cargo / Tomatoes / Load Queries
+        if (/maal|tamatar|cargo|load|gadi|tomato|produce|fragile/i.test(val)) {
+            return {
+                "English": `🍅 CARGO ADVISORY: Active cargo: ${state.cargo}. Temperature: 19.2°C (Refrigerated). Avoid harsh braking or sudden maneuvers.`,
+                "Sindhi":  `🍅 MAAL ADVISORY: Gadi mein ${state.cargo} maal ahe. Temp: 19.2°C. Achanak brake na kayo.`,
+                "Urdu":    `🍅 MAAL ADVISORY: Gadi mein ${state.cargo} maal hai. Temp: 19.2°C. Achanak brake mat lagayein.`,
+                "Dhatki":  `🍅 MAAL ADVISORY: Gadi mein ${state.cargo} maal hai. Temp: 19.2°C. Achanak brake na karo.`
+            };
+        }
+
+        // 6. Weather / Rain / Night Queries
+        if (/weather|rain|barish|mosam|night|raat|dark|slippery/i.test(val)) {
+            return {
+                "English": `🌧️ WEATHER ALERT: Current weather: ${state.weather} (${state.time}). Road friction μ = 0.38 (Wet). Keep hazard lights ON and reduce speed.`,
+                "Sindhi":  `🌧️ MOSAM ALERT: Maujuda mosam: ${state.weather} (${state.time}). Sadak chikani ahe. Hazard lights chalao.`,
+                "Urdu":    `🌧️ MAUSAM ALERT: Maujuda mausam: ${state.weather} (${state.time}). Sadak phislan wali hai. Hazard lights chalu rakhein.`,
+                "Dhatki":  `🌧️ MOSAM ALERT: Maujuda mosam: ${state.weather} (${state.time}). Sadak chikani hai. Hazard lights chalao.`
+            };
+        }
+
+        // 7. Greetings
+        if (/hello|hi|salam|aayo|kiin|kean|welcome|khush/i.test(val)) {
+            return {
+                "English": `👋 IDAS DISPATCH: Hello TRK-119! Connected to IDAS Network on Mithi → Hyderabad route (${state.progressPct}% complete). How can dispatch assist?`,
+                "Sindhi":  `👋 IDAS DISPATCH: Khush aayo TRK-119! Mithi → Hyderabad rasto (${state.progressPct}% mukammal). Kihn madad kayo?`,
+                "Urdu":    `👋 IDAS DISPATCH: Khush aamdeed TRK-119! Mithi → Hyderabad rasta (${state.progressPct}% mukammal). Kaise madad karein?`,
+                "Dhatki":  `👋 IDAS DISPATCH: Aavkaari TRK-119! Mithi → Hyderabad raah (${state.progressPct}% mukammal). Kihn madad karo?`
+            };
+        }
+
+        // 8. Hazard / Emergency
+        if (/kharab|breakdown|help|madad|emergency|accident|jam|janwar|hazard|khatro/i.test(val)) {
+            return {
+                "English": `🚨 HIGH-PRIORITY ALERT: Hazard logged for TRK-119 near ${covered} km. Alternate routing via Diplo calculated. Dispatch monitoring.`,
+                "Sindhi":  `🚨 HIGH-PRIORITY ALERT: TRK-119 ${covered} km wath khatro register thia. Diplo rasto nayo alert tayar ahe.`,
+                "Urdu":    `🚨 HIGH-PRIORITY ALERT: TRK-119 ${covered} km ke paas khatra register ho gaya. Diplo se naya rasta tayyar hai.`,
+                "Dhatki":  `🚨 HIGH-PRIORITY ALERT: TRK-119 ${covered} km paas khatro register thia. Diplo raah nayo alert tayar hai.`
+            };
+        }
+
+        // 9. Intelligent Dynamic Context Fallback
+        return {
+            "English": `📡 DISPATCH ASSISTANT: Message logged for TRK-119. Active route: Mithi → Hyderabad (${state.progressPct}% complete, ${covered} km). Speed: ${spd}. Dispatch monitoring safety.`,
+            "Sindhi":  `📡 DISPATCH ASSISTANT: TRK-119 paighaam record thia. Rasto: Mithi → Hyderabad (${state.progressPct}% mukammal, ${covered} km). Raftar: ${spd}. Corporate tuhaji safety nigrani karay ahe.`,
+            "Urdu":    `📡 DISPATCH ASSISTANT: TRK-119 paigham record ho gaya. Rasta: Mithi → Hyderabad (${state.progressPct}% mukammal, ${covered} km). Raftar: ${spd}. Corporate aap ki safety nigrani kar raha hai.`,
+            "Dhatki":  `📡 DISPATCH ASSISTANT: TRK-119 sandesh record thia. Raah: Mithi → Hyderabad (${state.progressPct}% mukammal, ${covered} km). Raftar: ${spd}. Corporate taari safety nigrani kare ahe.`
+        };
+    }
 
     const safetyTexts = {
         "extreme": {
@@ -815,14 +859,14 @@
     }
 
     // Render Chat
-    function renderChat() {
+        function renderChat() {
         const boxCorp = document.getElementById('corp-chat-box');
         const boxDrv  = document.getElementById('drv-chat-box');
         
         let htmlCorp = '', htmlDrv = '';
         state.messages.forEach(msg => {
             const isDrv = msg.role === 'driver';
-            const textDrv = isDrv ? msg.original : (autoReplies[msg.cat]?.[state.lang] || msg.english);
+            const textDrv = isDrv ? msg.original : (msg.replyObj ? msg.replyObj[state.lang] : msg.english);
             
             htmlCorp += `
                 <div class="chat-row ${isDrv ? 'driver' : 'corporate'}">
@@ -861,35 +905,17 @@
         renderChat();
     }
 
-        function sendDrvMessage(e) {
+            function sendDrvMessage(e) {
         e.preventDefault();
         const inp = document.getElementById('drv-chat-input');
         const val = inp.value.trim();
         if (!val) return;
 
-        const lowVal = val.toLowerCase();
-        let cat = 'default';
-
-        if (/route|rasto|raah|give|where|path|map|destination|way/i.test(lowVal)) {
-            cat = 'route';
-        } else if (/mura|muri|mor|side|direction|kahan|kayi|turn|left|right|wanjo|vanjo/i.test(lowVal)) {
-            cat = 'turn';
-        } else if (/speed|fast|slow|raftar|tez|limit/i.test(lowVal)) {
-            cat = 'speed';
-        } else if (/time|eta|distance|km|duration|pohchan|wqt|ghante|when/i.test(lowVal)) {
-            cat = 'eta';
-        } else if (/maal|tamatar|cargo|load|gadi|tomato|produce/i.test(lowVal)) {
-            cat = 'cargo';
-        } else if (/weather|rain|barish|mosam|night|raat|dark/i.test(lowVal)) {
-            cat = 'weather';
-        } else if (/hello|hi|salam|aayo|kiin|kean|welcome/i.test(lowVal)) {
-            cat = 'hello';
-        } else if (/kharab|breakdown|help|madad|emergency|accident|jam|janwar|hazard/i.test(lowVal)) {
-            cat = 'hazard';
-        }
-
-        state.messages.push({ role: 'driver', original: val, english: cat === 'hazard' ? '🚨 HAZARD REPORTED BY DRIVER' : val });
-        state.messages.push({ role: 'corporate', english: autoReplies[cat].English, cat: cat });
+        const smartReply = generateSmartReply(val);
+        const isHazard = /kharab|breakdown|help|madad|emergency|accident|jam|janwar|hazard|khatro/i.test(val);
+        
+        state.messages.push({ role: 'driver', original: val, english: isHazard ? '🚨 HAZARD REPORTED BY DRIVER: ' + val : val });
+        state.messages.push({ role: 'corporate', english: smartReply.English, replyObj: smartReply });
         
         inp.value = '';
         renderChat();
