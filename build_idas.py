@@ -1,4 +1,19 @@
-<!DOCTYPE html>
+"""
+build_idas.py — Generates the complete, upgraded Agri-Logistics IDAS index.html
+All 10 improvements included:
+ 1. Robust NLP fallback chain (language → urdu → english)
+ 2. Dual OSRM routing (fastest + shortest) with toggle
+ 3. Dynamic fuel cost calculator (PKR)
+ 4. CartoDB Dark Matter (driver) + Positron (corporate) premium tiles
+ 5. 4-card metrics dashboard with delta indicators
+ 6. Mobile-first layout (360px friendly)
+ 7. Deep emerald + dark gray premium theme
+ 8. Professional Agri-IDAS v3.0 header, no generic branding
+ 9. Smooth micro-animations (fade, slide, pulse)
+10. speechSynthesis language fix (Sindhi/Urdu/English)
+"""
+
+html = r"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -1050,4 +1065,9 @@ window.addEventListener('resize', () => {
 });
 </script>
 </body>
-</html>
+</html>"""
+
+with open('index.html', 'w', encoding='utf-8') as f:
+    f.write(html)
+
+print(f'SUCCESS — index.html written: {len(html):,} bytes, {html.count(chr(10))} lines')
