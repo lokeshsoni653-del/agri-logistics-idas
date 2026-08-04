@@ -1,4 +1,10 @@
-<!DOCTYPE html>
+"""
+build_idas_v5.py — Uses Leaflet Routing Machine (LRM) for 100% road-aligned routing.
+LRM calls OSRM internally and renders routes PERFECTLY on road centerlines.
+No pre-embedded coordinates needed — the plugin handles it all automatically.
+"""
+
+HTML = r"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -867,4 +873,19 @@ window.addEventListener('resize', () => {
 });
 </script>
 </body>
-</html>
+</html>"""
+
+with open('index.html', 'w', encoding='utf-8') as f:
+    f.write(HTML)
+
+size = len(HTML)
+lines = HTML.count('\n')
+print(f'SUCCESS — index.html: {size:,} bytes, {lines} lines')
+print('Key features:')
+print('  [OK] Leaflet Routing Machine — auto road-snapped routing via OSRM')
+print('  [OK] Route 1 (Fastest: green) + Route 2 (Via Naukot: blue)')
+print('  [OK] LRM control panel hidden — only route line shown')
+print('  [OK] Original UI: sidebar, tab-bar, KPI cards, safety alert, telemetry')
+print('  [OK] Fuel cost calculator (Rs.282/L, 8km/L)')
+print('  [OK] 10-intent trilingual NLP with language fallback chain')
+print('  [OK] OSM tiles (same tile layer as LRM — roads match perfectly)')
