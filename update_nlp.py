@@ -6,9 +6,9 @@ new_replies = '''    // Comprehensive Multilingual Intent Dictionary
     const autoReplies = {
         "hello": {
             "English": "👋 IDAS DISPATCH: Welcome TRK-119! Connected to IDAS Network. How can dispatch assist your transit today?",
-            "Sindhi":  "👋 IDAS DISPATCH: Khush aayo TRK-119! IDAS Network saan jura ahyo. Kihn madad kayo?",
+            "Sindhi":  "👋 IDAS DISPATCH: Khush aayo TRK-119! IDAS Network saan jura ahyo. Kihn madad kaya?",
             "Urdu":    "👋 IDAS DISPATCH: Khush aamdeed TRK-119! IDAS Network se jur gaye hain. Kaise madad karein?",
-            "Dhatki":  "👋 IDAS DISPATCH: Aavkaari TRK-119! IDAS Network saan jura aahin. Kihn madad karo?"
+            "Dhatki":  "👋 IDAS DISPATCH: Aavkaari TRK-119! IDAS Network saan jura aao. Kihn madad kara?"
         },
         "route": {
             "English": "🗺️ ROUTE DISPATCH: Active corridor is Mithi → Hyderabad (162.5 km) via National Highway 8. Current position: ~56.9 km covered near Digri.",
@@ -25,14 +25,14 @@ new_replies = '''    // Comprehensive Multilingual Intent Dictionary
         "speed": {
             "English": "⚡ SPEED ADVISORY: Current recommended speed is 42 km/h (Limit: 50 km/h) due to rain and night driving conditions.",
             "Sindhi":  "⚡ RAFTAR ADVISORY: Barish aur raat ji wajah saan recommended raftar 42 km/h ahe. Tezi na kayo.",
-            "Urdu":    "⚡ RAFTAR ADVISORY: Baarish aur raat ki wajah se tajweez karda raftaar 42 km/h hai. Tez na chalein.",
+            "Urdu":    "⚡ RAFTAR ADVISORY: Baarish aur raat ki wajah se chalane ki raftaar 42 km/h hai. Tez na chalein.",
             "Dhatki":  "⚡ RAFTAR ADVISORY: Barish ayi raat ri wajah saan recommended raftar 42 km/h hai."
         },
         "eta": {
             "English": "⏱️ ETA DISPATCH: Estimated time remaining to Hyderabad is ~2 hours 10 minutes (105.6 km remaining).",
             "Sindhi":  "⏱️ ETA DISPATCH: Hyderabad pohchan mein lagbhag 2 kalak 10 minute baaki aahin (105.6 km baaki).",
             "Urdu":    "⏱️ ETA DISPATCH: Hyderabad pahunche mein taqreeban 2 ghante 10 minute baaqi hain (105.6 km baaqi).",
-            "Dhatki":  "⏱️ ETA DISPATCH: Hyderabad ppohche mein lagbhag 2 kalak 10 minute baaki aahin."
+            "Dhatki":  "⏱️ ETA DISPATCH: Hyderabad ppohche mein andazan 2 kalak 10 minute baaki aahin."
         },
         "cargo": {
             "English": "🍅 CARGO ADVISORY: Fragile Tomato load detected. Temperature: 19.2°C. Avoid harsh braking or sudden maneuvers.",

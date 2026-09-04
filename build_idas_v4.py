@@ -917,7 +917,7 @@ function playAudioGuidance() {
   const msgs = {
     Sindhi:  'IDAS Alert TRK-119 laye. National Highway 8 te barish. Raftar ghat karo. Salaamti saan halo.',
     Urdu:    'IDAS Alert Truck 119. National Highway 8 par baarish. Raftar ghatayein. Salamti se chalein.',
-    Dhatki:  'IDAS Alert TRK-119. NH-8 te barish. Raftar ghat karo. Salaamti vanj.',
+    Dhatki:  'IDAS Alert TRK-119. NH-8 te barish. Raftar ghat karo. aaram sa jao.',
     English: 'IDAS Alert for Truck 119. Rain on National Highway 8. Reduce speed. Drive safely.'
   };
   const utt = new SpeechSynthesisUtterance(msgs[state.lang]||msgs.English);

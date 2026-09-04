@@ -20,7 +20,7 @@ smart_reply_code = '''    function generateSmartReply(userText) {
                 "English": `🗺️ ROUTE DISPATCH: Active corridor is Mithi → Hyderabad (162.5 km) via National Highway 8. Current location: ${covered} km covered near Digri. ${remKm} km remaining.`,
                 "Sindhi":  `🗺️ RASTO DISPATCH: Tuhajo rasto Mithi → Hyderabad (162.5 km) National Highway 8 te ahe. Maujuda jagah: ${covered} km Digri wath puras. ${remKm} km baaki ahe.`,
                 "Urdu":    `🗺️ RASTA DISPATCH: Aap ka rasta Mithi → Hyderabad (162.5 km) National Highway 8 par hai. Maujuda maqam: ${covered} km Digri ke paas. ${remKm} km baaqi hain.`,
-                "Dhatki":  `🗺️ RAAH DISPATCH: Taaro raah Mithi → Hyderabad (162.5 km) National Highway 8 te hai. Maujuda thikano: ${covered} km Digri paas. ${remKm} km baaki aahin.`
+                "Dhatki":  `🗺️ RAAH DISPATCH: awayo rasto Mithi → Hyderabad (162.5 km) National Highway 8 te hai. Maujuda thikano: ${covered} km Digri paas. ${remKm} km baaki aahin.`
             };
         }
 
