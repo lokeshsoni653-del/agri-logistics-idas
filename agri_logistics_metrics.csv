@@ -1,0 +1,9 @@
+route_id,route_name,origin_lat,origin_lon,dest_lat,dest_lon,haversine_dist_km,osrm_road_dist_km,distance_delta_km,haversine_error_pct,estimated_duration_min,osrm_api_latency_ms
+R01,Mithi Farm A to Mithi Market,24.7436,69.8,24.731,69.795,1.49,1.99,0.5,25.01,3.5,385.5
+R02,Mithi Depot to Naukot Junction,24.7436,69.7961,24.858,69.5011,32.38,38.43,6.05,15.74,38.2,365.4
+R03,Naukot Belt to Digri Market,24.858,69.5011,25.1023,69.0125,56.24,75.04,18.8,25.05,83.7,363.2
+R04,Digri Tomato Belt to Matli Hub,25.1023,69.0125,25.1378,68.9145,10.63,14.07,3.44,24.47,23.1,369.4
+R05,Matli Market to Hyderabad Processing Hub,25.1378,68.9145,25.396,68.3578,62.91,70.01,7.1,10.13,64.9,412.9
+R06,Mithi to Hyderabad Full Corridor (NH-8),24.7436,69.7961,25.396,68.3578,162.01,184.14,22.13,12.02,170.9,344.5
+R07,Diplo Pastoral Route to Mithi Market,24.4667,69.5833,24.7436,69.7961,37.56,40.98,3.42,8.34,38.5,374.0
+R08,Tando Ghulam Ali to Tando Jam SAU Hub,25.1225,68.8876,25.4285,68.5365,49.03,58.21,9.18,15.77,57.0,347.2

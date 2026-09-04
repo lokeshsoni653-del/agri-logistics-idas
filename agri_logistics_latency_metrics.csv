@@ -1,0 +1,9 @@
+prompt_id,language,intent_category,input_text,nlp_classification_ms,tts_synthesis_ms,total_latency_ms
+P01,Dhatki,route,give me my route,0.0038,740.97,740.98
+P02,Dhatki,turn,humai kayi side mura,0.0163,653.51,653.53
+P03,Sindhi,route,rasto dasso Mithi thon Hyderabad,0.01,703.99,704.0
+P04,Sindhi,speed,tamatar nazuk maal ahe raftar ketri rakhan,0.0155,731.17,731.19
+P05,Urdu,default,rasta batao kitna distance baqi hai,0.0172,746.45,746.47
+P06,Urdu,speed,baarish ho rahi hai speed limit kia hai,0.0167,1237.59,1237.61
+P07,English,route,give me estimated time of arrival,0.0092,806.1,806.11
+P08,Dhatki,hazard,gadi kharab thia ahe madad mokh,0.015,907.05,907.06
