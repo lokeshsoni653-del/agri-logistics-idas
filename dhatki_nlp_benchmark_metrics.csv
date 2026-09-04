@@ -1,0 +1,9 @@
+test_id,intent_class,dhatki_input,semantic_gloss,nlp_parse_mean_ms,tts_synthesis_mean_ms,end_to_end_mean_ms,end_to_end_p95_ms,realtime_viable
+DH_01,ROUTE_GUIDANCE,give me my route to hyderabad hub,Request corridor guidance,0.0013,739.77,739.77,759.32,True
+DH_02,MANEUVER_TURN,humai kayi side mura agte junction te,Turn direction inquiry,0.0021,658.57,658.58,672.64,True
+DH_03,SPEED_REGULATION,raftar ketri rakhani ahe raat mein,Speed limit check under night,0.0029,732.46,732.46,750.05,True
+DH_04,CARGO_STABILIZATION,tamatar nazuk maal ahe gadi mein dhyan rakh,Fragile produce protection notice,0.0037,705.67,705.68,722.1,True
+DH_05,WEATHER_HAZARD,sadak te barish ahe sadak chikani thia,Precipitation & surface friction alert,0.0044,749.22,749.22,766.2,True
+DH_06,EMERGENCY_DISPATCH,gadi kharab thia ahe raste te madad mokh,Breakdown emergency distress call,0.0051,908.63,908.64,930.55,True
+DH_07,FUEL_STATION,aglo petrol pump kahan ahe diesel mukam,Fuel exhaustion warning,0.006,682.55,682.55,700.23,True
+DH_08,ROUTE_GUIDANCE,hyderabad mandi ketre waqt mein pohchan,Arrival ETA forecast request,0.0015,806.47,806.47,827.91,True

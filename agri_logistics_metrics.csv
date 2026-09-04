@@ -1,9 +1,9 @@
-route_id,route_name,origin_lat,origin_lon,dest_lat,dest_lon,haversine_dist_km,osrm_road_dist_km,distance_delta_km,haversine_error_pct,estimated_duration_min,osrm_api_latency_ms
-R01,Mithi Farm A to Mithi Market,24.7436,69.8,24.731,69.795,1.49,1.99,0.5,25.01,3.5,385.5
-R02,Mithi Depot to Naukot Junction,24.7436,69.7961,24.858,69.5011,32.38,38.43,6.05,15.74,38.2,365.4
-R03,Naukot Belt to Digri Market,24.858,69.5011,25.1023,69.0125,56.24,75.04,18.8,25.05,83.7,363.2
-R04,Digri Tomato Belt to Matli Hub,25.1023,69.0125,25.1378,68.9145,10.63,14.07,3.44,24.47,23.1,369.4
-R05,Matli Market to Hyderabad Processing Hub,25.1378,68.9145,25.396,68.3578,62.91,70.01,7.1,10.13,64.9,412.9
-R06,Mithi to Hyderabad Full Corridor (NH-8),24.7436,69.7961,25.396,68.3578,162.01,184.14,22.13,12.02,170.9,344.5
-R07,Diplo Pastoral Route to Mithi Market,24.4667,69.5833,24.7436,69.7961,37.56,40.98,3.42,8.34,38.5,374.0
-R08,Tando Ghulam Ali to Tando Jam SAU Hub,25.1225,68.8876,25.4285,68.5365,49.03,58.21,9.18,15.77,57.0,347.2
+route_id,route_name,primary_cargo,haversine_dist_km,osrm_road_dist_km,distance_underest_km,error_percentage,haversine_est_time_min,osrm_actual_time_min,time_delay_min,haversine_fuel_liters,osrm_fuel_liters,unbudgeted_fuel_liters,haversine_cost_pkr,osrm_actual_cost_pkr,unbudgeted_cost_pkr,api_latency_ms
+R01,Mithi Farm A to Mithi Market,Millet/Grain,1.49,1.99,0.5,25.01,1.5,3.5,2.0,0.19,0.25,0.06,52.5,70.01,17.51,397.2
+R02,Mithi Depot to Naukot Junction,Mixed Produce,32.38,38.43,6.05,15.74,32.4,38.2,5.8,4.05,4.8,0.76,1141.41,1354.68,213.27,350.5
+R03,Naukot Belt to Digri Market,Chili/Grain,56.24,75.04,18.8,25.05,56.2,83.7,27.4,7.03,9.38,2.35,1982.56,2645.23,662.68,346.7
+R04,Digri Tomato Belt to Matli Hub,Perishable Tomatoes,10.63,14.07,3.44,24.47,10.6,23.1,12.5,1.33,1.76,0.43,374.6,495.95,121.35,382.1
+R05,Matli Market to Hyderabad Processing Hub,Vegetables/Onions,62.91,70.01,7.1,10.13,62.9,64.9,2.0,7.86,8.75,0.89,2217.68,2467.79,250.1,346.7
+R06,Mithi to Hyderabad Full Corridor (NH-8),Supply Chain Arterial,162.01,184.14,22.13,12.02,162.0,170.9,8.9,20.25,23.02,2.77,5710.92,6490.88,779.96,355.9
+R07,Diplo Pastoral Route to Mithi Market,Dairy/Livestock,37.56,40.98,3.42,8.34,37.6,38.5,0.9,4.7,5.12,0.43,1324.04,1444.46,120.42,368.4
+R08,Tando Ghulam Ali to Tando Jam SAU Hub,Research Research Cargo,49.03,58.21,9.18,15.77,49.0,57.0,8.0,6.13,7.28,1.15,1728.34,2051.86,323.52,352.3
