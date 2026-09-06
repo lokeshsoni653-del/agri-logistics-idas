@@ -242,6 +242,12 @@
 
         .metric-card {
             border-left: 5px solid var(--primary-light);
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 110px;
+            box-sizing: border-box;
         }
 
         .metric-card h3 {
@@ -249,19 +255,30 @@
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: 0.8px;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .metric-value {
             font-size: 1.8rem;
             font-weight: 800;
             color: var(--primary-dark);
-            margin: 4px 0;
+            margin: 2px 0 4px 0;
+            line-height: 1.1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .metric-delta {
-            font-size: 0.75rem;
+            font-size: 0.74rem;
             font-weight: 600;
             color: #4A7C2F;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         /* ── Safety Alert Panels ────────────────────────────────── */
@@ -797,7 +814,7 @@
 
         <!-- ── TAB 1: CORPORATE DASHBOARD ────────────────────────── -->
         <div id="tab-corp">
-            <!-- KPI Cards with Dynamic Corridor Telemetry -->
+            <!-- KPI Cards (Compact & Even exactly matching original layout) -->
             <div class="grid-kpi" style="grid-template-columns: repeat(5, 1fr);">
                 <div class="card metric-card">
                     <h3>Active Trucks</h3>
@@ -805,24 +822,24 @@
                     <div class="metric-delta">↑ 3 since yesterday</div>
                 </div>
                 <div class="card metric-card">
-                    <h3 id="corp-kpi-dist-title">Corridor Dist</h3>
+                    <h3>Corridor Dist</h3>
                     <div class="metric-value" id="corp-kpi-dist">184.1 km</div>
                     <div class="metric-delta" id="corp-kpi-dist-delta" style="color:#2E7D32;">📍 True-Road OSRM</div>
                 </div>
                 <div class="card metric-card" style="border-left-color:var(--accent-gold);">
-                    <h3 id="corp-kpi-fuel-title">Est. Fuel Cost</h3>
+                    <h3>Est. Fuel Cost</h3>
                     <div class="metric-value" id="corp-kpi-fuel" style="color:#B78103;">Rs. 6,491</div>
-                    <div class="metric-delta" id="corp-kpi-fuel-delta" style="color:#7D5A02;">@ Rs. 282/L · 23.02 L</div>
+                    <div class="metric-delta" id="corp-kpi-fuel-delta" style="color:#7D5A02;">@ Rs. 282/L · 8 km/L</div>
                 </div>
                 <div class="card metric-card">
-                    <h3 id="corp-kpi-time-title">In Transit Time</h3>
-                    <div class="metric-value" id="corp-kpi-time">171 min</div>
-                    <div class="metric-delta" id="corp-kpi-time-delta" style="color:#5C6B4A;">~2.9 hours</div>
+                    <h3>In Transit</h3>
+                    <div class="metric-value" id="corp-kpi-transit">17</div>
+                    <div class="metric-delta" id="corp-kpi-transit-delta" style="color:#5C6B4A;">Mithi → Hyderabad</div>
                 </div>
                 <div class="card metric-card" id="corp-kpi-risk-card" style="border-left-color:#C62828;">
-                    <h3 id="corp-kpi-risk-title">Risk Level</h3>
-                    <div class="metric-value" id="corp-kpi-risk" style="color:#C62828;">Active Arterial</div>
-                    <div class="metric-delta" id="corp-kpi-risk-delta" style="color:#C62828;">Live Telemetry Monitored</div>
+                    <h3>Risk Level</h3>
+                    <div class="metric-value" id="corp-kpi-risk" style="color:#C62828;">Extreme</div>
+                    <div class="metric-delta" id="corp-kpi-risk-delta" style="color:#C62828;">🌧️ Wet Surface (μ=0.38)</div>
                 </div>
             </div>
 
@@ -14501,26 +14518,59 @@
         mapCorp.fitBounds(bounds, { padding: [35, 35], maxZoom: 15 });
         mapDrv.fitBounds(bounds, { padding: [35, 35], maxZoom: 15 });
 
-        // 6. Update Tab 1 KPI Cards
-        const distEl  = document.getElementById('corp-kpi-dist');
-        const distDEl = document.getElementById('corp-kpi-dist-delta');
-        const fuelEl  = document.getElementById('corp-kpi-fuel');
-        const fuelDEl = document.getElementById('corp-kpi-fuel-delta');
-        const timeEl  = document.getElementById('corp-kpi-time');
-        const timeDEl = document.getElementById('corp-kpi-time-delta');
-        const riskEl  = document.getElementById('corp-kpi-risk');
-        const riskDEl = document.getElementById('corp-kpi-risk-delta');
-        const mapHdr  = document.getElementById('corp-map-header');
-        const badgeEl = document.getElementById('active-corridor-badge');
+        // 6. Update Tab 1 KPI Cards (Compact & Even exactly matching Photo 1)
+        const distEl     = document.getElementById('corp-kpi-dist');
+        const fuelEl     = document.getElementById('corp-kpi-fuel');
+        const transitEl  = document.getElementById('corp-kpi-transit');
+        const transitDEl = document.getElementById('corp-kpi-transit-delta');
+        const riskEl     = document.getElementById('corp-kpi-risk');
+        const riskCard   = document.getElementById('corp-kpi-risk-card');
+        const riskDEl    = document.getElementById('corp-kpi-risk-delta');
+        const mapHdr     = document.getElementById('corp-map-header');
+        const badgeEl    = document.getElementById('active-corridor-badge');
 
-        if (distEl)  distEl.innerText = `${c.osrm_km} km`;
-        if (distDEl) distDEl.innerText = `📍 OSRM True-Road (+${(c.osrm_km - c.haversine_km).toFixed(2)} km delta)`;
-        if (fuelEl)  fuelEl.innerText = `Rs. ${Math.round(c.cost_pkr).toLocaleString()}`;
-        if (fuelDEl) fuelDEl.innerText = `@ Rs. 282/L · ${c.fuel_l.toFixed(2)} L Diesel`;
-        if (timeEl)  timeEl.innerText = `${Math.round(c.time_min)} min`;
-        if (timeDEl) timeDEl.innerText = `~${(c.time_min / 60).toFixed(1)} hours transit`;
-        if (riskEl)  riskEl.innerText = c.risk;
-        if (riskDEl) riskDEl.innerText = `${c.crop} · ${c.error_pct} geometric delta`;
+        if (distEl) distEl.innerText = `${c.osrm_km} km`;
+        if (fuelEl) fuelEl.innerText = `Rs. ${Math.round(c.cost_pkr).toLocaleString()}`;
+
+        const transitCounts = { 'R01': '4', 'R02': '8', 'R03': '11', 'R04': '14', 'R05': '15', 'R06': '17', 'R07': '6', 'R08': '9' };
+        if (transitEl) transitEl.innerText = transitCounts[cid] || '17';
+        if (transitDEl) {
+            const parts = c.name.split('→');
+            const origin = parts[0].trim().split(' ')[0];
+            const dest = parts[1] ? parts[1].trim().split(' ')[0] : 'Hub';
+            transitDEl.innerText = `${origin} → ${dest}`;
+        }
+
+        if (riskEl) {
+            let rWord = 'Extreme';
+            let rColor = '#C62828';
+            let rSub = '🌧️ Wet Surface (μ=0.38)';
+
+            if (cid === 'R06') {
+                rWord = 'Extreme'; rColor = '#C62828'; rSub = '🌧️ Wet Surface (μ=0.38)';
+            } else if (cid === 'R04') {
+                rWord = 'Critical'; rColor = '#C62828'; rSub = '🍅 Perishable Produce';
+            } else if (cid === 'R01' || cid === 'R08') {
+                rWord = 'Optimal'; rColor = '#2E7D32'; rSub = '☀️ Clear / Dry (μ=0.85)';
+            } else if (cid === 'R03') {
+                rWord = 'High'; rColor = '#E65100'; rSub = '🚜 Rural Canal Feeder';
+            } else if (cid === 'R02') {
+                rWord = 'Moderate'; rColor = '#EF6C00'; rSub = '🏜️ Desert Shoulder Sand';
+            } else if (cid === 'R07') {
+                rWord = 'Moderate'; rColor = '#EF6C00'; rSub = '🐪 Pastoral Crossing';
+            } else {
+                rWord = 'Moderate'; rColor = '#EF6C00'; rSub = '📍 Active Route Monitoring';
+            }
+
+            riskEl.innerText = rWord;
+            riskEl.style.color = rColor;
+            if (riskCard) riskCard.style.borderLeftColor = rColor;
+            if (riskDEl) {
+                riskDEl.innerText = rSub;
+                riskDEl.style.color = rColor;
+            }
+        }
+
         if (mapHdr)  mapHdr.innerText = `🗺️ Live Fleet Map · ${c.id}: ${c.name} (${c.osrm_km} km)`;
         if (badgeEl) badgeEl.innerText = `Active: ${c.id} · ${c.name} (${c.osrm_km} km)`;
 
