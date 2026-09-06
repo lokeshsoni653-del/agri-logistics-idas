@@ -8,10 +8,10 @@
 ## 📄 Research Context & Citation
 
 * **Research Paper Title**: *"Bridging the Digital Literacy Gap in Rural Agri-Logistics: A Trilingual, Context-Aware Intelligent Driver Assistance System for the Sindh Agricultural Supply Chain"*
-* **Author**: Lokesh Kumar (Student ID: `2k22-SE-42`)
+* **Author**: Lokesh Kumar, *Student Member, IEEE* (Member # `99402233`, Karachi Section · Student ID: `2k22-SE-42`)
 * **Email**: [2K22-SE-42@student.sau.edu.pk](mailto:2K22-SE-42@student.sau.edu.pk)
 * **Institution**: Department of Software Engineering, Sindh Agriculture University, Tandojam, Pakistan
-* **Supervision & Academic Guidance**: Prof. Dr. Bhawani Shankar Chowdhry (IEEE Fellow / Distinguished National Professor)
+* **Supervision & Academic Guidance**: Prof. Dr. Bhawani Shankar Chowdhry (IEEE Life Senior Member / Distinguished National Professor)
 
 ---
 

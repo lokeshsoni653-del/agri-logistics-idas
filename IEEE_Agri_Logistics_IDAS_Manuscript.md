@@ -1,8 +1,14 @@
 # Bridging the Digital Literacy Gap in Rural Agri-Logistics: A Trilingual, Context-Aware Intelligent Driver Assistance System
 
-**Lokesh Kumar**  
+**Lokesh Kumar**, *Student Member, IEEE* (Member # 99402233)  
 *Department of Software Engineering, Sindh Agriculture University, Tandojam, Sindh, Pakistan*  
+*IEEE Karachi Section*  
 Email: 2K22-SE-42@student.sau.edu.pk  
+
+*Under the Supervision & Guidance of:*  
+**Prof. Dr. Bhawani Shankar Chowdhry**, *Life Senior Member, IEEE*  
+*Professor Emeritus / Distinguished National Professor, Sindh Agriculture University, Tandojam*  
+*Chair / Lead Advisor, IEEE Karachi Section*  
 
 ---
 
@@ -166,6 +172,11 @@ Because $\alpha > 0.80$, the instrument satisfies formal psychometric reliabilit
 
 ## VII. Conclusion & Future Outlook
 This investigation formulated, implemented, and validated the Agri-Logistics IDAS platform designed to bridge the digital and linguistic divide in rural agricultural transport. The study demonstrates that true-road GIS modeling rectifies an average **17.07%** distance underestimation inherent in straight-line calculations, eliminating hidden fuel deficits exceeding PKR 2,400 per fleet cycle and mitigating transit delays that precipitate perishable tomato spoilage. Concurrently, dialectal NLP benchmarking establishes that low-resource **Dhatki** voice advisories can be parsed and synthesized with sub-second turnaround (**747.92 ms**), validating real-time in-cab applicability. Future extensions will integrate physical LoRaWAN mesh transceivers to ensure uninterrupted telemetry communication across non-cellular desert stretches of the Thar region.
+
+---
+
+## Acknowledgment
+The author expresses profound gratitude to **Prof. Dr. Bhawani Shankar Chowdhry** (Life Senior Member, IEEE) for his invaluable mentorship, rigorous technical feedback, and continuous intellectual guidance throughout the design, formulation, and empirical testing of this research. Sincere appreciation is also extended to the **IEEE Karachi Section** and the Faculty of Agricultural Engineering, Sindh Agriculture University, Tandojam, for providing administrative and technical facilities supporting this work.
 
 ---
 

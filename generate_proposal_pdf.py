@@ -15,14 +15,14 @@ from reportlab.platypus import (
 )
 
 def build_pdf(filename="research_proposal.pdf"):
-    # Page size: Letter (612 x 792 pt). Margins: 36 pt. Printable width = 540 pt.
+    # Page size: Letter (612 x 792 pt). Margins: 34 pt. Printable width = 544 pt.
     doc = SimpleDocTemplate(
         filename,
         pagesize=letter,
-        leftMargin=36,
-        rightMargin=36,
-        topMargin=32,
-        bottomMargin=32
+        leftMargin=34,
+        rightMargin=34,
+        topMargin=26,
+        bottomMargin=26
     )
 
     styles = getSampleStyleSheet()
@@ -32,8 +32,8 @@ def build_pdf(filename="research_proposal.pdf"):
         'DocTitle',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=13,
-        leading=16,
+        fontSize=12,
+        leading=14.5,
         textColor=colors.HexColor('#1E3A0F'),
         alignment=1
     )
@@ -42,8 +42,8 @@ def build_pdf(filename="research_proposal.pdf"):
         'DocSubTitle',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=9.5,
-        leading=12,
+        fontSize=8.8,
+        leading=11,
         textColor=colors.HexColor('#9E7812'),
         alignment=1
     )
@@ -52,8 +52,8 @@ def build_pdf(filename="research_proposal.pdf"):
         'DocMeta',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=8,
-        leading=11,
+        fontSize=7.5,
+        leading=10,
         textColor=colors.HexColor('#333333'),
         alignment=1
     )
@@ -62,19 +62,19 @@ def build_pdf(filename="research_proposal.pdf"):
         'SectionH1',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=9.5,
-        leading=13,
+        fontSize=8.5,
+        leading=11,
         textColor=colors.HexColor('#1E3A0F'),
-        spaceBefore=6,
-        spaceAfter=3
+        spaceBefore=4,
+        spaceAfter=2
     )
     
     body_style = ParagraphStyle(
         'BodyDark',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=8,
-        leading=11,
+        fontSize=7.4,
+        leading=9.8,
         textColor=colors.HexColor('#222222')
     )
     
@@ -82,10 +82,10 @@ def build_pdf(filename="research_proposal.pdf"):
         'BulletText',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=7.8,
-        leading=10.5,
+        fontSize=7.2,
+        leading=9.4,
         textColor=colors.HexColor('#222222'),
-        leftIndent=10
+        leftIndent=8
     )
 
     # Table styles
@@ -93,8 +93,8 @@ def build_pdf(filename="research_proposal.pdf"):
         'THStyle',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=7.2,
-        leading=9.5,
+        fontSize=6.8,
+        leading=8.8,
         textColor=colors.white
     )
 
@@ -102,8 +102,8 @@ def build_pdf(filename="research_proposal.pdf"):
         'TDStyle',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=7,
-        leading=9.2,
+        fontSize=6.6,
+        leading=8.4,
         textColor=colors.HexColor('#222222')
     )
 
@@ -111,8 +111,8 @@ def build_pdf(filename="research_proposal.pdf"):
         'TDBold',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=7,
-        leading=9.2,
+        fontSize=6.6,
+        leading=8.4,
         textColor=colors.HexColor('#1E3A0F')
     )
 
@@ -120,8 +120,8 @@ def build_pdf(filename="research_proposal.pdf"):
         'TDRed',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=7,
-        leading=9.2,
+        fontSize=6.6,
+        leading=8.4,
         textColor=colors.HexColor('#C62828')
     )
 
@@ -130,19 +130,19 @@ def build_pdf(filename="research_proposal.pdf"):
     # Title & Header
     story.append(Paragraph("Bridging the Digital Literacy Gap in Rural Agri-Logistics:", title_style))
     story.append(Paragraph("A Trilingual, Context-Aware Intelligent Driver Assistance System for Sindh Supply Chains", title_style))
-    story.append(Spacer(1, 3))
+    story.append(Spacer(1, 2))
     story.append(Paragraph("Formal Research Proposal & System Architecture Document", sub_title_style))
-    story.append(Spacer(1, 4))
+    story.append(Spacer(1, 3))
     
     meta_text = (
-        "<b>Researcher:</b> Lokesh Kumar (Student ID: 2k22-SE-42) &nbsp;|&nbsp; "
-        "<b>Department:</b> Software Engineering, Sindh Agriculture University, Tandojam<br/>"
-        "<b>Supervision & Guidance:</b> Prof. Dr. Bhawani Shankar Chowdhry &nbsp;|&nbsp; "
+        "<b>Researcher:</b> Lokesh Kumar (Student ID: 2k22-SE-42 &nbsp;|&nbsp; <b>IEEE Student Member # 99402233</b>, Karachi Section)<br/>"
+        "<b>Department:</b> Software Engineering, Sindh Agriculture University, Tandojam &nbsp;|&nbsp; "
+        "<b>Supervision:</b> Prof. Dr. Bhawani Shankar Chowdhry (IEEE Life Senior Member)<br/>"
         "<b>Live Prototype Portal:</b> https://agri-idas.tech"
     )
     story.append(Paragraph(meta_text, meta_style))
-    story.append(Spacer(1, 5))
-    story.append(HRFlowable(width="100%", thickness=1.2, color=colors.HexColor('#1E3A0F'), spaceAfter=6))
+    story.append(Spacer(1, 3))
+    story.append(HRFlowable(width="100%", thickness=1.2, color=colors.HexColor('#1E3A0F'), spaceAfter=4))
 
     # 1. Problem Statement
     story.append(Paragraph("1. Problem Statement & Motivation", h1_style))
@@ -155,7 +155,7 @@ def build_pdf(filename="research_proposal.pdf"):
         "deficits and prolonged transit delays that spoil produce."
     )
     story.append(Paragraph(p1, body_style))
-    story.append(Spacer(1, 4))
+    story.append(Spacer(1, 3))
 
     # 2. Objectives
     story.append(Paragraph("2. Core Research Objectives (RO1 - RO4)", h1_style))
@@ -163,7 +163,7 @@ def build_pdf(filename="research_proposal.pdf"):
     story.append(Paragraph("• <b>RO2: Regional Dialect NLP Engine:</b> Engineer a lightweight semantic intent parser specifically tailored for the low-resource Dhatki dialect alongside regional Sindhi and national Urdu.", bullet_style))
     story.append(Paragraph("• <b>RO3: Real-Time Audio Voice Advisory:</b> Deliver synthesized auditory turn and hazard warnings in under 1.0 second so illiterate operators navigate safely without looking at screens.", bullet_style))
     story.append(Paragraph("• <b>RO4: Telemetry-Driven Safety Matrix:</b> Adapt speed limits dynamically based on live surface friction (wet μ=0.38) and refrigerated cargo temperature (19.2°C) to prevent tomato damage.", bullet_style))
-    story.append(Spacer(1, 5))
+    story.append(Spacer(1, 3))
 
     # 3. Architecture Overview (Auto-wrapped cells)
     story.append(Paragraph("3. Technical System Architecture", h1_style))
@@ -193,15 +193,15 @@ def build_pdf(filename="research_proposal.pdf"):
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#1E3A0F')),
         ('ALIGN', (0,0), (-1,-1), 'LEFT'),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 3),
-        ('TOPPADDING', (0,0), (-1,-1), 3),
-        ('LEFTPADDING', (0,0), (-1,-1), 4),
-        ('RIGHTPADDING', (0,0), (-1,-1), 4),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 1.8),
+        ('TOPPADDING', (0,0), (-1,-1), 1.8),
+        ('LEFTPADDING', (0,0), (-1,-1), 3),
+        ('RIGHTPADDING', (0,0), (-1,-1), 3),
         ('BACKGROUND', (0,1), (-1,-1), colors.HexColor('#F9F8F5')),
         ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#D0C9B8')),
     ]))
     story.append(t_arch)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 3))
 
     # 4. Empirical GIS Findings
     story.append(Paragraph("4. Empirical Findings: GIS Corridor Testing (Mithi to Hyderabad)", h1_style))
@@ -238,15 +238,15 @@ def build_pdf(filename="research_proposal.pdf"):
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#2D5016')),
         ('ALIGN', (0,0), (-1,-1), 'LEFT'),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 2.5),
-        ('TOPPADDING', (0,0), (-1,-1), 2.5),
+        ('BOTTOMPADDING', (0,0), (-1,-1), 1.5),
+        ('TOPPADDING', (0,0), (-1,-1), 1.5),
         ('LEFTPADDING', (0,0), (-1,-1), 3),
         ('RIGHTPADDING', (0,0), (-1,-1), 3),
         ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#D0C9B8')),
         ('BACKGROUND', (0,-1), (-1,-1), colors.HexColor('#EFECE4')),
     ]))
     story.append(t_gis)
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 3))
 
     # 5. Benchmarks & Validation
     story.append(Paragraph("5. Latency Benchmarks & Statistical Validation", h1_style))
@@ -260,13 +260,14 @@ def build_pdf(filename="research_proposal.pdf"):
         "(Cronbach's alpha = 0.842)."
     )
     story.append(Paragraph(p_stat, body_style))
-    story.append(Spacer(1, 6))
+    story.append(Spacer(1, 3))
 
     # 6. Supervision & Note
-    story.append(Paragraph("6. Supervisory Guidance & Verification", h1_style))
+    story.append(Paragraph("6. Supervisory Guidance & IEEE Affiliation", h1_style))
     p_sup = (
-        "This project is developed as an official Final Year Software Engineering capstone and IEEE research paper "
-        "under the direct supervision of <b>Prof. Dr. Bhawani Shankar Chowdhry</b> at Sindh Agriculture University, Tandojam. "
+        "This research is conducted by <b>Lokesh Kumar</b> (IEEE Student Member # 99402233, Karachi Section) as an "
+        "official Final Year Software Engineering capstone and IEEE conference paper under the supervision and guidance of "
+        "<b>Prof. Dr. Bhawani Shankar Chowdhry</b> (IEEE Life Senior Member, Karachi Section) at Sindh Agriculture University, Tandojam. "
         "The live interactive system, road datasets, and full source code are accessible at <b>https://agri-idas.tech</b>."
     )
     story.append(Paragraph(p_sup, body_style))
