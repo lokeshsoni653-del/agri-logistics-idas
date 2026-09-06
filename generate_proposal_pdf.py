@@ -137,8 +137,8 @@ def build_pdf(filename="research_proposal.pdf"):
     meta_text = (
         "<b>Researcher:</b> Lokesh Kumar (Student ID: 2k22-SE-42 &nbsp;|&nbsp; <b>IEEE Student Member # 99402233</b>, Karachi Section)<br/>"
         "<b>Department:</b> Software Engineering, Sindh Agriculture University, Tandojam &nbsp;|&nbsp; "
-        "<b>Supervision:</b> Prof. Dr. Bhawani Shankar Chowdhry (IEEE Life Senior Member)<br/>"
-        "<b>Live Prototype Portal:</b> https://agri-idas.tech"
+        "<b>Supervision:</b> Prof. Dr. Bhawani Shankar Chowdhry (Sitara-e-Imtiaz, Life Senior Member IEEE)<br/>"
+        "<b>Live Portal:</b> https://agri-idas.tech &nbsp;|&nbsp; <b>Supervisor Profile:</b> https://bschowdhry.info"
     )
     story.append(Paragraph(meta_text, meta_style))
     story.append(Spacer(1, 3))
@@ -263,12 +263,12 @@ def build_pdf(filename="research_proposal.pdf"):
     story.append(Spacer(1, 3))
 
     # 6. Supervision & Note
-    story.append(Paragraph("6. Supervisory Guidance & IEEE Affiliation", h1_style))
+    story.append(Paragraph("6. Supervisory Guidance & Academic Affiliation", h1_style))
     p_sup = (
-        "This research is conducted by <b>Lokesh Kumar</b> (IEEE Student Member # 99402233, Karachi Section) as an "
-        "official Final Year Software Engineering capstone and IEEE conference paper under the supervision and guidance of "
-        "<b>Prof. Dr. Bhawani Shankar Chowdhry</b> (IEEE Life Senior Member, Karachi Section) at Sindh Agriculture University, Tandojam. "
-        "The live interactive system, road datasets, and full source code are accessible at <b>https://agri-idas.tech</b>."
+        "This research is formulated by <b>Lokesh Kumar</b> (IEEE Student Member # 99402233, Karachi Section) under "
+        "the academic supervision of <b>Prof. Dr. Bhawani Shankar Chowdhry</b> (Sitara-e-Imtiaz, Izaz-e-Fazeelat, "
+        "Distinguished National Professor & IEEE Life Senior Member). Built upon Prof. Chowdhry's research framework in "
+        "IoT Agritech Applications and Wireless Sensor Networks (WSN), the live system is accessible at <b>https://agri-idas.tech</b>."
     )
     story.append(Paragraph(p_sup, body_style))
 

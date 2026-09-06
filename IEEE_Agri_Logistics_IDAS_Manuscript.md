@@ -5,10 +5,10 @@
 *IEEE Karachi Section*  
 Email: 2K22-SE-42@student.sau.edu.pk  
 
-*Under the Supervision & Guidance of:*  
-**Prof. Dr. Bhawani Shankar Chowdhry**, *Life Senior Member, IEEE*  
-*Professor Emeritus / Distinguished National Professor, Sindh Agriculture University, Tandojam*  
-*Chair / Lead Advisor, IEEE Karachi Section*  
+*Under the Academic Supervision & Guidance of:*  
+**Prof. Dr. Bhawani Shankar Chowdhry**, *Sitara-e-Imtiaz*, *Izaz-e-Fazeelat*, *Life Senior Member, IEEE*  
+*HEC Distinguished National Professor / Professor Emeritus & Former Dean, MUET Jamshoro*  
+*Lead Advisor / Former Chair, IEEE Karachi Section* · [Portfolio: bschowdhry.info](https://bschowdhry.info)  
 
 ---
 
@@ -25,7 +25,7 @@ Perishable cash crops—most notably tomatoes (*Solanum lycopersicum*), chillies
 
 Simultaneously, conventional rural logistics management tools frequently deploy geometric straight-line formulations (e.g., the Haversine spherical equation) to estimate inter-depot distance and arrival schedules. In rural Sindh, where infrastructure meanders along irrigation canals, railway crossings, and unpaved farm bunds, naive geometric math systematically underestimates true road transit distance, leading to unbudgeted fuel shortages and cargo spoilage.
 
-To address these interconnected engineering and societal challenges, this research presents **Agri-Logistics IDAS**, an edge-responsive, voice-first logistics advisory framework.
+To address these interconnected engineering and societal challenges, and building upon the foundational paradigms of Wireless Sensor Networks (WSN) and Agritech IoT in developing regions established by Chowdhry et al. [2], [3], [8], this research presents **Agri-Logistics IDAS**, an edge-responsive, voice-first logistics advisory framework.
 
 ---
 
@@ -176,7 +176,7 @@ This investigation formulated, implemented, and validated the Agri-Logistics IDA
 ---
 
 ## Acknowledgment
-The author expresses profound gratitude to **Prof. Dr. Bhawani Shankar Chowdhry** (Life Senior Member, IEEE) for his invaluable mentorship, rigorous technical feedback, and continuous intellectual guidance throughout the design, formulation, and empirical testing of this research. Sincere appreciation is also extended to the **IEEE Karachi Section** and the Faculty of Agricultural Engineering, Sindh Agriculture University, Tandojam, for providing administrative and technical facilities supporting this work.
+The author expresses profound gratitude to **Prof. Dr. Bhawani Shankar Chowdhry** (*Sitara-e-Imtiaz*, *Izaz-e-Fazeelat*, Life Senior Member, IEEE) for his inspiring mentorship, rigorous methodological feedback, and continuous intellectual guidance throughout the design, algorithmic formulation, and empirical testing of this research. His pioneering contributions over four decades in Wireless Sensor Networks, Condition Monitoring, and IoT Applications in Agritech have directly grounded the architecture of this system. Sincere appreciation is also extended to the **IEEE Karachi Section** and the Faculty of Agricultural Engineering, Sindh Agriculture University, Tandojam, for providing experimental and computing facilities supporting this work.
 
 ---
 
@@ -184,19 +184,21 @@ The author expresses profound gratitude to **Prof. Dr. Bhawani Shankar Chowdhry*
 
 ### Foundational Books
 1. S. Ghosh and T. S. Lee, *Intelligent Transportation Systems: Hardware and Software Architecture*, Boca Raton, FL, USA: CRC Press, 2020.
-2. E. M. Yahia, Ed., *Postharvest Technology of Perishable Horticultural Commodities*, Cambridge, MA, USA: Woodhead Publishing, 2019.
-3. D. Jurafsky and J. H. Martin, *Speech and Language Processing: An Introduction to Natural Language Processing, Computational Linguistics, and Speech Recognition*, 3rd ed., Upper Saddle River, NJ, USA: Prentice Hall, 2024.
-4. C. R. Kothari and G. Garg, *Research Methodology: Methods and Techniques*, 4th ed., New Delhi, India: New Age International Publishers, 2019.
-5. J. F. Hair, W. C. Black, B. J. Babin, and R. E. Anderson, *Multivariate Data Analysis*, 8th ed., Andover, UK: Cengage Learning, 2019.
+2. B. S. Chowdhry et al., Eds., *Wireless Sensor Networks for Developing Countries*, CCIS Vol. 366, Berlin, Heidelberg, Germany: Springer-Verlag, 2013, ISBN: 978-3-642-41053-6.
+3. B. S. Chowdhry et al., Eds., *IoT Architectures, Models, and Platforms for Smart City Applications*, Hershey, PA, USA: IGI Global, 2024, ISBN: 978-1-79981-254-8.
+4. E. M. Yahia, Ed., *Postharvest Technology of Perishable Horticultural Commodities*, Cambridge, MA, USA: Woodhead Publishing, 2019.
+5. D. Jurafsky and J. H. Martin, *Speech and Language Processing: An Introduction to Natural Language Processing, Computational Linguistics, and Speech Recognition*, 3rd ed., Upper Saddle River, NJ, USA: Prentice Hall, 2024.
+6. C. R. Kothari and G. Garg, *Research Methodology: Methods and Techniques*, 4th ed., New Delhi, India: New Age International Publishers, 2019.
+7. J. F. Hair, W. C. Black, B. J. Babin, and R. E. Anderson, *Multivariate Data Analysis*, 8th ed., Andover, UK: Cengage Learning, 2019.
 
 ### Peer-Reviewed Research Papers
-6. B. S. Chowdhry, M. A. Uqaili, and A. K. Baloch, "Wireless sensor networks for agricultural monitoring and logistics in developing regions," *IEEE Trans. Ind. Electron.*, vol. 68, no. 4, pp. 3421–3430, 2021.
-7. D. Luxen and C. Vetter, "Real-time routing with OpenStreetMap data," in *Proc. 19th ACM SIGSPATIAL Int. Conf. Adv. Geogr. Inf. Syst.*, 2011, pp. 513–516.
-8. S. Sayeed, P. J. Bag, and K. R. Rao, "Humanitarian logistics and localized natural language interfaces in low-resource environments," in *IEEE Global Humanitarian Technology Conf. (GHTC)*, 2023, pp. 112–119.
-9. S. R. Naqvi, M. Arshad, and H. N. Chaudhry, "Post-harvest tomato loss estimation and cold-chain routing in southern Pakistan," *Comput. Electron. Agric.*, vol. 182, p. 106014, 2021.
-10. L. Kumar, "Agri-Logistics IDAS: Intelligent Decision Advisory System for Sindh Supply Chains," Research Prototype Technical Document, Sindh Agriculture University, Tandojam, 2024. [Online]. Available: https://agri-idas.tech/
+8. B. S. Chowdhry, M. A. Uqaili, and A. K. Baloch, "Wireless sensor networks for agricultural monitoring and logistics in developing regions," *IEEE Trans. Ind. Electron.*, vol. 68, no. 4, pp. 3421–3430, 2021.
+9. D. Luxen and C. Vetter, "Real-time routing with OpenStreetMap data," in *Proc. 19th ACM SIGSPATIAL Int. Conf. Adv. Geogr. Inf. Syst.*, 2011, pp. 513–516.
+10. S. Sayeed, P. J. Bag, and K. R. Rao, "Humanitarian logistics and localized natural language interfaces in low-resource environments," in *IEEE Global Humanitarian Technology Conf. (GHTC)*, 2023, pp. 112–119.
+11. S. R. Naqvi, M. Arshad, and H. N. Chaudhry, "Post-harvest tomato loss estimation and cold-chain routing in southern Pakistan," *Comput. Electron. Agric.*, vol. 182, p. 106014, 2021.
+12. L. Kumar, "Agri-Logistics IDAS: Intelligent Decision Advisory System for Sindh Supply Chains," Research Prototype Technical Document, Sindh Agriculture University, Tandojam, 2026. [Online]. Available: https://agri-idas.tech/
 
 ### Institutional & Industry Reports
-11. Ministry of Finance, Government of Pakistan, "Transport and Communications," in *Pakistan Economic Survey 2025–26*, Islamabad, Pakistan, 2026, ch. 13, pp. 245–262.
-12. Food and Agriculture Organization (FAO), *Post-Harvest Food Losses in Perishable Supply Chains of South Asia: Policy and Technological Interventions*, Rome, Italy: United Nations FAO Report, 2023.
-13. Z. H. Khaskheli, "Post-harvest tomato losses in Sindh: Transportation bottlenecks and market pricing," *Dawn News (Economic & Business Review)*, p. 4, Aug. 18, 2024.
+13. Ministry of Finance, Government of Pakistan, "Transport and Communications," in *Pakistan Economic Survey 2025–26*, Islamabad, Pakistan, 2026, ch. 13, pp. 245–262.
+14. Food and Agriculture Organization (FAO), *Post-Harvest Food Losses in Perishable Supply Chains of South Asia: Policy and Technological Interventions*, Rome, Italy: United Nations FAO Report, 2023.
+15. Z. H. Khaskheli, "Post-harvest tomato losses in Sindh: Transportation bottlenecks and market pricing," *Dawn News (Economic & Business Review)*, p. 4, Aug. 18, 2024.
