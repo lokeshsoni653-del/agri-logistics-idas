@@ -22,7 +22,11 @@ def build_pdf(filename="research_proposal.pdf"):
         leftMargin=34,
         rightMargin=34,
         topMargin=26,
-        bottomMargin=26
+        bottomMargin=26,
+        title="Agri-Logistics IDAS - Research Proposal - Lokesh Kumar",
+        author="Lokesh Kumar (Student ID: 2k22-SE-42, IEEE Member # 99402233)",
+        subject="IoT & Trilingual NLP Intelligent Decision Support System for Perishable Produce Logistics",
+        creator="Lokesh Kumar & Prof. Dr. Bhawani Shankar Chowdhry"
     )
 
     styles = getSampleStyleSheet()
