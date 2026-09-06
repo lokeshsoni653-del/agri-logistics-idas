@@ -3,10 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Cache Control for instant updates -->
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+        <!-- Cache Control for instant updates -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate, max-age=0" />
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
+    <meta name="build-version" content="2026.09.06.1450" />
 
     <title>Agri-Logistics IDAS · Phase 3 Research Portal</title>
     
@@ -216,10 +217,11 @@
         }
 
         .grid-kpi {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 18px;
-            margin-bottom: 24px;
+            display: grid !important;
+            grid-template-columns: repeat(5, 1fr) !important;
+            gap: 16px !important;
+            margin-bottom: 22px !important;
+            align-items: stretch !important;
         }
 
         .card {
@@ -242,43 +244,54 @@
 
         .metric-card {
             border-left: 5px solid var(--primary-light);
-            padding: 16px 20px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            min-height: 110px;
-            box-sizing: border-box;
+            padding: 16px 20px !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: space-between !important;
+            height: 110px !important;
+            min-height: 110px !important;
+            max-height: 110px !important;
+            box-sizing: border-box !important;
+            overflow: hidden !important;
+            border-radius: 14px !important;
         }
 
         .metric-card h3 {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.8px;
-            margin-bottom: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: 0.72rem !important;
+            font-weight: 700 !important;
+            color: var(--text-muted) !important;
+            text-transform: uppercase !important;
+            letter-spacing: 0.8px !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 1.2 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
         }
 
         .metric-value {
-            font-size: 1.8rem;
-            font-weight: 800;
-            color: var(--primary-dark);
-            margin: 2px 0 4px 0;
-            line-height: 1.1;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: 1.8rem !important;
+            font-weight: 800 !important;
+            color: var(--primary-dark) !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 1.15 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
         }
 
         .metric-delta {
-            font-size: 0.74rem;
-            font-weight: 600;
-            color: #4A7C2F;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
+            font-size: 0.74rem !important;
+            font-weight: 600 !important;
+            color: #4A7C2F !important;
+            margin: 0 !important;
+            padding: 0 !important;
+            line-height: 1.2 !important;
+            white-space: nowrap !important;
+            overflow: hidden !important;
+            text-overflow: ellipsis !important;
         }
 
         /* ── Safety Alert Panels ────────────────────────────────── */
@@ -1579,7 +1592,7 @@
     "cost_pkr": 70.01,
     "unbudgeted_pkr": 18.0,
     "error_pct": "25.00%",
-    "risk": "Low (Local Feeder)",
+    "risk": "Optimal",
     "advisory": "Mithi local transit: Farm road clear. Keep steady speed around produce stalls.",
     "polyline": [
       [
@@ -1871,7 +1884,7 @@
     "cost_pkr": 1354.68,
     "unbudgeted_pkr": 213.26,
     "error_pct": "15.74%",
-    "risk": "Moderate (Desert Highway)",
+    "risk": "Moderate",
     "advisory": "Thar Desert arterial (S-68): Paved highway. Watch for drifting sand patches near road shoulders.",
     "polyline": [
       [
@@ -3355,7 +3368,7 @@
     "cost_pkr": 2645.23,
     "unbudgeted_pkr": 662.7,
     "error_pct": "25.05%",
-    "risk": "Moderate (Canal Belt)",
+    "risk": "Moderate",
     "advisory": "Irrigation canal belt (S-68/S-81): Paved provincial highway. Reduce speed at bridge crossings.",
     "polyline": [
       [
@@ -4639,7 +4652,7 @@
     "cost_pkr": 495.95,
     "unbudgeted_pkr": 121.26,
     "error_pct": "24.45%",
-    "risk": "Critical (Fragile Cargo)",
+    "risk": "Critical",
     "advisory": "CRITICAL CARGO (S-81): Fresh ripe tomatoes onboard. Speed capped at 42 km/h to prevent transit bruising.",
     "polyline": [
       [
@@ -5203,7 +5216,7 @@
     "cost_pkr": 2467.79,
     "unbudgeted_pkr": 249.92,
     "error_pct": "10.14%",
-    "risk": "Moderate (Urban Approach)",
+    "risk": "Moderate",
     "advisory": "Hyderabad approach (S-79/N-5): Heavy market truck congestion near Hala Naka bypass. Keep lane discipline.",
     "polyline": [
       [
@@ -7099,7 +7112,7 @@
     "cost_pkr": 6490.88,
     "unbudgeted_pkr": 779.88,
     "error_pct": "12.02%",
-    "risk": "Active Transit (Full Corridor)",
+    "risk": "Extreme",
     "advisory": "Main Arterial Transit (184.1 km): Continuous IDAS monitoring across S-68, S-81, S-79, and N-5.",
     "polyline": [
       [
@@ -12019,7 +12032,7 @@
     "cost_pkr": 1444.46,
     "unbudgeted_pkr": 120.39,
     "error_pct": "8.35%",
-    "risk": "Moderate (Pastoral Rangeland)",
+    "risk": "Moderate",
     "advisory": "Diplo rangeland: Paved highway with free-grazing camel and goat herds crossing the roadway.",
     "polyline": [
       [
@@ -13079,7 +13092,7 @@
     "cost_pkr": 2051.86,
     "unbudgeted_pkr": 323.59,
     "error_pct": "15.77%",
-    "risk": "Low (Dual Carriageway)",
+    "risk": "Optimal",
     "advisory": "SAU Agronomy Corridor: Direct transit via S-79 and N-120 Dual Carriageway to University research storage silo.",
     "polyline": [
       [
@@ -14529,7 +14542,8 @@
         const mapHdr     = document.getElementById('corp-map-header');
         const badgeEl    = document.getElementById('active-corridor-badge');
 
-        if (distEl) distEl.innerText = `${c.osrm_km} km`;
+        const distFormatted = (c.osrm_km >= 10) ? Number(c.osrm_km).toFixed(1) : Number(c.osrm_km).toFixed(2);
+        if (distEl) distEl.innerText = `${distFormatted} km`;
         if (fuelEl) fuelEl.innerText = `Rs. ${Math.round(c.cost_pkr).toLocaleString()}`;
 
         const transitCounts = { 'R01': '4', 'R02': '8', 'R03': '11', 'R04': '14', 'R05': '15', 'R06': '17', 'R07': '6', 'R08': '9' };
@@ -14547,19 +14561,23 @@
             let rSub = '🌧️ Wet Surface (μ=0.38)';
 
             if (cid === 'R06') {
-                rWord = 'Extreme'; rColor = '#C62828'; rSub = '🌧️ Wet Surface (μ=0.38)';
+                rWord = 'Extreme';  rColor = '#C62828'; rSub = '🌧️ Wet Surface (μ=0.38)';
             } else if (cid === 'R04') {
-                rWord = 'Critical'; rColor = '#C62828'; rSub = '🍅 Perishable Produce';
-            } else if (cid === 'R01' || cid === 'R08') {
-                rWord = 'Optimal'; rColor = '#2E7D32'; rSub = '☀️ Clear / Dry (μ=0.85)';
+                rWord = 'Critical'; rColor = '#C62828'; rSub = '🍅 Fragile Cargo';
+            } else if (cid === 'R01') {
+                rWord = 'Optimal';  rColor = '#2E7D32'; rSub = '☀️ Clear / Dry (μ=0.85)';
+            } else if (cid === 'R08') {
+                rWord = 'Optimal';  rColor = '#2E7D32'; rSub = '🌾 Research Corridor';
             } else if (cid === 'R03') {
-                rWord = 'High'; rColor = '#E65100'; rSub = '🚜 Rural Canal Feeder';
+                rWord = 'High';     rColor = '#E65100'; rSub = '🚜 Canal Feeder';
             } else if (cid === 'R02') {
-                rWord = 'Moderate'; rColor = '#EF6C00'; rSub = '🏜️ Desert Shoulder Sand';
+                rWord = 'Moderate'; rColor = '#EF6C00'; rSub = '🏜️ Desert Shoulder';
             } else if (cid === 'R07') {
                 rWord = 'Moderate'; rColor = '#EF6C00'; rSub = '🐪 Pastoral Crossing';
+            } else if (cid === 'R05') {
+                rWord = 'Moderate'; rColor = '#EF6C00'; rSub = '🏙️ Urban Inflow';
             } else {
-                rWord = 'Moderate'; rColor = '#EF6C00'; rSub = '📍 Active Route Monitoring';
+                rWord = 'Moderate'; rColor = '#EF6C00'; rSub = '📍 Active Route';
             }
 
             riskEl.innerText = rWord;

@@ -20,7 +20,7 @@
     "cost_pkr": 70.01,
     "unbudgeted_pkr": 18.0,
     "error_pct": "25.00%",
-    "risk": "Low (Local Feeder)",
+    "risk": "Optimal",
     "advisory": "Mithi local transit: Farm road clear. Keep steady speed around produce stalls.",
     "polyline": [
       [
@@ -312,7 +312,7 @@
     "cost_pkr": 1354.68,
     "unbudgeted_pkr": 213.26,
     "error_pct": "15.74%",
-    "risk": "Moderate (Desert Highway)",
+    "risk": "Moderate",
     "advisory": "Thar Desert arterial (S-68): Paved highway. Watch for drifting sand patches near road shoulders.",
     "polyline": [
       [
@@ -1796,7 +1796,7 @@
     "cost_pkr": 2645.23,
     "unbudgeted_pkr": 662.7,
     "error_pct": "25.05%",
-    "risk": "Moderate (Canal Belt)",
+    "risk": "Moderate",
     "advisory": "Irrigation canal belt (S-68/S-81): Paved provincial highway. Reduce speed at bridge crossings.",
     "polyline": [
       [
@@ -3080,7 +3080,7 @@
     "cost_pkr": 495.95,
     "unbudgeted_pkr": 121.26,
     "error_pct": "24.45%",
-    "risk": "Critical (Fragile Cargo)",
+    "risk": "Critical",
     "advisory": "CRITICAL CARGO (S-81): Fresh ripe tomatoes onboard. Speed capped at 42 km/h to prevent transit bruising.",
     "polyline": [
       [
@@ -3644,7 +3644,7 @@
     "cost_pkr": 2467.79,
     "unbudgeted_pkr": 249.92,
     "error_pct": "10.14%",
-    "risk": "Moderate (Urban Approach)",
+    "risk": "Moderate",
     "advisory": "Hyderabad approach (S-79/N-5): Heavy market truck congestion near Hala Naka bypass. Keep lane discipline.",
     "polyline": [
       [
@@ -5540,7 +5540,7 @@
     "cost_pkr": 6490.88,
     "unbudgeted_pkr": 779.88,
     "error_pct": "12.02%",
-    "risk": "Active Transit (Full Corridor)",
+    "risk": "Extreme",
     "advisory": "Main Arterial Transit (184.1 km): Continuous IDAS monitoring across S-68, S-81, S-79, and N-5.",
     "polyline": [
       [
@@ -10460,7 +10460,7 @@
     "cost_pkr": 1444.46,
     "unbudgeted_pkr": 120.39,
     "error_pct": "8.35%",
-    "risk": "Moderate (Pastoral Rangeland)",
+    "risk": "Moderate",
     "advisory": "Diplo rangeland: Paved highway with free-grazing camel and goat herds crossing the roadway.",
     "polyline": [
       [
@@ -11520,7 +11520,7 @@
     "cost_pkr": 2051.86,
     "unbudgeted_pkr": 323.59,
     "error_pct": "15.77%",
-    "risk": "Low (Dual Carriageway)",
+    "risk": "Optimal",
     "advisory": "SAU Agronomy Corridor: Direct transit via S-79 and N-120 Dual Carriageway to University research storage silo.",
     "polyline": [
       [
