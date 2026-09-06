@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Cache Control for instant updates -->
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+
     <title>Agri-Logistics IDAS · Phase 3 Research Portal</title>
     
     <!-- Google Fonts & Leaflet CSS -->
@@ -1603,11 +1608,124 @@
         const lat = (24.7436 + (25.3960 - 24.7436) * val / 100).toFixed(4);
         const lng = (69.7961 + (68.3578 - 69.7961) * val / 100).toFixed(4);
         document.getElementById('tele-gps').innerText = `${lat}°N, ${lng}°E`;
+        
+        updateAudioAdvisoryUI();
     }
 
 
     // ── DYNAMIC CONTEXT-AWARE AUDIO ADVISORY SYSTEM ────────────────
-    const ADVISORY_CORPUS = {
+    function getDynamicAdvisory(lang, progress, weather, time, hazard) {
+        const isRainNight = (weather === 'Rain' || time === 'Night');
+        
+        if (hazard) {
+            if (lang === 'Urdu') {
+                return {
+                    headline: '🚨 ہنگامی الرٹ! ڈگری کے قریب سڑک بند ہے۔ ڈپلو والے راستے پر مڑیں۔',
+                    roman: 'Alert! Digri ke qareeb rasta band hai. Diplo wale raste par muden.',
+                    english: 'Emergency SOS: Road blocked near Digri. Reroute via Diplo detour.'
+                };
+            } else if (lang === 'Dhatki') {
+                return {
+                    headline: '🚨 ہنگامی الرٹ! ڊگھڙي پاڻي آهي، ڊپلو واٽے ونو۔',
+                    roman: 'Alert! Digri paas rukawat hai, Diplo raah te vanjo.',
+                    english: 'Emergency SOS: Flooding near Digri. Divert via Diplo provincial route.'
+                };
+            } else {
+                return {
+                    headline: '🚨 هنگامي الرٽ! ڊگھڙي وٽ روڊ بلاڪ آهي. ڊپلو طرف نئون رستو هلو.',
+                    roman: 'Alert! Digri wath rasto band ahe. Diplo taraf naye raste te wanj.',
+                    english: 'Emergency SOS: Road blocked near Digri. Reroute via Diplo bypass.'
+                };
+            }
+        }
+        
+        if (isRainNight) {
+            if (lang === 'Urdu') {
+                return {
+                    headline: '🌧️ خبردار! بارش اور رات ہے۔ رفتار 42 کلومیٹر رکھیں اور ہیزارڈ لائٹس آن کریں۔',
+                    roman: 'Khabardar! Baarish aur raat ka waqt hai. Raftar 42 km/h rakhein aur hazard lights on karein.',
+                    english: 'Caution! Rain & night conditions (μ=0.38). Cap speed at 42 km/h to protect perishable tomato crates.'
+                };
+            } else if (lang === 'Dhatki') {
+                return {
+                    headline: '🌧️ دھیان رکھو! بارش اتے رات ہے، سڑک چکنی ہے۔ رفتار 42 کرو۔',
+                    roman: 'Dhyan rakho! Barish atay raat hai, sadak chikni hai. Raftar 42 karo atay tamatar sambhalo.',
+                    english: 'Caution! Wet road. Drive at 42 km/h to prevent tomato cargo shifting.'
+                };
+            } else {
+                return {
+                    headline: '🌧️ خبردار! برسات ۽ رات آهي، روڊ چڪڻو آهي (μ=0.38). رفتار 42 رکو ۽ ٽماٽن جو خيال رکو.',
+                    roman: 'Khabardar! Meenhan ain raat ahe. Raftar 42 km/h rakho, agte sadak chikni ahe.',
+                    english: 'Caution! Wet surface friction (μ=0.38). Maintain 42 km/h for delicate cargo.'
+                };
+            }
+        }
+        
+        // Progress-based normal instructions
+        if (progress < 25) {
+            if (lang === 'Urdu') {
+                return {
+                    headline: '📍 مٹھی روانگی: نیشنل ہائی وے 8 پر نوکوٹ جنکشن کی طرف سیدھے چلیں۔ (38 km)',
+                    roman: 'Mithi Rawangi: National Highway 8 par Naukot junction ki taraf seedha chalein (38 km).',
+                    english: 'Departure Mithi: Continue straight along NH-8 toward Naukot junction (38 km).'
+                };
+            } else if (lang === 'Dhatki') {
+                return {
+                    headline: '📍 مٹھی روانگی: این ایچ 8 تے نوکوٹ جنکشن سائیڈ ونو۔ (38 km)',
+                    roman: 'Mithi Rawangi: NH-8 te Naukot junction side vanjo (38 km).',
+                    english: 'Mithi Departure: Drive straight on NH-8 toward Naukot junction.'
+                };
+            } else {
+                return {
+                    headline: '📍 مٺي روانگي: نيشنل هاءِ وي 8 تي نوڪوٽ جنڪشن طرف سڌو هلو۔ (38 km)',
+                    roman: 'Mithi Rawangi: National Highway 8 te Naukot junction taraf siddho halo (38 km).',
+                    english: 'Mithi Departure: Continue along National Highway 8 toward Naukot.'
+                };
+            }
+        } else if (progress < 65) {
+            if (lang === 'Urdu') {
+                return {
+                    headline: '🧭 ڈگری جنکشن: آگے بائیں مڑیں اور مٹلی کی طرف سیدھے رہیں۔ (45 km)',
+                    roman: 'Digri Junction: Aage baayein muren aur Matli ki taraf seedha rahein (45 km).',
+                    english: 'Digri Junction: Turn left and follow NH-8 toward Matli hub (45 km).'
+                };
+            } else if (lang === 'Dhatki') {
+                return {
+                    headline: '🧭 ڊگھڙي جنڪشن: آگيا کھبے پھرو اتے مٽلي سائيڊ ونو۔ (45 km)',
+                    roman: 'Digri Junction: Aagya khabey phiro atay Matli side vanjo (45 km).',
+                    english: 'Digri Junction: Turn left toward Matli produce hub (45 km).'
+                };
+            } else {
+                return {
+                    headline: '🧭 ڊگھڙي جنڪشن: اڳتي کٻي مڙو ۽ مٽلي طرف سڌو هلو۔ (45 km)',
+                    roman: 'Digri Junction: Agte khabbe moro ain Matli taraf siddho halo (45 km).',
+                    english: 'Digri Junction: Turn left toward Matli route (45 km).'
+                };
+            }
+        } else {
+            if (lang === 'Urdu') {
+                return {
+                    headline: '🏁 حیدرآباد داخلہ: ہول سیل سبزی منڈی بائی پاس سے داخل ہوں۔ (15 km)',
+                    roman: 'Hyderabad Dakhla: Wholesale sabzi mandi bypass se dakhil hon (15 km).',
+                    english: 'Approaching Destination: Enter Hyderabad wholesale market terminal via bypass (15 km).'
+                };
+            } else if (lang === 'Dhatki') {
+                return {
+                    headline: '🏁 حیدرآباد پُہچ: منڈی بائی پاس کن داخل تھیو۔ (15 km)',
+                    roman: 'Hyderabad Pohch: Mandi bypass kan dakhil thiyo (15 km).',
+                    english: 'Hyderabad Arrival: Enter terminal vegetable market via bypass.'
+                };
+            } else {
+                return {
+                    headline: '🏁 حيدرآباد آمد: سبزي منڊي باءِ پاس وٽان داخل ٿيو۔ (15 km)',
+                    roman: 'Hyderabad Amad: Sabzi mandi bypass wataan dakhil thiyo (15 km).',
+                    english: 'Hyderabad Arrival: Enter wholesale terminal bypass.'
+                };
+            }
+        }
+    }
+
+    const ADVISORY_CORPUS_DEPRECATED = {
         Sindhi: {
             normal: {
                 headline: 'اڳتي نيشنل هاءِ وي 8 تي سڌو هلو، مٽلي طرف (45 km)',
@@ -1666,14 +1784,9 @@
 
     function updateAudioAdvisoryUI() {
         const lang = state.lang;
-        const corpus = ADVISORY_CORPUS[lang] || ADVISORY_CORPUS.Sindhi;
-        
-        let condition = 'normal';
-        if (state.weather === 'Rain' || state.time === 'Night') condition = 'monsoon';
-        if (state.activeHazard) condition = 'hazard';
+        const progress = state.progressPct || 35;
+        const item = getDynamicAdvisory(lang, progress, state.weather, state.time, state.activeHazard);
 
-        const item = corpus[condition] || corpus.normal;
-        
         const headlineEl = document.getElementById('advisory-headline');
         const romanEl    = document.getElementById('advisory-roman');
         const englishEl  = document.getElementById('advisory-english');
@@ -1688,10 +1801,10 @@
         if (btnLabel)   btnLabel.innerText = `Speak Advisory in ${lang}`;
 
         if (boxEl) {
-            if (condition === 'hazard') {
+            if (state.activeHazard) {
                 boxEl.style.borderLeftColor = '#C62828';
                 boxEl.style.background = '#FDECEA';
-            } else if (condition === 'monsoon') {
+            } else if (state.weather === 'Rain' || state.time === 'Night') {
                 boxEl.style.borderLeftColor = '#E65100';
                 boxEl.style.background = '#FFF4E5';
             } else {
@@ -1703,19 +1816,16 @@
 
     function playAudioGuidance() {
         const lang = state.lang;
-        const corpus = ADVISORY_CORPUS[lang] || ADVISORY_CORPUS.Sindhi;
-        let condition = 'normal';
-        if (state.weather === 'Rain' || state.time === 'Night') condition = 'monsoon';
-        if (state.activeHazard) condition = 'hazard';
+        const progress = state.progressPct || 35;
+        const item = getDynamicAdvisory(lang, progress, state.weather, state.time, state.activeHazard);
 
-        const item = corpus[condition] || corpus.normal;
         const transcript = `🔊 Spoken (${lang}): "${item.roman}"`;
         document.getElementById('audio-transcript').innerText = transcript;
 
         if ('speechSynthesis' in window) {
-            window.speechSynthesis.cancel(); // Stop any pending speech
+            window.speechSynthesis.cancel();
             const utter = new SpeechSynthesisUtterance(item.roman);
-            utter.lang = corpus.voiceLang || 'ur-PK';
+            utter.lang = 'ur-PK';
             utter.rate = 0.88;
             utter.pitch = 1.0;
             window.speechSynthesis.speak(utter);
