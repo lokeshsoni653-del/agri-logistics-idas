@@ -11,7 +11,7 @@
 * **Author**: Lokesh Kumar, *Student Member, IEEE* (Member # `99402233`, Karachi Section · Student ID: `2k22-SE-42`)
 * **Email**: [2K22-SE-42@student.sau.edu.pk](mailto:2K22-SE-42@student.sau.edu.pk)
 * **Institution**: Department of Software Engineering, Sindh Agriculture University, Tandojam, Pakistan
-* **Supervision & Academic Guidance**: Prof. Dr. Bhawani Shankar Chowdhry, *Sitara-e-Imtiaz*, *Izaz-e-Fazeelat* (HEC Distinguished National Professor / Professor Emeritus & Life Senior Member, IEEE) · [Official Portfolio: bschowdhry.info](https://bschowdhry.info)
+* **Supervision & Academic Guidance**: Prof. Dr. Bhawani Shankar Chowdhry, *Sitara-e-Imtiaz*, *Izaz-e-Fazeelat* (HEC Distinguished National Professor / Professor Emeritus & Life Senior Member, IEEE)
 
 ---
 

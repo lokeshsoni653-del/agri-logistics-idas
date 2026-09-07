@@ -8,7 +8,7 @@ Email: 2K22-SE-42@student.sau.edu.pk
 *Under the Academic Supervision & Guidance of:*  
 **Prof. Dr. Bhawani Shankar Chowdhry**, *Sitara-e-Imtiaz*, *Izaz-e-Fazeelat*, *Life Senior Member, IEEE*  
 *HEC Distinguished National Professor / Professor Emeritus & Former Dean, MUET Jamshoro*  
-*Lead Advisor / Former Chair, IEEE Karachi Section* · [Portfolio: bschowdhry.info](https://bschowdhry.info)  
+*Lead Advisor / Former Chair, IEEE Karachi Section*  
 
 ---
 

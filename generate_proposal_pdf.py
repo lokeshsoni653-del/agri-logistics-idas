@@ -140,9 +140,9 @@ def build_pdf(filename="research_proposal.pdf"):
     
     meta_text = (
         "<b>Researcher:</b> Lokesh Kumar (Student ID: 2k22-SE-42 &nbsp;|&nbsp; <b>IEEE Student Member # 99402233</b>, Karachi Section)<br/>"
-        "<b>Department:</b> Software Engineering, Sindh Agriculture University, Tandojam &nbsp;|&nbsp; "
-        "<b>Supervision:</b> Prof. Dr. Bhawani Shankar Chowdhry (Sitara-e-Imtiaz, Life Senior Member IEEE)<br/>"
-        "<b>Live Portal:</b> https://agri-idas.tech &nbsp;|&nbsp; <b>Supervisor Profile:</b> https://bschowdhry.info"
+        "<b>Department:</b> Software Engineering, Sindh Agriculture University, Tandojam<br/>"
+        "<b>Supervision:</b> Prof. Dr. Bhawani Shankar Chowdhry (Sitara-e-Imtiaz, Izaz-e-Fazeelat, Distinguished National Professor & Life Senior Member IEEE)<br/>"
+        "<b>Live Research Portal:</b> https://agri-idas.tech"
     )
     story.append(Paragraph(meta_text, meta_style))
     story.append(Spacer(1, 3))
