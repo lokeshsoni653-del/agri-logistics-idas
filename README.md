@@ -32,11 +32,11 @@
 
 ## 🌾 Abstract & Problem Formulation
 
-Agricultural transit across Lower Sindh—predominantly the **Mithi $\rightarrow$ Mirpurkhas $\rightarrow$ Hyderabad** transit corridor—experiences catastrophic post-harvest crop losses (**exceeding 30% for perishable produce like tomatoes and mangoes**) alongside unbudgeted diesel deficits. Field evaluations reveal three core systemic bottlenecks:
+Agricultural transit across Lower Sindh—predominantly the **Mithi → Mirpurkhas → Hyderabad** transit corridor—experiences post-harvest crop losses **exceeding 30% for perishable produce** alongside structural diesel deficits. Field evaluations reveal three core systemic bottlenecks:
 
-1. **The Digital & Text-Literacy Barrier:** Standard commercial telematics and GPS navigation engines (Google Maps, Waze) rely on English or Urdu textual UI, alienating rural commercial transport operators.
+1. **Digital & Text-Literacy Barriers:** Standard GPS engines rely on English or Urdu textual UI, alienating rural transport operators.
 2. **Vernacular Linguistic Heterogeneity:** Drivers predominantly operate in indigenous regional dialects (**Sindhi**, **Dhatki**, and regional vernacular Urdu).
-3. **Dynamic Environmental Road Hazards:** Night driving, severe monsoon flash-flooding, submerged bridges, and unpaved arterial rural routes dramatically increase rollover accidents and perishable cargo bruising.
+3. **Dynamic Environmental Road Hazards:** Night driving, monsoon flash-flooding, submerged bridges, and unpaved arterial rural routes increase rollover risks and crop bruising.
 
 **Agri-Logistics IDAS** resolves these challenges by coupling an **OSRM True-Road GIS Engine**, a **Bidirectional Trilingual NLP Translation Layer**, an automated **4-Tier Context-Aware Safety Rules Matrix**, and a **Sub-Second Multilingual Voice Advisory Engine** into a zero-literacy mobile cockpit.
 
@@ -44,34 +44,34 @@ Agricultural transit across Lower Sindh—predominantly the **Mithi $\rightarrow
 
 ## 🏗️ End-to-End System Architecture
 
-```
-┌────────────────────────────────────────────────────────────────────────────────────────┐
-│                          Agri-Logistics IDAS System Architecture                       │
-├────────────────────────────────────────────────────────────────────────────────────────┤
-│                                                                                        │
-│  [1. USER INTERACTION & COCKPIT LAYER]                                                 │
-│       ├── Corporate Dispatch Console (English Management View)                         │
-│       └── Driver Navigation HUD (Trilingual Vernacular Interface: Sindhi/Urdu/Dhatki)  │
-│                                      │                                                 │
-│                                      ▼                                                 │
-│  [2. BIDIRECTIONAL NLP TRANSLATION & HAZARD DETECTION ENGINE]                          │
-│       ├── Driver Dialect Normalizer (Romanized Sindhi / Dhatki / Urdu)                 │
-│       ├── Lexical Hazard Parser (Flooded Causeways, Blocked Roads, Weather Warnings)   │
-│       └── Corporate English Command Synthesizer                                        │
-│                                      │                                                 │
-│                                      ▼                                                 │
-│  [3. GEOSPATIAL ROUTING & TELEMETRICS LAYER]                                           │
-│       ├── Open Source Routing Machine (OSRM) Engine                                    │
-│       ├── Real-Time Turn-by-Turn Instruction Parser                                    │
-│       └── Dynamic Folium Geospatial Map Engine with Outage Fallback Mechanism          │
-│                                      │                                                 │
-│                                      ▼                                                 │
-│  [4. CONTEXT-AWARE SAFETY & SPEECH ADVISORY PIPELINE]                                  │
-│       ├── 4-Tier Risk Inference Matrix (Normal → Advisory → Critical → Extreme)        │
-│       ├── Fragile Cargo Decay Suffix Synthesizer ("Nazuk maal aahay, ahista halo")     │
-│       └── Cached gTTS Audio Synthesis Layer (@st.cache_data for Sub-Second Playback)   │
-│                                                                                        │
-└────────────────────────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    subgraph UI ["1. User Interaction & Cockpit Layer"]
+        A[Corporate Dispatch Console - English View]
+        B[Driver Navigation HUD - Trilingual Sindhi / Dhatki / Urdu]
+    end
+
+    subgraph NLP ["2. Bidirectional NLP & Hazard Detection"]
+        C[Driver Dialect Normalizer - Romanized Dialects]
+        D[Lexical Hazard Parser - Flooded Causeways & Roadblocks]
+        E[Corporate Command Synthesizer]
+    end
+
+    subgraph GIS ["3. Geospatial Routing & Telematics Layer"]
+        F[OSRM True-Road Routing Engine]
+        G[Turn-by-Turn Instruction Parser]
+        H[Folium Geospatial Map with Network Fallback]
+    end
+
+    subgraph SAFETY ["4. Context-Aware Safety & Speech Pipeline"]
+        I[4-Tier Risk Inference Matrix - Normal to Extreme]
+        J[Fragile Cargo Decay Suffix Synthesizer]
+        K[Sub-Second gTTS Multilingual Voice Advisory Engine]
+    end
+
+    UI --> NLP
+    NLP --> GIS
+    GIS --> SAFETY
 ```
 
 ---
@@ -80,9 +80,9 @@ Agricultural transit across Lower Sindh—predominantly the **Mithi $\rightarrow
 
 | Evaluation Metric | Measured Benchmark | Target Baseline | Operational Significance |
 | :--- | :--- | :--- | :--- |
-| **OSRM Route Resolution Latency** | **$410\text{ ms}$** (Mean) | $< 1000\text{ ms}$ | Enables instant re-routing during field outages. |
-| **Trilingual Audio Synthesis Latency** | **$280\text{ ms}$** (Cached) | $< 500\text{ ms}$ | Delivers sub-second voice prompts before road turns. |
-| **Regional Hazard Lexicon Coverage** | **15+ Hazard Lemmas** | Dialectal Parity | Covers Sindhi (*"pul budi wai ahe"*), Dhatki, Urdu. |
+| **OSRM Route Resolution Latency** | **410 ms** (Mean) | < 1000 ms | Enables instant re-routing during field outages. |
+| **Trilingual Audio Synthesis Latency** | **280 ms** (Cached) | < 500 ms | Delivers sub-second voice prompts before road turns. |
+| **Regional Hazard Lexicon Coverage** | **15+ Hazard Lemmas** | Dialectal Parity | Covers Sindhi (*pul budi wai ahe*), Dhatki, Urdu. |
 | **Dynamic Safety Tiers** | **4 Discrete Tiers** | Multi-Factor | Adapts to Cargo (Perishable), Weather, & Time of Day. |
 
 ---
@@ -91,10 +91,10 @@ Agricultural transit across Lower Sindh—predominantly the **Mithi $\rightarrow
 
 The platform dynamically calculates road safety protocol across environmental factors:
 
-* **Tier 1: Normal Operation (Green)** $\rightarrow$ Clear weather, daytime, standard durable cargo.
-* **Tier 2: Advisory Protocol (Amber)** $\rightarrow$ Night travel OR unpaved rural tracks; speed limit reduced by $15\%$.
-* **Tier 3: Critical Hazard (Red - 2s Pulse)** $\rightarrow$ Rain precipitation on perishable cargo; prompts braking distance advisory in selected dialect.
-* **Tier 4: Extreme Risk (Dark Red - 1s Pulse)** $\rightarrow$ Simultaneous **Night + Heavy Monsoon + Fragile Perishable Goods**; activates mandatory audio stop-and-inspect sequence.
+* **Tier 1: Normal Operation (Green)** → Clear weather, daytime, standard durable cargo.
+* **Tier 2: Advisory Protocol (Amber)** → Night travel OR unpaved rural tracks; speed limit reduced by 15%.
+* **Tier 3: Critical Hazard (Red - 2s Pulse)** → Rain precipitation on perishable cargo; prompts braking distance advisory in selected dialect.
+* **Tier 4: Extreme Risk (Dark Red - 1s Pulse)** → Simultaneous **Night + Heavy Monsoon + Fragile Perishable Goods**; activates mandatory audio stop-and-inspect sequence.
 
 ---
 
@@ -109,7 +109,7 @@ The real-world viability of this system is backed by formal field collaboration 
 ## 💻 Local Installation & Reproducibility Guide
 
 ### Prerequisites
-* Python `3.10` or `3.11`
+* Python 3.10 or 3.11
 * Git
 
 ```bash
