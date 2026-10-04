@@ -1,138 +1,45 @@
 # Agri-Logistics IDAS — Intelligent Driver Assistance System
 
-> **Production-Grade Research Prototype — Phase 3 (Context-Aware Safety)**  
-> **Live System Portal**: [https://agri-idas.tech](https://agri-idas.tech)
+> **Context-Aware Safety Telematics & Trilingual Vernacular Voice Guidance for Agricultural Supply Chains in Rural Sindh**  
+> **Live Production Portal**: [https://agri-idas.tech](https://agri-idas.tech)
+
+[![IEEE Karachi Section](https://img.shields.io/badge/IEEE-Karachi%20Section-00629B?style=for-the-badge&logo=ieee&logoColor=white)](https://ieee.org)
+[![EPICS in IEEE](https://img.shields.io/badge/Grant%20Proposal-EPICS%20in%20IEEE%20($10k)-FF6F00?style=for-the-badge)](https://epics.ieee.org)
+[![Community Partner](https://img.shields.io/badge/NPO%20Partner-SPO%20Pakistan-2E7D32?style=for-the-badge)](https://spopk.org)
+[![Academic Supervisor](https://img.shields.io/badge/Supervisor-Prof.%20Dr.%20B.S.%20Chowdhry-8E24AA?style=for-the-badge)](https://bschowdhry.info)
+[![Python 3.11+](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
+[![Streamlit](https://img.shields.io/badge/UI%20Framework-Streamlit-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)](https://streamlit.io)
 
 ---
 
-## 📄 Research Context & Citation
+## 📄 Academic Attribution & Leadership
 
-* **Research Paper Title**: *"Bridging the Digital Literacy Gap in Rural Agri-Logistics: A Trilingual, Context-Aware Intelligent Driver Assistance System for the Sindh Agricultural Supply Chain"*
-* **Author**: Lokesh Kumar, *Student Member, IEEE* (Member # `99402233`, Karachi Section · Student ID: `2k22-SE-42`)
-* **Email**: [2K22-SE-42@student.sau.edu.pk](mailto:2K22-SE-42@student.sau.edu.pk)
-* **Institution**: Department of Software Engineering, Sindh Agriculture University, Tandojam, Pakistan
-* **Supervision & Academic Guidance**: Prof. Dr. Bhawani Shankar Chowdhry, *Sitara-e-Imtiaz*, *Izaz-e-Fazeelat* (HEC Distinguished National Professor / Professor Emeritus & Life Senior Member, IEEE)
-
----
-
-## 🌾 Abstract & Research Problem
-
-Agricultural logistics across rural Sindh (particularly the **Mithi $\rightarrow$ Hyderabad** transit corridor) suffer high post-harvest crop losses ($\sim 35-40\%$ for delicate produce like tomatoes) due to:
-1. **Digital Literacy Barriers**: Traditional GPS & fleet management applications assume English/Urdu text literacy.
-2. **Language Heterogeneity**: Rural truck drivers predominantly communicate in regional dialects (**Sindhi**, **Urdu**, and **Dhatki**).
-3. **Dynamic Environmental Hazards**: Night driving, heavy monsoon rainfall, flooding, and unlit rural road hazards drastically increase accident risk and cargo spoilage.
-
-The **Agri-Logistics IDAS** addresses this gap by combining **Trilingual NLP Translation**, **OSRM True-Road Routing**, **Context-Aware Multi-Tier Safety Alerting**, and **gTTS Multilingual Audio Advisories** into a zero-literacy-barrier mobile interface.
+* **Principal Student Investigator & Lead Architect**: **Lokesh Kumar**  
+  *Student Member, IEEE* (Member # `99402233`, Karachi Section) · Student ID: `2k22-SE-42`  
+  *Department of Software Engineering, Sindh Agriculture University (SAU), Tandojam, Pakistan*  
+  *Email*: [2K22-SE-42@student.sau.edu.pk](mailto:2K22-SE-42@student.sau.edu.pk) | [lokeshsoni653@gmail.com](mailto:lokeshsoni653@gmail.com)
+* **Academic Supervisor & Senior Investigator**: **Prof. Dr. Bhawani Shankar Chowdhry**  
+  *Sitara-i-Imtiaz*, *Izaz-e-Fazeelat*  
+  *HEC Distinguished National Professor & Professor Emeritus, Mehran University of Engineering and Technology (MUET)*  
+  *Former Dean, FECCE & Life Senior Member, IEEE*
+* **IEEE Section & Technical Publishing Advisor**: **Engr. Parkash Lohana**  
+  *Director CSPD, MAJU · Publication Chair & Conference Secretary, IEEE KHI-HTC*
+* **Institutional Community Partner**: **Strengthening Participatory Organisation (SPO)**  
+  *Regional Office, Hyderabad, Sindh, Pakistan*  
+  *Program Lead*: **Shewa Ram Suthar** (*Program Manager, Sindh*)
 
 ---
 
-## 🏗️ System Architecture
+## 🌾 Abstract & Problem Formulation
 
-The architecture consists of four decoupled processing layers:
+Agricultural transit across Lower Sindh—predominantly the **Mithi $\rightarrow$ Mirpurkhas $\rightarrow$ Hyderabad** transit corridor—experiences catastrophic post-harvest crop losses (**exceeding 30% for perishable produce like tomatoes and mangoes**) alongside unbudgeted diesel deficits. Field evaluations reveal three core systemic bottlenecks:
 
-```
-┌─────────────────────────────────────────────────────────────────────────┐
-│                      Agri-Logistics IDAS Pipeline                       │
-├─────────────────────────────────────────────────────────────────────────┤
-│                                                                         │
-│  [1. Driver / Corporate Interface]                                      │
-│      ├── Mobile-Responsive Dispatch Chat                                │
-│      └── Context Simulator Controls (Cargo, Weather, Time)             │
-│                                                                         │
-│  [2. Trilingual NLP Engine]                                             │
-│      ├── Bidirectional NLP (Sindhi / Urdu / Dhatki ↔ Corporate English) │
-│      └── Regional Hazard Keyword & Emergency Detector                   │
-│                                                                         │
-│  [3. OSRM True-Road Routing Layer]                                      │
-│      ├── OpenStreetMap True-Road Polyline Geometry                      │
-│      └── Off-Grid Network Fallback Map Renderer                         │
-│                                                                         │
-│  [4. Context-Aware Safety & Audio Layer]                                │
-│      ├── 4-Tier Risk Matrix (Extreme, Critical, Warning, Standard)      │
-│      └── gTTS Multilingual Voice Engine (@st.cache_data)                │
-│                                                                         │
-└─────────────────────────────────────────────────────────────────────────┘
-```
+1. **The Digital & Text-Literacy Barrier:** Standard commercial telematics and GPS navigation engines (Google Maps, Waze) rely on English or Urdu textual UI, alienating rural commercial transport operators.
+2. **Vernacular Linguistic Heterogeneity:** Drivers predominantly operate in indigenous regional dialects (**Sindhi**, **Dhatki**, and regional vernacular Urdu).
+3. **Dynamic Environmental Road Hazards:** Night driving, severe monsoon flash-flooding, submerged bridges, and unpaved arterial rural routes dramatically increase rollover accidents and perishable cargo bruising.
+
+**Agri-Logistics IDAS** resolves these challenges by coupling an **OSRM True-Road GIS Engine**, a **Bidirectional Trilingual NLP Translation Layer**, an automated **4-Tier Context-Aware Safety Rules Matrix**, and a **Sub-Second Multilingual Voice Advisory Engine** into a zero-literacy mobile cockpit.
 
 ---
 
-## ⚡ Key Features
-
-1. **Trilingual Dispatch Chat (Sindhi, Urdu, Dhatki)**:
-   - Real-time bidirectional chat matching driver hazard inputs against regional phrasebooks.
-   - Instant corporate auto-reply bot responding directly in the driver's chosen dialect.
-   - Mobile-optimized layout with zero text wrapping on action buttons.
-
-2. **4-Tier Context-Aware Safety Matrix**:
-   - **Tier 4: EXTREME RISK** (Night + Rain + Fragile Cargo) — Pulsing high-priority safety alert.
-   - **Tier 3: CRITICAL RISK** (Wet Roads + Fragile Cargo) — Braking distance & crop bruising advisory.
-   - **Tier 2: WARNING** (Night Driving / Wet Roads / Fragile Cargo).
-   - **Tier 1: STANDARD** (Clear driving conditions).
-
-3. **True-Road OSRM Navigation**:
-   - Interactive Folium polyline route calculation from Mithi to Hyderabad via Naukot & Tando Ghulam Ali.
-   - Pure HTML map injection eliminating Streamlit component key conflicts.
-
-4. **gTTS Multilingual Audio Guidance**:
-   - Spoken maneuver advisories in Romanized Sindhi, Urdu, and Dhatki.
-   - Preposition-cleaned natural pronunciation and `@st.cache_data` latency optimization.
-
-5. **Live Route Progress & Demo Simulator**:
-   - Progress bar tracking distance covered (`km`) and dynamic ETA countdown (`hours/mins`).
-   - Interactive demo slider to simulate route progression during research evaluation.
-
----
-
-## 📁 Repository Structure
-
-```text
-agri-idas/
-├── agri_logistics_idas.py    # Main Streamlit Phase 3 Application & UI
-├── routing.py                 # OSRM True-Road Engine & Map Renderers
-├── voice_advisory.py          # gTTS Trilingual Audio Advisory Module
-├── requirements.txt           # Python Dependencies
-├── task.md                    # System Task Tracker & Audit Log
-└── README.md                  # Comprehensive Academic Documentation
-```
-
----
-
-## 💻 Local Setup & Execution
-
-1. **Clone Repository**:
-   ```bash
-   git clone https://github.com/your-username/agri-idas.git
-   cd agri-idas
-   ```
-
-2. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-3. **Run Application**:
-   ```bash
-   streamlit run agri_logistics_idas.py
-   ```
-
-4. **Access Portal**:
-   Open browser at `http://localhost:8501` or visit the live deployment at [https://agri-idas.tech](https://agri-idas.tech).
-
----
-
-## 📜 IEEE Citation Format
-
-```bibtex
-@inproceedings{kumar2024agri,
-  author    = {Kumar, Lokesh},
-  title     = {Bridging the Digital Literacy Gap in Rural Agri-Logistics: A Trilingual, Context-Aware Intelligent Driver Assistance System for the Sindh Agricultural Supply Chain},
-  booktitle = {Proceedings of the Sindh Agriculture University Research Symposium},
-  address   = {Tandojam, Pakistan},
-  year      = {2024},
-  note      = {Supervision & Guidance: Prof. Dr. Bhawani Shankar Chowdhry}
-}
-```
-
----
-
-*© 2024 Lokesh Kumar · Department of Software Engineering · Sindh Agriculture University, Tandojam.*
+## 🏗️ End-to-End System Architecture
