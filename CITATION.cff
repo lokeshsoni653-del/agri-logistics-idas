@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this software in your research, please cite it as below."
+authors:
+  - family-names: "Kumar"
+    given-names: "Lokesh"
+    affiliation: "Sindh Agriculture University, Tandojam"
+    orcid: "https://orcid.org/0009-0000-0000-0000"
+  - family-names: "Lohana"
+    given-names: "Parkash"
+    affiliation: "Mohammad Ali Jinnah University & IEEE Region 10"
+  - family-names: "Suthar"
+    given-names: "Shewa Ram"
+    affiliation: "Strengthening Participatory Organisation (SPO)"
+  - family-names: "Chowdhry"
+    given-names: "Bhawani Shankar"
+    affiliation: "Mehran University of Engineering and Technology (MUET)"
+title: "Agri-Logistics IDAS: Trilingual Navigation and Context-Aware Safety Telematics for Rural Agricultural Supply Chains"
+version: 3.0.0
+date-released: 2026-10-01
+url: "https://agri-idas.tech"
+repository-code: "https://github.com/lokeshsoni653-del/agri-logistics-idas"
+keywords:
+  - intelligent-transportation-systems
+  - vernacular-nlp
+  - agricultural-logistics
+  - sindh
+  - low-literacy-hci
+  - smart-rural-mobility
+  - epics-in-ieee
+license: "MIT"
